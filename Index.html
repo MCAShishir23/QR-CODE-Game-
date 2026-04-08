@@ -1,1894 +1,1868 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCore AI - Hospital Receptionist Management System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #0a0f1a;
-            --bg-secondary: #111827;
-            --bg-card: #1a2332;
-            --bg-elevated: #232f42;
-            --accent-primary: #00d4aa;
-            --accent-secondary: #00b894;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --accent-info: #3b82f6;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-color: #2d3a4f;
-            --glow-primary: rgba(0, 212, 170, 0.3);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR PUZZLE — HORROR EDITION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+:root {
+  --bg: #050508;
+  --bg2: #0d0d16;
+  --bg3: #12121f;
+  --card: #0f0f1a;
+  --card2: #161625;
+  --border: #2a2a45;
+  --border2: #3a3a60;
+  --accent1: #c84bff;
+  --accent2: #ff3366;
+  --accent3: #00e5ff;
+  --accent4: #ffe600;
+  --green: #00ff88;
+  --text: #e8e8f0;
+  --text2: #9090b0;
+  --text3: #5a5a80;
+  --glow1: rgba(200,75,255,0.15);
+  --glow2: rgba(255,51,102,0.15);
+  --glow3: rgba(0,229,255,0.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* === GRID BACKGROUND === */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(200,75,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,75,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none; z-index:0;
+}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+/* === SCANLINE OVERLAY === */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
+  pointer-events:none; z-index:0;
+  animation: scan 8s linear infinite;
+}
+@keyframes scan {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100px; }
+}
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Space Grotesk', sans-serif;
-        }
+/* === PARTICLES === */
+#particles-canvas { position:fixed; inset:0; pointer-events:none; z-index:1; }
 
-        /* Background Animation */
-        .bg-pattern {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(0, 184, 148, 0.04) 0%, transparent 70%);
-        }
+/* === LOGIN === */
+#loginWrap {
+  position:relative; z-index:10;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+}
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 50px 40px;
+  width: 100%; max-width: 460px;
+  position:relative; overflow:hidden;
+  box-shadow: 0 0 60px rgba(200,75,255,0.2), 0 0 120px rgba(255,51,102,0.1);
+}
+.login-card::before {
+  content:'';
+  position:absolute; top:-2px; left:10%; width:80%; height:2px;
+  background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
+}
+.login-card::after {
+  content:'';
+  position:absolute; bottom:-2px; left:10%; width:80%; height:2px;
+  background: linear-gradient(90deg, transparent, var(--accent2), var(--accent1), transparent);
+}
+.logo-wrap {
+  text-align:center; margin-bottom:40px;
+}
+.logo-skull {
+  font-size:60px; line-height:1;
+  filter: drop-shadow(0 0 20px var(--accent1));
+  animation: float 3s ease-in-out infinite;
+  display:block; margin-bottom:12px;
+}
+@keyframes float {
+  0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}
+}
+.logo-title {
+  font-family:'Creepster', cursive;
+  font-size:2.8rem; letter-spacing:3px;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow: none;
+  line-height:1;
+}
+.logo-sub {
+  font-family:'Space Mono', monospace;
+  font-size:0.7rem; color:var(--text3); letter-spacing:4px;
+  margin-top:6px;
+}
 
-        .grid-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background-image: 
-                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridMove 20s linear infinite;
-        }
+.role-tabs {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:8px; margin-bottom:28px;
+}
+.role-tab {
+  padding:10px 8px; border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--bg2);
+  color:var(--text2); font-family:'Rajdhani',sans-serif;
+  font-size:0.85rem; font-weight:600; letter-spacing:1px;
+  cursor:pointer; transition:all 0.2s;
+  text-align:center;
+}
+.role-tab:hover { border-color:var(--border2); color:var(--text); }
+.role-tab.active {
+  background: linear-gradient(135deg, rgba(200,75,255,0.2), rgba(255,51,102,0.2));
+  border-color:var(--accent1); color:var(--accent1);
+  box-shadow: 0 0 12px rgba(200,75,255,0.3);
+}
+.role-tab i { display:block; font-size:1.2rem; margin-bottom:4px; }
 
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
+.field-group { margin-bottom:20px; position:relative; }
+.field-group label {
+  display:block; font-size:0.75rem; font-weight:700;
+  letter-spacing:2px; color:var(--text3); margin-bottom:8px;
+  text-transform:uppercase;
+}
+.field-group input {
+  width:100%; padding:14px 18px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; color:var(--text);
+  font-family:'Rajdhani',sans-serif; font-size:1rem;
+  transition:all 0.2s; outline:none;
+}
+.field-group input:focus {
+  border-color:var(--accent1);
+  box-shadow:0 0 0 3px rgba(200,75,255,0.1);
+}
+.field-group input::placeholder { color:var(--text3); }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
+.btn-primary {
+  width:100%; padding:16px;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  border:none; border-radius:12px; cursor:pointer;
+  font-family:'Bebas Neue', cursive; font-size:1.3rem;
+  letter-spacing:3px; color:white;
+  transition:all 0.3s; position:relative; overflow:hidden;
+  box-shadow: 0 4px 20px rgba(200,75,255,0.4);
+}
+.btn-primary:hover {
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(200,75,255,0.5);
+}
+.btn-primary:active { transform:translateY(0); }
+.btn-primary::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  transform:translateX(-100%); transition:transform 0.5s;
+}
+.btn-primary:hover::before { transform:translateX(100%); }
 
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
+.hint-text {
+  text-align:center; margin-top:20px;
+  font-size:0.75rem; color:var(--text3);
+  font-family:'Space Mono',monospace; line-height:1.8;
+}
+.hint-text span { color:var(--accent3); }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 3px;
-        }
+/* === LAYOUT === */
+#app { display:none; position:relative; z-index:10; min-height:100vh; }
 
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
+.sidebar {
+  position:fixed; left:0; top:0; bottom:0;
+  width:260px;
+  background:var(--card);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  overflow-y:auto; z-index:100;
+  transition:transform 0.3s;
+}
+.sidebar-logo {
+  padding:24px 20px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+.sidebar-logo .skull { font-size:28px; filter:drop-shadow(0 0 8px var(--accent1)); }
+.sidebar-logo-text h2 {
+  font-family:'Creepster',cursive; font-size:1.4rem; letter-spacing:2px;
+  background:linear-gradient(135deg, var(--accent1), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.sidebar-logo-text small { font-size:0.65rem; color:var(--text3); letter-spacing:3px; font-family:'Space Mono',monospace; }
 
-        .card:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 30px rgba(0, 212, 170, 0.1);
-        }
+.sidebar-user {
+  margin:16px 16px 0;
+  padding:14px; border-radius:12px;
+  background:var(--bg2); border:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+.avatar {
+  width:40px; height:40px; border-radius:12px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--accent1), var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',cursive; font-size:1.2rem;
+  box-shadow:0 0 12px rgba(200,75,255,0.4);
+}
+.avatar-info .name { font-weight:700; font-size:0.95rem; }
+.avatar-info .email { font-size:0.7rem; color:var(--text3); font-family:'Space Mono',monospace; word-break:break-all; }
 
-        /* Pulse Animation */
-        .pulse-dot {
-            position: relative;
-        }
+.nav { padding:16px 12px; flex:1; }
+.nav-section { margin-bottom:20px; }
+.nav-section-title {
+  font-size:0.65rem; letter-spacing:3px; color:var(--text3);
+  font-weight:700; padding:0 8px 8px; text-transform:uppercase;
+}
+.nav-link {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 12px; border-radius:10px;
+  color:var(--text2); text-decoration:none; cursor:pointer;
+  font-size:0.95rem; font-weight:600; letter-spacing:0.5px;
+  transition:all 0.2s; border:1px solid transparent;
+  margin-bottom:3px;
+}
+.nav-link:hover { background:var(--bg2); color:var(--text); border-color:var(--border); }
+.nav-link.active {
+  background:linear-gradient(90deg, rgba(200,75,255,0.15), transparent);
+  color:var(--accent1); border-color:rgba(200,75,255,0.3);
+}
+.nav-link i { width:18px; text-align:center; font-size:0.9rem; }
+.nav-badge {
+  margin-left:auto; padding:2px 8px; border-radius:20px;
+  font-size:0.7rem; font-weight:700; font-family:'Space Mono',monospace;
+}
+.nav-badge.red { background:rgba(255,51,102,0.2); color:var(--accent2); }
+.nav-badge.green { background:rgba(0,255,136,0.15); color:var(--green); }
+.nav-badge.purple { background:rgba(200,75,255,0.15); color:var(--accent1); }
 
-        .pulse-dot::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: inherit;
-            animation: pulse 2s ease-out infinite;
-        }
+.sidebar-footer {
+  padding:16px 12px;
+  border-top:1px solid var(--border);
+}
+.logout-btn {
+  width:100%; padding:10px; border-radius:10px;
+  background:rgba(255,51,102,0.1); border:1px solid rgba(255,51,102,0.2);
+  color:var(--accent2); cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-size:0.9rem; font-weight:700;
+  letter-spacing:1px; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.logout-btn:hover { background:rgba(255,51,102,0.2); box-shadow:0 0 12px rgba(255,51,102,0.2); }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
+.main { margin-left:260px; min-height:100vh; padding:28px; }
 
-        /* Status Indicators */
-        .status-available {
-            background: var(--accent-primary);
-            box-shadow: 0 0 10px var(--accent-primary);
-        }
+/* === TOPBAR === */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; padding:16px 24px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px;
+}
+.topbar-title { font-family:'Bebas Neue',cursive; font-size:1.6rem; letter-spacing:2px; color:var(--text); }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.topbar-btn {
+  padding:8px 16px; border-radius:8px; cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-size:0.85rem; font-weight:700;
+  letter-spacing:1px; transition:all 0.2s; border:1px solid var(--border2);
+  background:var(--bg2); color:var(--text2);
+  display:flex; align-items:center; gap:6px;
+}
+.topbar-btn:hover { color:var(--text); border-color:var(--accent1); }
 
-        .status-busy {
-            background: var(--accent-warning);
-            box-shadow: 0 0 10px var(--accent-warning);
-        }
+/* === STAT CARDS === */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
 
-        .status-offline {
-            background: var(--accent-danger);
-            box-shadow: 0 0 10px var(--accent-danger);
-        }
+.stat-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:22px 20px; position:relative; overflow:hidden;
+  transition:all 0.3s;
+}
+.stat-card:hover { transform:translateY(-4px); border-color:var(--border2); }
+.stat-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.stat-card.c1::before { background:linear-gradient(90deg, var(--accent1), transparent); }
+.stat-card.c2::before { background:linear-gradient(90deg, var(--accent2), transparent); }
+.stat-card.c3::before { background:linear-gradient(90deg, var(--accent3), transparent); }
+.stat-card.c4::before { background:linear-gradient(90deg, var(--accent4), transparent); }
+.stat-icon {
+  width:44px; height:44px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; margin-bottom:14px;
+}
+.stat-card.c1 .stat-icon { background:rgba(200,75,255,0.15); color:var(--accent1); }
+.stat-card.c2 .stat-icon { background:rgba(255,51,102,0.15); color:var(--accent2); }
+.stat-card.c3 .stat-icon { background:rgba(0,229,255,0.15); color:var(--accent3); }
+.stat-card.c4 .stat-icon { background:rgba(255,230,0,0.12); color:var(--accent4); }
+.stat-val { font-family:'Bebas Neue',cursive; font-size:2rem; letter-spacing:1px; line-height:1; }
+.stat-label { font-size:0.8rem; color:var(--text3); letter-spacing:1.5px; font-weight:700; margin-top:4px; text-transform:uppercase; }
 
-        /* AI Chat Styles */
-        .ai-typing {
-            display: flex;
-            gap: 4px;
-            padding: 12px 16px;
-        }
+/* === CONTENT CARD === */
+.content-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:24px; margin-bottom:20px;
+}
+.content-card-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px; padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.content-card-title {
+  font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:2px;
+  display:flex; align-items:center; gap:10px;
+}
+.content-card-title i { color:var(--accent1); }
 
-        .ai-typing span {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: typingBounce 1.4s ease-in-out infinite;
-        }
+/* === TABLE === */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+th {
+  padding:10px 14px; text-align:left;
+  font-size:0.7rem; letter-spacing:2px; font-weight:700;
+  color:var(--text3); border-bottom:1px solid var(--border);
+  text-transform:uppercase;
+}
+td {
+  padding:12px 14px; border-bottom:1px solid rgba(42,42,69,0.5);
+  font-size:0.9rem; font-weight:500;
+}
+tr:hover td { background:rgba(200,75,255,0.04); }
+tr:last-child td { border-bottom:none; }
 
-        .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
-        .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+/* === BADGES === */
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 10px; border-radius:6px;
+  font-size:0.72rem; font-weight:700; letter-spacing:1px;
+}
+.badge-green { background:rgba(0,255,136,0.12); color:var(--green); border:1px solid rgba(0,255,136,0.2); }
+.badge-red { background:rgba(255,51,102,0.12); color:var(--accent2); border:1px solid rgba(255,51,102,0.2); }
+.badge-purple { background:rgba(200,75,255,0.12); color:var(--accent1); border:1px solid rgba(200,75,255,0.2); }
+.badge-yellow { background:rgba(255,230,0,0.1); color:var(--accent4); border:1px solid rgba(255,230,0,0.2); }
+.badge-cyan { background:rgba(0,229,255,0.1); color:var(--accent3); border:1px solid rgba(0,229,255,0.2); }
 
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-8px); }
-        }
+/* === BUTTONS === */
+.btn {
+  padding:8px 16px; border-radius:8px; cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.85rem;
+  letter-spacing:0.8px; border:1px solid; transition:all 0.2s;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.btn-purple { background:rgba(200,75,255,0.1); border-color:rgba(200,75,255,0.3); color:var(--accent1); }
+.btn-purple:hover { background:rgba(200,75,255,0.2); box-shadow:0 0 12px rgba(200,75,255,0.3); }
+.btn-red { background:rgba(255,51,102,0.1); border-color:rgba(255,51,102,0.3); color:var(--accent2); }
+.btn-red:hover { background:rgba(255,51,102,0.2); }
+.btn-green { background:rgba(0,255,136,0.1); border-color:rgba(0,255,136,0.2); color:var(--green); }
+.btn-green:hover { background:rgba(0,255,136,0.2); }
+.btn-cyan { background:rgba(0,229,255,0.1); border-color:rgba(0,229,255,0.2); color:var(--accent3); }
+.btn-cyan:hover { background:rgba(0,229,255,0.2); }
+.btn-lg {
+  padding:14px 28px; font-size:1rem; border-radius:12px;
+  font-family:'Bebas Neue',cursive; letter-spacing:2px; font-weight:400;
+}
+.btn-grad {
+  background:linear-gradient(135deg, var(--accent1), var(--accent2));
+  border:none; color:white;
+  box-shadow:0 4px 16px rgba(200,75,255,0.35);
+}
+.btn-grad:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(200,75,255,0.45); }
 
-        /* Progress Ring */
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
+/* === PAGES === */
+.page { display:none; }
+.page.active { display:block; }
 
-        .progress-ring circle {
-            transition: stroke-dashoffset 0.5s ease;
-        }
+/* === GAME PAGE === */
+.game-hero {
+  text-align:center; padding:40px 20px 30px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:20px; margin-bottom:24px; position:relative; overflow:hidden;
+}
+.game-hero::before {
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background:radial-gradient(circle, rgba(200,75,255,0.06) 0%, transparent 60%);
+  animation:rotate 20s linear infinite;
+}
+@keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.game-title {
+  font-family:'Creepster',cursive; font-size:3rem; letter-spacing:4px;
+  background:linear-gradient(135deg, var(--accent1), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  margin-bottom:8px;
+}
+.game-subtitle { color:var(--text2); font-size:0.9rem; letter-spacing:2px; }
+.game-fee {
+  margin:20px 0;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 24px; border-radius:100px;
+  background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.2);
+  color:var(--green); font-family:'Space Mono',monospace; font-size:0.9rem;
+}
 
-        /* Floating Particles */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: float 8s ease-in-out infinite;
-        }
+/* === PUZZLE === */
+.puzzle-wrap { position:relative; z-index:1; }
+.timer-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.timer-display {
+  font-family:'Bebas Neue',cursive; font-size:2.5rem; letter-spacing:2px;
+  color:var(--accent2); line-height:1;
+}
+.timer-display.warning { color:var(--accent4); animation:pulse 0.5s infinite; }
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-20px) translateX(10px); }
-            50% { transform: translateY(-10px) translateX(-10px); }
-            75% { transform: translateY(-30px) translateX(5px); }
-        }
+.puzzle-board {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:6px; padding:16px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:16px; max-width:520px; margin:0 auto 20px;
+}
+.puzzle-piece {
+  aspect-ratio:1; border-radius:10px;
+  background:var(--card2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:1px;
+  cursor:pointer; transition:all 0.2s; color:var(--text2);
+  user-select:none;
+}
+.puzzle-piece:hover { border-color:var(--border2); color:var(--text); transform:scale(1.05); z-index:2; position:relative; }
+.puzzle-piece.selected {
+  border-color:var(--accent3); color:var(--accent3);
+  box-shadow:0 0 16px rgba(0,229,255,0.4);
+  background:rgba(0,229,255,0.08);
+}
+.puzzle-piece.correct {
+  border-color:var(--green); color:var(--green);
+  background:rgba(0,255,136,0.08);
+}
 
-        /* Entrance Animations */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
+/* === SCRATCH CARD === */
+.scratch-outer {
+  max-width:440px; margin:0 auto;
+  border-radius:20px; overflow:hidden;
+  box-shadow:0 0 40px rgba(200,75,255,0.3);
+  border:1px solid var(--border2);
+}
+.scratch-result-bg {
+  position:relative; padding:40px 30px;
+  background:linear-gradient(135deg, #1a0028, #28001a);
+  text-align:center;
+}
+.scratch-amount {
+  font-family:'Bebas Neue',cursive; font-size:4rem; letter-spacing:3px;
+  color:var(--accent4); text-shadow:0 0 30px rgba(255,230,0,0.5);
+}
+.scratch-msg { font-family:'Creepster',cursive; font-size:1.8rem; color:var(--accent1); margin-bottom:12px; }
+.scratch-sub { color:var(--text2); font-size:0.9rem; }
+#scratchCanvas { display:block; cursor:crosshair; }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* === QR CARDS === */
+.qr-batch-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+.qr-batch-item {
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:16px; padding:20px; position:relative; overflow:hidden;
+  transition:all 0.3s;
+}
+.qr-batch-item:hover { border-color:var(--border2); transform:translateY(-3px); }
+.qr-batch-item::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(200,75,255,0.04), transparent);
+  pointer-events:none;
+}
+.qr-batch-header { display:flex; align-items:start; justify-content:space-between; margin-bottom:16px; }
+.qr-batch-name { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:1px; }
+.qr-batch-meta { font-size:0.8rem; color:var(--text3); margin-top:2px; }
+.qr-preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:12px 0; }
+.qr-thumb {
+  background:white; border-radius:6px; padding:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:#333; min-height:64px; overflow:hidden;
+}
+.qr-thumb canvas, .qr-thumb img { width:100%!important; height:auto!important; }
 
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
-        .stagger-6 { animation-delay: 0.6s; }
+.progress-bar-wrap {
+  height:6px; background:var(--bg2); border-radius:3px; margin:10px 0 14px;
+}
+.progress-bar-fill { height:100%; border-radius:3px; transition:width 0.5s; }
+.progress-bar-fill.green { background:linear-gradient(90deg, var(--green), #00c066); }
+.progress-bar-fill.purple { background:linear-gradient(90deg, var(--accent1), var(--accent2)); }
 
-        /* Button Styles */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: var(--bg-primary);
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+/* === WALLET === */
+.wallet-hero {
+  background:linear-gradient(135deg, #1a0028 0%, #280018 100%);
+  border:1px solid rgba(200,75,255,0.3);
+  border-radius:20px; padding:30px; margin-bottom:20px;
+  position:relative; overflow:hidden;
+}
+.wallet-hero::before {
+  content:''; position:absolute; top:-30%; right:-20%; width:300px; height:300px;
+  background:radial-gradient(circle, rgba(200,75,255,0.15) 0%, transparent 70%);
+}
+.wallet-bal {
+  font-family:'Bebas Neue',cursive; font-size:3.5rem; letter-spacing:2px;
+  color:white; line-height:1; margin:10px 0;
+}
+.wallet-label { font-size:0.75rem; letter-spacing:3px; color:var(--text3); text-transform:uppercase; }
+.wallet-actions { display:flex; gap:12px; margin-top:20px; }
 
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.2));
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
-        }
+.txn-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; border-radius:12px;
+  background:var(--bg2); border:1px solid var(--border);
+  margin-bottom:8px; transition:all 0.2s;
+}
+.txn-item:hover { border-color:var(--border2); }
+.txn-icon {
+  width:36px; height:36px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:0.9rem;
+}
+.txn-icon.credit { background:rgba(0,255,136,0.12); color:var(--green); }
+.txn-icon.debit { background:rgba(255,51,102,0.12); color:var(--accent2); }
+.txn-info { flex:1; margin:0 14px; }
+.txn-name { font-weight:600; font-size:0.9rem; }
+.txn-date { font-size:0.75rem; color:var(--text3); font-family:'Space Mono',monospace; }
+.txn-amount { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:1px; }
+.txn-amount.credit { color:var(--green); }
+.txn-amount.debit { color:var(--accent2); }
 
-        .btn-primary:hover::before {
-            transform: translateX(100%);
-        }
+/* === USER MANAGEMENT === */
+.user-row-avatar {
+  width:34px; height:34px; border-radius:10px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--accent1), var(--accent2));
+  display:inline-flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:0.85rem;
+}
+.action-btns { display:flex; gap:6px; flex-wrap:wrap; }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
-        }
+/* === FORM === */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.form-group { margin-bottom:18px; }
+.form-group label {
+  display:block; font-size:0.72rem; letter-spacing:2px; font-weight:700;
+  color:var(--text3); margin-bottom:8px; text-transform:uppercase;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width:100%; padding:12px 16px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; color:var(--text);
+  font-family:'Rajdhani',sans-serif; font-size:0.95rem;
+  transition:all 0.2s; outline:none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color:var(--accent1); box-shadow:0 0 0 3px rgba(200,75,255,0.1);
+}
+.form-group select option { background:var(--card); }
+.form-group textarea { resize:vertical; min-height:100px; }
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+/* === MODAL === */
+.modal-backdrop {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7);
+  display:none; align-items:center; justify-content:center; z-index:1000;
+  backdrop-filter:blur(4px);
+}
+.modal-backdrop.open { display:flex; }
+.modal-box {
+  background:var(--card); border:1px solid var(--border2);
+  border-radius:20px; width:100%; max-width:520px;
+  max-height:90vh; overflow-y:auto; margin:16px;
+  box-shadow:0 0 60px rgba(200,75,255,0.2);
+}
+.modal-head {
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-head h3 { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:2px; color:var(--accent1); }
+.modal-close {
+  background:none; border:none; color:var(--text3); cursor:pointer;
+  font-size:1.2rem; padding:4px 8px; border-radius:8px; transition:all 0.2s;
+}
+.modal-close:hover { color:var(--accent2); background:rgba(255,51,102,0.1); }
+.modal-body { padding:24px; }
+.modal-foot { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
 
-        /* Input Styles */
-        .input-field {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 16px;
-            color: var(--text-primary);
-            width: 100%;
-            transition: all 0.3s ease;
-        }
+/* === NOTIFICATION === */
+#notifications { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+.notif {
+  min-width:280px; max-width:360px;
+  padding:14px 18px; border-radius:12px;
+  background:var(--card); border:1px solid var(--border2);
+  display:flex; align-items:start; gap:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  animation:notifIn 0.3s ease-out;
+}
+@keyframes notifIn { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
+.notif.success { border-left:3px solid var(--green); }
+.notif.error { border-left:3px solid var(--accent2); }
+.notif.warning { border-left:3px solid var(--accent4); }
+.notif.info { border-left:3px solid var(--accent1); }
+.notif-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
+.notif.success .notif-icon { color:var(--green); }
+.notif.error .notif-icon { color:var(--accent2); }
+.notif.warning .notif-icon { color:var(--accent4); }
+.notif.info .notif-icon { color:var(--accent1); }
+.notif-msg { font-size:0.9rem; font-weight:500; color:var(--text); line-height:1.4; }
 
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
-        }
+/* === LOADER === */
+#loader {
+  position:fixed; inset:0; background:rgba(5,5,8,0.9);
+  display:none; align-items:center; justify-content:center; z-index:9998;
+  flex-direction:column; gap:16px;
+}
+#loader.show { display:flex; }
+.loader-ring {
+  width:50px; height:50px;
+  border:3px solid var(--border2);
+  border-top-color:var(--accent1);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-text { font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--text3); letter-spacing:3px; }
 
-        .input-field::placeholder {
-            color: var(--text-muted);
-        }
+/* === MOBILE === */
+.mobile-toggle {
+  display:none; position:fixed; top:16px; left:16px; z-index:200;
+  padding:10px 12px; border-radius:10px; border:1px solid var(--border2);
+  background:var(--card); color:var(--text); cursor:pointer; font-size:1rem;
+}
+@media(max-width:900px){
+  .sidebar { transform:translateX(-100%); }
+  .sidebar.open { transform:translateX(0); }
+  .main { margin-left:0; padding:16px; padding-top:60px; }
+  .mobile-toggle { display:block; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .form-row { grid-template-columns:1fr; }
+  .qr-batch-grid { grid-template-columns:1fr; }
+  .topbar { flex-wrap:wrap; gap:10px; }
+}
+@media(max-width:480px){
+  .stats-grid { grid-template-columns:1fr; }
+  .puzzle-board { max-width:100%; }
+  .wallet-actions { flex-direction:column; }
+}
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
+/* === QR DISPLAY === */
+.qr-full-display {
+  background:white; border-radius:12px; padding:12px;
+  display:inline-block; margin:0 auto;
+  box-shadow:0 0 20px rgba(200,75,255,0.3);
+}
+.qr-code-text {
+  font-family:'Space Mono',monospace; font-size:0.65rem;
+  color:var(--text3); word-break:break-all; margin-top:8px;
+}
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+/* === ACHIEVEMENTS === */
+.achievement-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
+.achievement-item {
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:16px; padding:20px; text-align:center; transition:all 0.3s;
+  position:relative; overflow:hidden;
+}
+.achievement-item:hover { transform:translateY(-4px); border-color:var(--border2); }
+.achievement-item.unlocked { border-color:rgba(200,75,255,0.4); }
+.achievement-item.unlocked::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(200,75,255,0.06), transparent);
+}
+.ach-icon { font-size:2.5rem; margin-bottom:10px; display:block; filter:grayscale(100%); opacity:0.4; }
+.achievement-item.unlocked .ach-icon { filter:none; opacity:1; }
+.ach-name { font-weight:700; font-size:0.9rem; margin-bottom:4px; }
+.ach-desc { font-size:0.75rem; color:var(--text3); }
+.ach-badge { position:absolute; top:10px; right:10px; }
 
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 32px;
-            max-width: 500px;
-            width: 90%;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
+/* === REPORTS/CHARTS === */
+.chart-container {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:12px; padding:16px; position:relative;
+  height:220px; display:flex; align-items:flex-end; gap:8px;
+  overflow:hidden;
+}
+.bar-item {
+  flex:1; border-radius:6px 6px 0 0; min-width:20px;
+  transition:all 0.5s; cursor:pointer; position:relative;
+}
+.bar-item:hover { opacity:0.8; }
+.bar-label {
+  position:absolute; bottom:-24px; left:50%; transform:translateX(-50%);
+  font-size:0.65rem; color:var(--text3); white-space:nowrap; letter-spacing:1px;
+}
+.bar-val {
+  position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+  font-size:0.7rem; font-family:'Space Mono',monospace; color:var(--text2);
+  white-space:nowrap;
+}
 
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        /* Live Indicator */
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .live-indicator::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--accent-danger);
-            border-radius: 50%;
-            animation: livePulse 1.5s ease infinite;
-        }
-
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* Queue Item */
-        .queue-item {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .queue-item:hover {
-            background: var(--bg-elevated);
-            transform: translateX(5px);
-        }
-
-        /* Doctor Card */
-        .doctor-card {
-            transition: all 0.3s ease;
-        }
-
-        .doctor-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-        }
-
-        /* Notification Badge */
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--accent-danger);
-            color: white;
-            font-size: 10px;
-            font-weight: 600;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: badgePop 0.3s ease;
-        }
-
-        @keyframes badgePop {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        /* Wave Animation for AI */
-        .wave-container {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            height: 30px;
-        }
-
-        .wave-bar {
-            width: 4px;
-            background: var(--accent-primary);
-            border-radius: 2px;
-            animation: wave 1s ease-in-out infinite;
-        }
-
-        .wave-bar:nth-child(1) { animation-delay: 0s; height: 10px; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 20px; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 25px; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 12px; }
-
-        @keyframes wave {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.5); }
-        }
-
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 260px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0 !important;
-            }
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(0, 212, 170, 0.1);
-            color: var(--accent-primary);
-            border-left-color: var(--accent-primary);
-        }
-
-        /* Activity Timeline */
-        .timeline-item {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 24px;
-            bottom: -20px;
-            width: 2px;
-            background: var(--border-color);
-        }
-
-        .timeline-item:last-child::before {
-            display: none;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: 0;
-            top: 6px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--bg-elevated);
-            border: 2px solid var(--accent-primary);
-        }
-
-        /* Reduced Motion */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Focus States */
-        *:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-        }
-    </style>
+/* === MANAGER ALERT === */
+.alert-banner {
+  padding:14px 18px; border-radius:12px; margin-bottom:20px;
+  background:rgba(255,230,0,0.08); border:1px solid rgba(255,230,0,0.2);
+  color:var(--accent4); font-size:0.9rem; font-weight:600;
+  display:flex; align-items:center; gap:10px;
+}
+</style>
 </head>
 <body>
-    <div class="bg-pattern"></div>
-    <div class="grid-overlay"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="p-6 border-b border-[var(--border-color)]">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[var(--bg-primary)]">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-[var(--text-primary)]">MediCore AI</h1>
-                    <p class="text-xs text-[var(--text-muted)]">Hospital Management</p>
-                </div>
-            </div>
-        </div>
+<canvas id="particles-canvas"></canvas>
+<div id="notifications"></div>
+<div id="loader"><div class="loader-ring"></div><div class="loader-text">LOADING...</div></div>
 
-        <nav class="py-4">
-            <div class="px-4 py-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Main Menu</div>
-            
-            <div class="nav-item active" data-section="dashboard" onclick="switchSection('dashboard')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7" rx="1"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1"/>
-                </svg>
-                <span>Dashboard</span>
-            </div>
-
-            <div class="nav-item" data-section="appointments" onclick="switchSection('appointments')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <span>Appointments</span>
-            </div>
-
-            <div class="nav-item" data-section="patients" onclick="switchSection('patients')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <span>Patients</span>
-                <span class="ml-auto bg-[var(--accent-primary)] text-[var(--bg-primary)] text-xs px-2 py-0.5 rounded-full font-semibold">47</span>
-            </div>
-
-            <div class="nav-item" data-section="doctors" onclick="switchSection('doctors')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                </svg>
-                <span>Doctors</span>
-            </div>
-
-            <div class="px-4 py-2 mt-4 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">AI Agent</div>
-
-            <div class="nav-item" data-section="ai-agent" onclick="switchSection('ai-agent')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
-                    <circle cx="8" cy="14" r="1"/>
-                    <circle cx="16" cy="14" r="1"/>
-                </svg>
-                <span>AI Assistant</span>
-                <div class="ml-auto w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse"></div>
-            </div>
-
-            <div class="nav-item" data-section="calls" onclick="switchSection('calls')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
-                <span>Call Logs</span>
-            </div>
-
-            <div class="px-4 py-2 mt-4 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">System</div>
-
-            <div class="nav-item" data-section="analytics" onclick="switchSection('analytics')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
-                </svg>
-                <span>Analytics</span>
-            </div>
-
-            <div class="nav-item" onclick="openSettings()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-                <span>Settings</span>
-            </div>
-        </nav>
-
-        <!-- User Profile -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-[var(--border-color)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent-info)] to-[var(--accent-primary)] flex items-center justify-center font-bold text-[var(--bg-primary)]">
-                    PR
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-medium text-[var(--text-primary)]">Priya Sharma</p>
-                    <p class="text-xs text-[var(--text-muted)]">Senior Receptionist</p>
-                </div>
-                <button class="p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors" aria-label="Logout">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-muted)]">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content ml-[260px] min-h-screen">
-        <!-- Top Header -->
-        <header class="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-[var(--border-color)]">
-            <div class="flex items-center justify-between px-6 py-4">
-                <div class="flex items-center gap-4">
-                    <button class="lg:hidden p-2 rounded-lg hover:bg-[var(--bg-card)] transition-colors" onclick="toggleSidebar()" aria-label="Toggle Menu">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="3" y1="12" x2="21" y2="12"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                            <line x1="3" y1="18" x2="21" y2="18"/>
-                        </svg>
-                    </button>
-                    <div>
-                        <h2 class="text-xl font-bold text-[var(--text-primary)]" id="sectionTitle">Dashboard Overview</h2>
-                        <p class="text-sm text-[var(--text-muted)]" id="currentTime">Loading...</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <!-- Search -->
-                    <div class="hidden md:flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl px-4 py-2">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-muted)]">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                        <input type="text" placeholder="Search patients, doctors..." class="bg-transparent border-none outline-none text-sm w-48 text-[var(--text-primary)]" id="globalSearch" oninput="handleSearch(this.value)">
-                    </div>
-
-                    <!-- Emergency Alert -->
-                    <button class="relative p-3 rounded-xl bg-[var(--accent-danger)]/20 border border-[var(--accent-danger)]/50 hover:bg-[var(--accent-danger)]/30 transition-all group" onclick="triggerEmergency()" aria-label="Emergency Alert">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-danger)] group-hover:scale-110 transition-transform">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                            <line x1="12" y1="9" x2="12" y2="13"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                    </button>
-
-                    <!-- Notifications -->
-                    <button class="relative p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] transition-all" onclick="toggleNotifications()" aria-label="Notifications">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-secondary)]">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        </svg>
-                        <span class="notification-badge" id="notifBadge">5</span>
-                    </button>
-
-                    <!-- AI Status -->
-                    <div class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/30">
-                        <div class="live-indicator text-xs font-semibold text-[var(--accent-primary)]">AI ACTIVE</div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Dashboard Section -->
-        <section id="section-dashboard" class="p-6">
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="card p-6 fade-in-up stagger-1">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="p-3 rounded-xl bg-[var(--accent-primary)]/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-primary)]">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <span class="text-xs text-[var(--accent-primary)] bg-[var(--accent-primary)]/20 px-2 py-1 rounded-full">+12%</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-[var(--text-primary)] mb-1" id="statPatients">247</h3>
-                    <p class="text-sm text-[var(--text-muted)]">Total Patients Today</p>
-                    <div class="mt-4 h-1 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
-                        <div class="h-full w-3/4 bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full" style="animation: progressFill 1s ease forwards;"></div>
-                    </div>
-                </div>
-
-                <div class="card p-6 fade-in-up stagger-2">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="p-3 rounded-xl bg-[var(--accent-info)]/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-info)]">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                        <span class="text-xs text-[var(--accent-warning)] bg-[var(--accent-warning)]/20 px-2 py-1 rounded-full">3 Pending</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-[var(--text-primary)] mb-1" id="statAppointments">89</h3>
-                    <p class="text-sm text-[var(--text-muted)]">Appointments Today</p>
-                    <div class="mt-4 h-1 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
-                        <div class="h-full w-2/3 bg-gradient-to-r from-[var(--accent-info)] to-[var(--accent-primary)] rounded-full"></div>
-                    </div>
-                </div>
-
-                <div class="card p-6 fade-in-up stagger-3">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="p-3 rounded-xl bg-[var(--accent-secondary)]/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-secondary)]">
-                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                            </svg>
-                        </div>
-                        <span class="text-xs text-[var(--accent-primary)] bg-[var(--accent-primary)]/20 px-2 py-1 rounded-full">Available</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-[var(--text-primary)] mb-1" id="statDoctors">24</h3>
-                    <p class="text-sm text-[var(--text-muted)]">Doctors On Duty</p>
-                    <div class="mt-4 flex gap-1">
-                        <div class="flex-1 h-1 rounded-full bg-[var(--accent-primary)]"></div>
-                        <div class="flex-1 h-1 rounded-full bg-[var(--accent-primary)]"></div>
-                        <div class="flex-1 h-1 rounded-full bg-[var(--accent-warning)]"></div>
-                        <div class="flex-1 h-1 rounded-full bg-[var(--accent-danger)]"></div>
-                    </div>
-                </div>
-
-                <div class="card p-6 fade-in-up stagger-4">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="p-3 rounded-xl bg-[var(--accent-warning)]/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-warning)]">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12 6 12 12 16 14"/>
-                            </svg>
-                        </div>
-                        <span class="text-xs text-[var(--accent-danger)] bg-[var(--accent-danger)]/20 px-2 py-1 rounded-full">2 Critical</span>
-                    </div>
-                    <h3 class="text-3xl font-bold text-[var(--text-primary)] mb-1" id="statQueue">18</h3>
-                    <p class="text-sm text-[var(--text-muted)]">In Waiting Queue</p>
-                    <div class="mt-4 h-1 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
-                        <div class="h-full w-1/3 bg-gradient-to-r from-[var(--accent-warning)] to-[var(--accent-danger)] rounded-full"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Grid -->
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                <!-- Left Column - AI Agent & Queue -->
-                <div class="xl:col-span-2 space-y-6">
-                    <!-- AI Agent Chat Panel -->
-                    <div class="card fade-in-up stagger-5">
-                        <div class="p-6 border-b border-[var(--border-color)]">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--bg-primary)]">
-                                                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
-                                                <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
-                                                <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[var(--accent-primary)] border-2 border-[var(--bg-card)]"></div>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold text-[var(--text-primary)]">MediBot AI Assistant</h3>
-                                        <p class="text-xs text-[var(--accent-primary)]">Active - Handling 3 calls</p>
-                                    </div>
-                                </div>
-                                <div class="wave-container">
-                                    <div class="wave-bar"></div>
-                                    <div class="wave-bar"></div>
-                                    <div class="wave-bar"></div>
-                                    <div class="wave-bar"></div>
-                                    <div class="wave-bar"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="h-80 overflow-y-auto p-4 space-y-4" id="chatMessages">
-                            <!-- Messages will be inserted here -->
-                        </div>
-
-                        <div class="p-4 border-t border-[var(--border-color)]">
-                            <div class="flex gap-3">
-                                <input type="text" class="input-field flex-1" placeholder="Type a message or command..." id="chatInput" onkeypress="handleChatKeypress(event)">
-                                <button class="btn-primary px-6" onclick="sendMessage()" aria-label="Send Message">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="22" y1="2" x2="11" y2="13"/>
-                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="flex gap-2 mt-3">
-                                <button class="text-xs px-3 py-1.5 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 transition-all" onclick="quickCommand('book appointment')">Book Appointment</button>
-                                <button class="text-xs px-3 py-1.5 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 transition-all" onclick="quickCommand('check availability')">Check Availability</button>
-                                <button class="text-xs px-3 py-1.5 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 transition-all" onclick="quickCommand('emergency')">Emergency</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Patient Queue -->
-                    <div class="card fade-in-up stagger-6">
-                        <div class="p-6 border-b border-[var(--border-color)]">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-semibold text-[var(--text-primary)]">Live Patient Queue</h3>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs text-[var(--text-muted)]">Auto-refresh</span>
-                                    <div class="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="divide-y divide-[var(--border-color)]" id="patientQueue">
-                            <!-- Queue items will be inserted here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column - Doctors & Activity -->
-                <div class="space-y-6">
-                    <!-- Doctor Availability -->
-                    <div class="card fade-in-up stagger-5">
-                        <div class="p-6 border-b border-[var(--border-color)]">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-semibold text-[var(--text-primary)]">Doctor Availability</h3>
-                                <button class="text-xs text-[var(--accent-primary)] hover:underline" onclick="switchSection('doctors')">View All</button>
-                            </div>
-                        </div>
-                        <div class="p-4 space-y-3" id="doctorList">
-                            <!-- Doctors will be inserted here -->
-                        </div>
-                    </div>
-
-                    <!-- Real-time Activity -->
-                    <div class="card fade-in-up stagger-6">
-                        <div class="p-6 border-b border-[var(--border-color)]">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-semibold text-[var(--text-primary)]">Real-time Activity</h3>
-                                <div class="live-indicator text-xs font-semibold text-[var(--accent-danger)]">LIVE</div>
-                            </div>
-                        </div>
-                        <div class="p-4 space-y-4 max-h-80 overflow-y-auto" id="activityFeed">
-                            <!-- Activity items will be inserted here -->
-                        </div>
-                    </div>
-
-                    <!-- Incoming Calls -->
-                    <div class="card fade-in-up stagger-6 bg-gradient-to-br from-[var(--accent-info)]/10 to-[var(--accent-primary)]/10 border-[var(--accent-primary)]/30" id="incomingCallCard" style="display: none;">
-                        <div class="p-6 text-center">
-                            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--accent-info)]/20 flex items-center justify-center animate-pulse">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-info)]">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                </svg>
-                            </div>
-                            <h3 class="font-semibold text-[var(--text-primary)] mb-1">Incoming Call</h3>
-                            <p class="text-sm text-[var(--text-muted)] mb-4" id="callerInfo">+91 98765 43210</p>
-                            <div class="flex gap-3 justify-center">
-                                <button class="px-6 py-3 rounded-xl bg-[var(--accent-danger)] text-white font-semibold hover:opacity-90 transition-opacity" onclick="rejectCall()">
-                                    Reject
-                                </button>
-                                <button class="px-6 py-3 rounded-xl bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold hover:opacity-90 transition-opacity" onclick="acceptCall()">
-                                    Accept
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Appointments Section -->
-        <section id="section-appointments" class="p-6 hidden">
-            <div class="card p-6 fade-in-up">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)]">Appointment Management</h3>
-                    <button class="btn-primary flex items-center gap-2" onclick="openBookingModal()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"/>
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                        New Appointment
-                    </button>
-                </div>
-
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-4 mb-6">
-                    <select class="input-field w-auto" id="filterDepartment" onchange="filterAppointments()">
-                        <option value="">All Departments</option>
-                        <option value="cardiology">Cardiology</option>
-                        <option value="neurology">Neurology</option>
-                        <option value="orthopedics">Orthopedics</option>
-                        <option value="pediatrics">Pediatrics</option>
-                        <option value="general">General Medicine</option>
-                    </select>
-                    <select class="input-field w-auto" id="filterStatus" onchange="filterAppointments()">
-                        <option value="">All Status</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                    <input type="date" class="input-field w-auto" id="filterDate" onchange="filterAppointments()">
-                </div>
-
-                <!-- Appointments Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="text-left text-sm text-[var(--text-muted)] border-b border-[var(--border-color)]">
-                                <th class="pb-4 font-medium">Patient</th>
-                                <th class="pb-4 font-medium">Doctor</th>
-                                <th class="pb-4 font-medium">Department</th>
-                                <th class="pb-4 font-medium">Time</th>
-                                <th class="pb-4 font-medium">Status</th>
-                                <th class="pb-4 font-medium">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appointmentsTable">
-                            <!-- Appointments will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Patients Section -->
-        <section id="section-patients" class="p-6 hidden">
-            <div class="card p-6 fade-in-up">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)]">Patient Records</h3>
-                    <div class="flex gap-3">
-                        <input type="text" class="input-field w-64" placeholder="Search patients..." id="patientSearch" oninput="searchPatients(this.value)">
-                        <button class="btn-primary flex items-center gap-2" onclick="openPatientModal()">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                            Add Patient
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="patientsGrid">
-                    <!-- Patients will be inserted here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Doctors Section -->
-        <section id="section-doctors" class="p-6 hidden">
-            <div class="card p-6 fade-in-up">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)]">Doctor Management</h3>
-                    <button class="btn-primary flex items-center gap-2" onclick="openDoctorModal()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"/>
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                        Add Doctor
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="doctorsGrid">
-                    <!-- Doctors will be inserted here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- AI Agent Section -->
-        <section id="section-ai-agent" class="p-6 hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- AI Configuration -->
-                <div class="card p-6 fade-in-up">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-6">AI Agent Configuration</h3>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Voice Mode</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="voiceMode" value="auto" checked class="w-4 h-4 accent-[var(--accent-primary)]">
-                                    <span class="text-sm text-[var(--text-primary)]">Auto Answer</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="voiceMode" value="manual" class="w-4 h-4 accent-[var(--accent-primary)]">
-                                    <span class="text-sm text-[var(--text-primary)]">Manual</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">AI Personality</label>
-                            <select class="input-field">
-                                <option value="professional">Professional</option>
-                                <option value="friendly">Friendly</option>
-                                <option value="empathetic">Empathetic</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Greeting Message</label>
-                            <textarea class="input-field h-24" placeholder="Enter default greeting message...">Hello! Welcome to MediCore Hospital. I am your AI assistant. How may I help you today?</textarea>
-                        </div>
-
-                        <div class="flex items-center justify-between p-4 bg-[var(--bg-elevated)] rounded-xl">
-                            <div>
-                                <p class="font-medium text-[var(--text-primary)]">Appointment Auto-Booking</p>
-                                <p class="text-sm text-[var(--text-muted)]">Allow AI to book appointments automatically</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" checked>
-                                <div class="w-11 h-6 bg-[var(--bg-primary)] rounded-full peer peer-checked:bg-[var(--accent-primary)] after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
-                            </label>
-                        </div>
-
-                        <button class="btn-primary w-full">Save Configuration</button>
-                    </div>
-                </div>
-
-                <!-- AI Statistics -->
-                <div class="card p-6 fade-in-up stagger-2">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-6">AI Performance Today</h3>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="p-4 bg-[var(--bg-elevated)] rounded-xl text-center">
-                            <p class="text-3xl font-bold text-[var(--accent-primary)]">156</p>
-                            <p class="text-sm text-[var(--text-muted)]">Calls Handled</p>
-                        </div>
-                        <div class="p-4 bg-[var(--bg-elevated)] rounded-xl text-center">
-                            <p class="text-3xl font-bold text-[var(--accent-info)]">43</p>
-                            <p class="text-sm text-[var(--text-muted)]">Appointments Booked</p>
-                        </div>
-                        <div class="p-4 bg-[var(--bg-elevated)] rounded-xl text-center">
-                            <p class="text-3xl font-bold text-[var(--accent-secondary)]">98.2%</p>
-                            <p class="text-sm text-[var(--text-muted)]">Success Rate</p>
-                        </div>
-                        <div class="p-4 bg-[var(--bg-elevated)] rounded-xl text-center">
-                            <p class="text-3xl font-bold text-[var(--accent-warning)]">1:24</p>
-                            <p class="text-sm text-[var(--text-muted)]">Avg Call Duration</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <h4 class="font-medium text-[var(--text-primary)]">Recent AI Actions</h4>
-                        <div class="space-y-3" id="aiActions">
-                            <!-- AI actions will be inserted here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call Logs Section -->
-        <section id="section-calls" class="p-6 hidden">
-            <div class="card p-6 fade-in-up">
-                <h3 class="text-xl font-bold text-[var(--text-primary)] mb-6">Call History</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="text-left text-sm text-[var(--text-muted)] border-b border-[var(--border-color)]">
-                                <th class="pb-4 font-medium">Caller</th>
-                                <th class="pb-4 font-medium">Time</th>
-                                <th class="pb-4 font-medium">Duration</th>
-                                <th class="pb-4 font-medium">Type</th>
-                                <th class="pb-4 font-medium">Outcome</th>
-                                <th class="pb-4 font-medium">Recording</th>
-                            </tr>
-                        </thead>
-                        <tbody id="callLogsTable">
-                            <!-- Call logs will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Analytics Section -->
-        <section id="section-analytics" class="p-6 hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card p-6 fade-in-up">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-6">Weekly Overview</h3>
-                    <div class="h-64 flex items-end justify-between gap-2" id="weeklyChart">
-                        <!-- Chart bars will be inserted here -->
-                    </div>
-                    <div class="flex justify-between mt-4 text-xs text-[var(--text-muted)]">
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
-                    </div>
-                </div>
-
-                <div class="card p-6 fade-in-up stagger-2">
-                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-6">Department Distribution</h3>
-                    <div class="space-y-4" id="departmentStats">
-                        <!-- Department stats will be inserted here -->
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Booking Modal -->
-    <div class="modal-overlay" id="bookingModal">
-        <div class="modal-content max-w-lg">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[var(--text-primary)]">Book Appointment</h3>
-                <button class="p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors" onclick="closeModal('bookingModal')" aria-label="Close Modal">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-muted)]">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
-            </div>
-            <form id="bookingForm" onsubmit="submitBooking(event)">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Patient Name</label>
-                        <input type="text" class="input-field" placeholder="Enter patient name" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Phone Number</label>
-                        <input type="tel" class="input-field" placeholder="+91 XXXXX XXXXX" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Department</label>
-                            <select class="input-field" required>
-                                <option value="">Select</option>
-                                <option value="cardiology">Cardiology</option>
-                                <option value="neurology">Neurology</option>
-                                <option value="orthopedics">Orthopedics</option>
-                                <option value="pediatrics">Pediatrics</option>
-                                <option value="general">General Medicine</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Doctor</label>
-                            <select class="input-field" id="doctorSelect" required>
-                                <option value="">Select</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Date</label>
-                            <input type="date" class="input-field" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Time Slot</label>
-                            <select class="input-field" required>
-                                <option value="">Select</option>
-                                <option value="09:00">09:00 AM</option>
-                                <option value="09:30">09:30 AM</option>
-                                <option value="10:00">10:00 AM</option>
-                                <option value="10:30">10:30 AM</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="11:30">11:30 AM</option>
-                                <option value="14:00">02:00 PM</option>
-                                <option value="14:30">02:30 PM</option>
-                                <option value="15:00">03:00 PM</option>
-                                <option value="15:30">03:30 PM</option>
-                                <option value="16:00">04:00 PM</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Reason for Visit</label>
-                        <textarea class="input-field h-20" placeholder="Brief description of symptoms..."></textarea>
-                    </div>
-                </div>
-                <div class="flex gap-3 mt-6">
-                    <button type="button" class="flex-1 px-6 py-3 rounded-xl border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] transition-colors" onclick="closeModal('bookingModal')">Cancel</button>
-                    <button type="submit" class="flex-1 btn-primary">Book Appointment</button>
-                </div>
-            </form>
-        </div>
+<!-- ======== LOGIN ======== -->
+<div id="loginWrap">
+  <div class="login-card">
+    <div class="logo-wrap">
+      <span class="logo-skull">💀</span>
+      <div class="logo-title">QR PUZZLE</div>
+      <div class="logo-sub">HORROR EDITION</div>
     </div>
 
-    <!-- Notification Panel -->
-    <div class="fixed top-20 right-6 w-80 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl z-50 hidden" id="notificationPanel">
-        <div class="p-4 border-b border-[var(--border-color)]">
-            <div class="flex items-center justify-between">
-                <h4 class="font-semibold text-[var(--text-primary)]">Notifications</h4>
-                <button class="text-xs text-[var(--accent-primary)] hover:underline" onclick="clearNotifications()">Clear All</button>
-            </div>
-        </div>
-        <div class="max-h-80 overflow-y-auto" id="notificationList">
-            <!-- Notifications will be inserted here -->
-        </div>
+    <div class="role-tabs">
+      <div class="role-tab active" data-role="user">
+        <i class="fas fa-user"></i> USER
+      </div>
+      <div class="role-tab" data-role="admin">
+        <i class="fas fa-skull"></i> ADMIN
+      </div>
+      <div class="role-tab" data-role="manager">
+        <i class="fas fa-user-shield"></i> MANAGER
+      </div>
     </div>
 
-    <!-- Emergency Modal -->
-    <div class="modal-overlay" id="emergencyModal">
-        <div class="modal-content text-center">
-            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-[var(--accent-danger)]/20 flex items-center justify-center animate-pulse">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-danger)]">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    <line x1="12" y1="9" x2="12" y2="13"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-            </div>
-            <h3 class="text-2xl font-bold text-[var(--accent-danger)] mb-2">Emergency Alert</h3>
-            <p class="text-[var(--text-muted)] mb-6">Emergency protocol has been activated. All available staff will be notified.</p>
-            <button class="btn-primary w-full" onclick="closeModal('emergencyModal')">Acknowledge</button>
-        </div>
+    <form id="loginForm">
+      <div class="field-group">
+        <label>Email Address</label>
+        <input type="email" id="emailIn" placeholder="Enter your email" value="user@example.com" required>
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="passIn" placeholder="Enter password" value="user123" required>
+      </div>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-door-open"></i> &nbsp; ENTER THE PORTAL
+      </button>
+    </form>
+
+    <div class="hint-text">
+      user: <span>user123</span> &nbsp;|&nbsp; admin: <span>admin123</span> &nbsp;|&nbsp; manager: <span>manager123</span>
     </div>
-
-    <script>
-        // ========== DATA ==========
-        const doctors = [
-            { id: 1, name: 'Dr. Rajesh Kumar', department: 'Cardiology', status: 'available', patients: 12, nextSlot: '10:30 AM', avatar: 'RK' },
-            { id: 2, name: 'Dr. Priya Singh', department: 'Neurology', status: 'busy', patients: 8, nextSlot: '11:00 AM', avatar: 'PS' },
-            { id: 3, name: 'Dr. Amit Sharma', department: 'Orthopedics', status: 'available', patients: 15, nextSlot: '10:00 AM', avatar: 'AS' },
-            { id: 4, name: 'Dr. Neha Gupta', department: 'Pediatrics', status: 'available', patients: 20, nextSlot: '10:45 AM', avatar: 'NG' },
-            { id: 5, name: 'Dr. Vikram Patel', department: 'General Medicine', status: 'offline', patients: 6, nextSlot: 'N/A', avatar: 'VP' },
-            { id: 6, name: 'Dr. Sunita Rao', department: 'Cardiology', status: 'busy', patients: 10, nextSlot: '11:30 AM', avatar: 'SR' },
-        ];
-
-        const patients = [
-            { id: 1, name: 'Ramesh Verma', age: 45, phone: '+91 98765 43210', condition: 'Chest Pain', doctor: 'Dr. Rajesh Kumar', status: 'waiting', waitTime: 15, token: 'A001' },
-            { id: 2, name: 'Anita Devi', age: 32, phone: '+91 87654 32109', condition: 'Headache', doctor: 'Dr. Priya Singh', status: 'in-consultation', waitTime: 0, token: 'A002' },
-            { id: 3, name: 'Sunil Kumar', age: 28, phone: '+91 76543 21098', condition: 'Back Pain', doctor: 'Dr. Amit Sharma', status: 'waiting', waitTime: 25, token: 'A003' },
-            { id: 4, name: 'Baby Kavya', age: 5, phone: '+91 65432 10987', condition: 'Fever', doctor: 'Dr. Neha Gupta', status: 'waiting', waitTime: 10, token: 'A004' },
-            { id: 5, name: 'Mohan Lal', age: 55, phone: '+91 54321 09876', condition: 'Diabetes Checkup', doctor: 'Dr. Vikram Patel', status: 'checked-in', waitTime: 5, token: 'A005' },
-            { id: 6, name: 'Kavita Sharma', age: 40, phone: '+91 43210 98765', condition: 'Heart Checkup', doctor: 'Dr. Sunita Rao', status: 'waiting', waitTime: 30, token: 'A006' },
-        ];
-
-        const appointments = [
-            { id: 1, patient: 'Ramesh Verma', doctor: 'Dr. Rajesh Kumar', department: 'Cardiology', time: '09:30 AM', status: 'confirmed' },
-            { id: 2, patient: 'Anita Devi', doctor: 'Dr. Priya Singh', department: 'Neurology', time: '10:00 AM', status: 'in-progress' },
-            { id: 3, patient: 'Sunil Kumar', doctor: 'Dr. Amit Sharma', department: 'Orthopedics', time: '10:30 AM', status: 'scheduled' },
-            { id: 4, patient: 'Baby Kavya', doctor: 'Dr. Neha Gupta', department: 'Pediatrics', time: '11:00 AM', status: 'scheduled' },
-            { id: 5, patient: 'Mohan Lal', doctor: 'Dr. Vikram Patel', department: 'General', time: '11:30 AM', status: 'cancelled' },
-            { id: 6, patient: 'Kavita Sharma', doctor: 'Dr. Sunita Rao', department: 'Cardiology', time: '02:00 PM', status: 'confirmed' },
-        ];
-
-        const callLogs = [
-            { id: 1, caller: '+91 98765 43210', time: '09:15 AM', duration: '2:34', type: 'inbound', outcome: 'Appointment Booked' },
-            { id: 2, caller: '+91 87654 32109', time: '09:45 AM', duration: '1:12', type: 'outbound', outcome: 'Reminder Sent' },
-            { id: 3, caller: '+91 76543 21098', time: '10:00 AM', duration: '3:45', type: 'inbound', outcome: 'Query Resolved' },
-            { id: 4, caller: '+91 65432 10987', time: '10:20 AM', duration: '0:45', type: 'missed', outcome: 'Callback Required' },
-        ];
-
-        const notifications = [
-            { id: 1, type: 'appointment', message: 'New appointment booked with Dr. Rajesh Kumar', time: '2 min ago' },
-            { id: 2, type: 'emergency', message: 'Emergency case incoming - ETA 5 minutes', time: '5 min ago' },
-            { id: 3, type: 'reminder', message: 'Dr. Priya Singh\'s lunch break at 1 PM', time: '15 min ago' },
-            { id: 4, type: 'system', message: 'AI agent handled 10 calls successfully', time: '30 min ago' },
-            { id: 5, type: 'patient', message: 'Patient token A003 waiting for 20+ minutes', time: '45 min ago' },
-        ];
-
-        const aiActions = [
-            { action: 'Booked appointment for Ramesh Verma', time: '2 min ago', success: true },
-            { action: 'Checked doctor availability - Cardiology', time: '5 min ago', success: true },
-            { action: 'Sent appointment reminder to 5 patients', time: '10 min ago', success: true },
-            { action: 'Transferred emergency call to desk', time: '15 min ago', success: true },
-            { action: 'Updated patient records', time: '20 min ago', success: true },
-        ];
-
-        const chatHistory = [
-            { sender: 'ai', message: 'Hello! I am MediBot, your AI assistant. I can help you book appointments, check doctor availability, and manage patient queries. How can I assist you today?' }
-        ];
-
-        const weeklyData = [
-            { day: 'Mon', patients: 180, appointments: 65 },
-            { day: 'Tue', patients: 220, appointments: 78 },
-            { day: 'Wed', patients: 195, appointments: 72 },
-            { day: 'Thu', patients: 247, appointments: 89 },
-            { day: 'Fri', patients: 210, appointments: 75 },
-            { day: 'Sat', patients: 150, appointments: 45 },
-            { day: 'Sun', patients: 85, appointments: 25 },
-        ];
-
-        const departmentData = [
-            { name: 'Cardiology', patients: 45, color: '#00d4aa' },
-            { name: 'Neurology', patients: 32, color: '#3b82f6' },
-            { name: 'Orthopedics', patients: 28, color: '#f59e0b' },
-            { name: 'Pediatrics', patients: 52, color: '#ec4899' },
-            { name: 'General Medicine', patients: 38, color: '#8b5cf6' },
-        ];
-
-        // ========== INITIALIZATION ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeDashboard();
-            updateTime();
-            setInterval(updateTime, 1000);
-            setInterval(simulateRealTimeUpdates, 5000);
-            renderChatMessages();
-        });
-
-        function initializeDashboard() {
-            renderPatientQueue();
-            renderDoctorList();
-            renderActivityFeed();
-            renderAppointmentsTable();
-            renderPatientsGrid();
-            renderDoctorsGrid();
-            renderCallLogs();
-            renderNotifications();
-            renderAIActions();
-            renderWeeklyChart();
-            renderDepartmentStats();
-            populateDoctorSelect();
-            
-            // Simulate incoming call after 10 seconds
-            setTimeout(simulateIncomingCall, 10000);
-        }
-
-        // ========== TIME UPDATE ==========
-        function updateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            document.getElementById('currentTime').textContent = now.toLocaleDateString('en-IN', options);
-        }
-
-        // ========== SECTION SWITCHING ==========
-        function switchSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('[id^="section-"]').forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Show selected section
-            const targetSection = document.getElementById(`section-${sectionId}`);
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            }
-            
-            // Update nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === sectionId) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Update title
-            const titles = {
-                'dashboard': 'Dashboard Overview',
-                'appointments': 'Appointment Management',
-                'patients': 'Patient Records',
-                'doctors': 'Doctor Management',
-                'ai-agent': 'AI Agent Configuration',
-                'calls': 'Call History',
-                'analytics': 'Analytics & Reports'
-            };
-            document.getElementById('sectionTitle').textContent = titles[sectionId] || 'Dashboard';
-        }
-
-        // ========== SIDEBAR TOGGLE ==========
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-
-        // ========== RENDER FUNCTIONS ==========
-        function renderPatientQueue() {
-            const container = document.getElementById('patientQueue');
-            container.innerHTML = patients.map(patient => `
-                <div class="queue-item p-4 flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent-info)] to-[var(--accent-primary)] flex items-center justify-center font-bold text-sm text-[var(--bg-primary)]">
-                        ${patient.token}
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <h4 class="font-medium text-[var(--text-primary)]">${patient.name}</h4>
-                            <span class="text-xs px-2 py-0.5 rounded-full ${getStatusClass(patient.status)}">${formatStatus(patient.status)}</span>
-                        </div>
-                        <p class="text-sm text-[var(--text-muted)]">${patient.condition} - ${patient.doctor}</p>
-                    </div>
-                    <div class="text-right">
-                        ${patient.status === 'waiting' ? `
-                            <p class="text-sm font-medium text-[var(--accent-warning)]">${patient.waitTime} min</p>
-                            <p class="text-xs text-[var(--text-muted)]">wait time</p>
-                        ` : patient.status === 'in-consultation' ? `
-                            <p class="text-sm font-medium text-[var(--accent-primary)]">In Progress</p>
-                        ` : `
-                            <p class="text-sm font-medium text-[var(--accent-info)]">Checked In</p>
-                        `}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderDoctorList() {
-            const container = document.getElementById('doctorList');
-            container.innerHTML = doctors.slice(0, 4).map(doctor => `
-                <div class="doctor-card p-3 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-color)]">
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center font-bold text-sm text-[var(--bg-primary)]">
-                                ${doctor.avatar}
-                            </div>
-                            <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[var(--bg-elevated)] status-${doctor.status}"></div>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-medium text-[var(--text-primary)] text-sm">${doctor.name}</h4>
-                            <p class="text-xs text-[var(--text-muted)]">${doctor.department}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-medium text-[var(--accent-primary)]">${doctor.nextSlot}</p>
-                            <p class="text-xs text-[var(--text-muted)]">${doctor.patients} patients</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderActivityFeed() {
-            const activities = [
-                { type: 'appointment', text: 'New appointment booked: Ramesh Verma with Dr. Rajesh Kumar', time: '2 min ago' },
-                { type: 'call', text: 'Incoming call from +91 98765 43210 - Appointment inquiry', time: '5 min ago' },
-                { type: 'patient', text: 'Patient token A002 started consultation', time: '8 min ago' },
-                { type: 'system', text: 'AI Agent successfully handled 3 consecutive calls', time: '12 min ago' },
-                { type: 'alert', text: 'Dr. Vikram Patel marked as offline', time: '15 min ago' },
-            ];
-
-            const container = document.getElementById('activityFeed');
-            container.innerHTML = activities.map(activity => `
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div>
-                        <p class="text-sm text-[var(--text-primary)]">${activity.text}</p>
-                        <p class="text-xs text-[var(--text-muted)] mt-1">${activity.time}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderAppointmentsTable() {
-            const container = document.getElementById('appointmentsTable');
-            container.innerHTML = appointments.map(apt => `
-                <tr class="border-b border-[var(--border-color)] hover:bg-[var(--bg-elevated)] transition-colors">
-                    <td class="py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-[var(--accent-primary)]/20 flex items-center justify-center text-sm font-medium text-[var(--accent-primary)]">
-                                ${apt.patient.split(' ').map(n => n[0]).join('')}
-                            </div>
-                            <span class="text-[var(--text-primary)]">${apt.patient}</span>
-                        </div>
-                    </td>
-                    <td class="py-4 text-[var(--text-secondary)]">${apt.doctor}</td>
-                    <td class="py-4 text-[var(--text-secondary)]">${apt.department}</td>
-                    <td class="py-4 text-[var(--text-secondary)]">${apt.time}</td>
-                    <td class="py-4">
-                        <span class="text-xs px-3 py-1 rounded-full ${getAppointmentStatusClass(apt.status)}">${apt.status}</span>
-                    </td>
-                    <td class="py-4">
-                        <div class="flex gap-2">
-                            <button class="p-2 rounded-lg hover:bg-[var(--bg-card)] transition-colors" aria-label="Edit">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--text-muted)]">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                </svg>
-                            </button>
-                            <button class="p-2 rounded-lg hover:bg-[var(--accent-danger)]/20 transition-colors" aria-label="Delete">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-danger)]">
-                                    <polyline points="3 6 5 6 21 6"/>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderPatientsGrid() {
-            const container = document.getElementById('patientsGrid');
-            container.innerHTML = patients.map(patient => `
-                <div class="p-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] transition-all cursor-pointer">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--accent-info)] to-[var(--accent-primary)] flex items-center justify-center font-bold text-[var(--bg-primary)]">
-                            ${patient.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <span class="text-xs px-2 py-1 rounded-full ${getStatusClass(patient.status)}">${formatStatus(patient.status)}</span>
-                    </div>
-                    <h4 class="font-semibold text-[var(--text-primary)] mb-1">${patient.name}</h4>
-                    <p class="text-sm text-[var(--text-muted)] mb-2">Age: ${patient.age} | Token: ${patient.token}</p>
-                    <p class="text-sm text-[var(--text-secondary)]">${patient.condition}</p>
-                    <div class="mt-3 pt-3 border-t border-[var(--border-color)] flex items-center justify-between">
-                        <span class="text-xs text-[var(--text-muted)]">${patient.phone}</span>
-                        <button class="text-xs text-[var(--accent-primary)] hover:underline">View Details</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderDoctorsGrid() {
-            const container = document.getElementById('doctorsGrid');
-            container.innerHTML = doctors.map(doctor => `
-                <div class="p-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] transition-all cursor-pointer">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="relative">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center font-bold text-lg text-[var(--bg-primary)]">
-                                ${doctor.avatar}
-                            </div>
-                            <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-[var(--bg-elevated)] status-${doctor.status}"></div>
-                        </div>
-                        <span class="text-xs px-2 py-1 rounded-full ${getDoctorStatusClass(doctor.status)}">${doctor.status}</span>
-                    </div>
-                    <h4 class="font-semibold text-[var(--text-primary)] mb-1">${doctor.name}</h4>
-                    <p class="text-sm text-[var(--accent-primary)] mb-2">${doctor.department}</p>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-[var(--text-muted)]">${doctor.patients} patients today</span>
-                        <span class="text-[var(--text-secondary)]">Next: ${doctor.nextSlot}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderCallLogs() {
-            const container = document.getElementById('callLogsTable');
-            container.innerHTML = callLogs.map(call => `
-                <tr class="border-b border-[var(--border-color)] hover:bg-[var(--bg-elevated)] transition-colors">
-                    <td class="py-4 text-[var(--text-primary)]">${call.caller}</td>
-                    <td class="py-4 text-[var(--text-secondary)]">${call.time}</td>
-                    <td class="py-4 text-[var(--text-secondary)]">${call.duration}</td>
-                    <td class="py-4">
-                        <span class="text-xs px-3 py-1 rounded-full ${getCallTypeClass(call.type)}">${call.type}</span>
-                    </td>
-                    <td class="py-4 text-[var(--text-secondary)]">${call.outcome}</td>
-                    <td class="py-4">
-                        <button class="p-2 rounded-lg hover:bg-[var(--bg-card)] transition-colors" aria-label="Play Recording">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-primary)]">
-                                <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderNotifications() {
-            const container = document.getElementById('notificationList');
-            container.innerHTML = notifications.map(notif => `
-                <div class="p-4 border-b border-[var(--border-color)] hover:bg-[var(--bg-elevated)] transition-colors cursor-pointer">
-                    <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-lg ${getNotificationIconClass(notif.type)} flex items-center justify-center">
-                            ${getNotificationIcon(notif.type)}
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm text-[var(--text-primary)]">${notif.message}</p>
-                            <p class="text-xs text-[var(--text-muted)] mt-1">${notif.time}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderAIActions() {
-            const container = document.getElementById('aiActions');
-            container.innerHTML = aiActions.map(action => `
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-[var(--bg-elevated)]">
-                    <div class="w-8 h-8 rounded-full ${action.success ? 'bg-[var(--accent-primary)]/20' : 'bg-[var(--accent-danger)]/20'} flex items-center justify-center">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${action.success ? 'text-[var(--accent-primary)]' : 'text-[var(--accent-danger)]'}">
-                            ${action.success ? '<polyline points="20 6 9 17 4 12"/>' : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'}
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm text-[var(--text-primary)]">${action.action}</p>
-                        <p class="text-xs text-[var(--text-muted)]">${action.time}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderWeeklyChart() {
-            const container = document.getElementById('weeklyChart');
-            const maxValue = Math.max(...weeklyData.map(d => d.patients));
-            container.innerHTML = weeklyData.map((day, index) => `
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full rounded-t-lg bg-gradient-to-t from-[var(--accent-primary)] to-[var(--accent-secondary)] transition-all duration-500" style="height: ${(day.patients / maxValue) * 100}%; animation: growUp 1s ease forwards; animation-delay: ${index * 0.1}s;"></div>
-                    <span class="text-xs font-medium text-[var(--text-secondary)]">${day.patients}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderDepartmentStats() {
-            const container = document.getElementById('departmentStats');
-            const maxPatients = Math.max(...departmentData.map(d => d.patients));
-            container.innerHTML = departmentData.map(dept => `
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-[var(--text-primary)]">${dept.name}</span>
-                        <span class="text-sm font-medium text-[var(--text-secondary)]">${dept.patients} patients</span>
-                    </div>
-                    <div class="h-2 bg-[var(--bg-elevated)] rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-1000" style="width: ${(dept.patients / maxPatients) * 100}%; background: ${dept.color};"></div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderChatMessages() {
-            const container = document.getElementById('chatMessages');
-            container.innerHTML = chatHistory.map(msg => `
-                <div class="flex ${msg.sender === 'ai' ? 'justify-start' : 'justify-end'}">
-                    <div class="${msg.sender === 'ai' ? 'bg-[var(--bg-elevated)]' : 'bg-[var(--accent-primary)]'} rounded-2xl px-4 py-3 max-w-[80%]">
-                        <p class="text-sm ${msg.sender === 'ai' ? 'text-[var(--text-primary)]' : 'text-[var(--bg-primary)]'}">${msg.message}</p>
-                    </div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        // ========== CHAT FUNCTIONS ==========
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            chatHistory.push({ sender: 'user', message });
-            renderChatMessages();
-            input.value = '';
-
-            // Simulate AI response
-            setTimeout(() => {
-                const response = generateAIResponse(message);
-                chatHistory.push({ sender: 'ai', message: response });
-                renderChatMessages();
-            }, 1000 + Math.random() * 1000);
-        }
-
-        function handleChatKeypress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        function quickCommand(command) {
-            document.getElementById('chatInput').value = command;
-            sendMessage();
-        }
-
-        function generateAIResponse(message) {
-            const lowerMessage = message.toLowerCase();
-            
-            if (lowerMessage.includes('book') || lowerMessage.includes('appointment')) {
-                return 'I can help you book an appointment. Please provide: 1) Patient name, 2) Preferred department, 3) Preferred date and time. For example: "Book appointment for John Doe in Cardiology tomorrow at 10 AM"';
-            } else if (lowerMessage.includes('availability') || lowerMessage.includes('available')) {
-                const availableDoctors = doctors.filter(d => d.status === 'available');
-                return `Currently ${availableDoctors.length} doctors are available: ${availableDoctors.map(d => d.name).join(', ')}. Would you like to book an appointment with any of them?`;
-            } else if (lowerMessage.includes('emergency')) {
-                return 'EMERGENCY PROTOCOL ACTIVATED. I am notifying all available medical staff. Please provide patient location and condition. Emergency team will respond within 2 minutes.';
-            } else if (lowerMessage.includes('queue') || lowerMessage.includes('waiting')) {
-                const waiting = patients.filter(p => p.status === 'waiting').length;
-                return `There are currently ${waiting} patients in the waiting queue. Average wait time is 18 minutes. The next token to be called is A003.`;
-            } else if (lowerMessage.includes('doctor')) {
-                return `We have ${doctors.length} doctors on duty today across 5 departments. ${doctors.filter(d => d.status === 'available').length} are currently available for appointments.`;
-            } else {
-                return 'I can help you with: booking appointments, checking doctor availability, managing patient queue, emergency protocols, and general hospital inquiries. What would you like to know?';
-            }
-        }
-
-        // ========== MODAL FUNCTIONS ==========
-        function openBookingModal() {
-            document.getElementById('bookingModal').classList.add('active');
-        }
-
-        function openPatientModal() {
-            alert('Patient registration form would open here');
-        }
-
-        function openDoctorModal() {
-            alert('Doctor registration form would open here');
-        }
-
-        function openSettings() {
-            alert('Settings panel would open here');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        function submitBooking(event) {
-            event.preventDefault();
-            closeModal('bookingModal');
-            addActivity('New appointment booked successfully');
-            showNotification('Appointment booked successfully!');
-        }
-
-        // ========== NOTIFICATION FUNCTIONS ==========
-        function toggleNotifications() {
-            const panel = document.getElementById('notificationPanel');
-            panel.classList.toggle('hidden');
-        }
-
-        function clearNotifications() {
-            document.getElementById('notificationList').innerHTML = '<p class="p-4 text-center text-[var(--text-muted)]">No notifications</p>';
-            document.getElementById('notifBadge').style.display = 'none';
-        }
-
-        function showNotification(message) {
-            alert(message);
-        }
-
-        // ========== EMERGENCY FUNCTIONS ==========
-        function triggerEmergency() {
-            document.getElementById('emergencyModal').classList.add('active');
-            addActivity('EMERGENCY ALERT triggered by receptionist');
-        }
-
-        // ========== CALL FUNCTIONS ==========
-        function simulateIncomingCall() {
-            const callCard = document.getElementById('incomingCallCard');
-            callCard.style.display = 'block';
-            document.getElementById('callerInfo').textContent = `+91 ${Math.floor(9000000000 + Math.random() * 999999999).toString().slice(0, 10)}`;
-        }
-
-        function acceptCall() {
-            document.getElementById('incomingCallCard').style.display = 'none';
-            addActivity('Incoming call answered by AI agent');
-            setTimeout(simulateIncomingCall, 30000);
-        }
-
-        function rejectCall() {
-            document.getElementById('incomingCallCard').style.display = 'none';
-            setTimeout(simulateIncomingCall, 30000);
-        }
-
-        // ========== HELPER FUNCTIONS ==========
-        function getStatusClass(status) {
-            const classes = {
-                'waiting': 'bg-[var(--accent-warning)]/20 text-[var(--accent-warning)]',
-                'in-consultation': 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]',
-                'checked-in': 'bg-[var(--accent-info)]/20 text-[var(--accent-info)]'
-            };
-            return classes[status] || 'bg-[var(--text-muted)]/20 text-[var(--text-muted)]';
-        }
-
-        function formatStatus(status) {
-            return status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        }
-
-        function getAppointmentStatusClass(status) {
-            const classes = {
-                'scheduled': 'bg-[var(--accent-info)]/20 text-[var(--accent-info)]',
-                'confirmed': 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]',
-                'in-progress': 'bg-[var(--accent-warning)]/20 text-[var(--accent-warning)]',
-                'completed': 'bg-[var(--accent-secondary)]/20 text-[var(--accent-secondary)]',
-                'cancelled': 'bg-[var(--accent-danger)]/20 text-[var(--accent-danger)]'
-            };
-            return classes[status] || 'bg-[var(--text-muted)]/20 text-[var(--text-muted)]';
-        }
-
-        function getDoctorStatusClass(status) {
-            const classes = {
-                'available': 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]',
-                'busy': 'bg-[var(--accent-warning)]/20 text-[var(--accent-warning)]',
-                'offline': 'bg-[var(--accent-danger)]/20 text-[var(--accent-danger)]'
-            };
-            return classes[status] || 'bg-[var(--text-muted)]/20 text-[var(--text-muted)]';
-        }
-
-        function getCallTypeClass(type) {
-            const classes = {
-                'inbound': 'bg-[var(--accent-info)]/20 text-[var(--accent-info)]',
-                'outbound': 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]',
-                'missed': 'bg-[var(--accent-danger)]/20 text-[var(--accent-danger)]'
-            };
-            return classes[type] || 'bg-[var(--text-muted)]/20 text-[var(--text-muted)]';
-        }
-
-        function getNotificationIconClass(type) {
-            const classes = {
-                'appointment': 'bg-[var(--accent-primary)]/20',
-                'emergency': 'bg-[var(--accent-danger)]/20',
-                'reminder': 'bg-[var(--accent-warning)]/20',
-                'system': 'bg-[var(--accent-info)]/20',
-                'patient': 'bg-[var(--accent-secondary)]/20'
-            };
-            return classes[type] || 'bg-[var(--text-muted)]/20';
-        }
-
-        function getNotificationIcon(type) {
-            const icons = {
-                'appointment': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-primary)]"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>',
-                'emergency': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-danger)]"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>',
-                'reminder': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-warning)]"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-                'system': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-info)]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>',
-                'patient': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent-secondary)]"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'
-            };
-            return icons[type] || '';
-        }
-
-        function populateDoctorSelect() {
-            const select = document.getElementById('doctorSelect');
-            doctors.forEach(doctor => {
-                const option = document.createElement('option');
-                option.value = doctor.id;
-                option.textContent = `${doctor.name} - ${doctor.department}`;
-                select.appendChild(option);
-            });
-        }
-
-        function filterAppointments() {
-            // Implementation for filtering appointments
-            console.log('Filtering appointments...');
-        }
-
-        function searchPatients(query) {
-            // Implementation for searching patients
-            console.log('Searching patients:', query);
-        }
-
-        function handleSearch(query) {
-            // Implementation for global search
-            console.log('Global search:', query);
-        }
-
-        function addActivity(text) {
-            const container = document.getElementById('activityFeed');
-            const newItem = document.createElement('div');
-            newItem.className = 'timeline-item';
-            newItem.innerHTML = `
-                <div class="timeline-dot"></div>
-                <div>
-                    <p class="text-sm text-[var(--text-primary)]">${text}</p>
-                    <p class="text-xs text-[var(--text-muted)] mt-1">Just now</p>
-                </div>
-            `;
-            container.insertBefore(newItem, container.firstChild);
-        }
-
-        // ========== REAL-TIME SIMULATION ==========
-        function simulateRealTimeUpdates() {
-            // Update patient count randomly
-            const patientStat = document.getElementById('statPatients');
-            const currentPatients = parseInt(patientStat.textContent);
-            const change = Math.random() > 0.5 ? 1 : -1;
-            if (currentPatients + change >= 240) {
-                patientStat.textContent = currentPatients + change;
-            }
-
-            // Update queue count
-            const queueStat = document.getElementById('statQueue');
-            const currentQueue = parseInt(queueStat.textContent);
-            const queueChange = Math.random() > 0.6 ? -1 : 1;
-            if (currentQueue + queueChange >= 10 && currentQueue + queueChange <= 25) {
-                queueStat.textContent = currentQueue + queueChange;
-            }
-
-            // Randomly add activity
-            if (Math.random() > 0.7) {
-                const activities = [
-                    'Patient token checked in at reception',
-                    'AI agent processed appointment request',
-                    'Doctor status updated to available',
-                    'New patient registration completed',
-                    'Appointment reminder sent via SMS'
-                ];
-                addActivity(activities[Math.floor(Math.random() * activities.length)]);
-            }
-        }
-
-        // Close notifications when clicking outside
-        document.addEventListener('click', (e) => {
-            const notifPanel = document.getElementById('notificationPanel');
-            const notifButton = e.target.closest('[onclick="toggleNotifications()"]');
-            if (!notifPanel.contains(e.target) && !notifButton) {
-                notifPanel.classList.add('hidden');
-            }
-        });
-
-        // Close modals with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
-                    modal.classList.remove('active');
-                });
-            }
-        });
-
-        // Animation for chart bars
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes growUp {
-                from { height: 0; }
-                to { height: var(--target-height); }
-            }
-            @keyframes progressFill {
-                from { width: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+  </div>
+</div>
+
+<!-- ======== APP ======== -->
+<button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+<div id="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="skull">💀</span>
+    <div class="sidebar-logo-text">
+      <h2>QR PUZZLE</h2>
+      <small>HORROR EDITION</small>
+    </div>
+  </div>
+  <div class="sidebar-user" id="sidebarUser"></div>
+  <div class="nav" id="sidebarNav"></div>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
+  </div>
+</nav>
+
+<main class="main" id="mainContent">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">DASHBOARD</div>
+    <div class="topbar-right">
+      <button class="topbar-btn"><i class="fas fa-bell"></i> <span id="notifCount">3</span></button>
+      <button class="topbar-btn"><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+  <div id="pageContainer"></div>
+</main>
+
+</div>
+
+<!-- CREATE BATCH MODAL -->
+<div class="modal-backdrop" id="batchModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3><i class="fas fa-qrcode"></i> Create QR Batch</h3>
+      <button class="modal-close" onclick="closeModal('batchModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Batch Name</label>
+          <input type="text" id="batchName" placeholder="e.g. Diwali Special">
+        </div>
+        <div class="form-group">
+          <label>Total QR Codes</label>
+          <input type="number" id="totalQRs" value="20" min="5" max="100">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Reward QR Count</label>
+          <input type="number" id="rewardQRs" value="10">
+        </div>
+        <div class="form-group">
+          <label>Reward Type</label>
+          <select id="rewardType" onchange="toggleRewardType()">
+            <option value="fixed">Fixed Amount</option>
+            <option value="random">Random Range</option>
+          </select>
+        </div>
+      </div>
+      <div id="fixedDiv" class="form-group">
+        <label>Fixed Amount (₹)</label>
+        <input type="number" id="fixedAmt" value="500">
+      </div>
+      <div id="randomDiv" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Min Amount (₹)</label>
+            <input type="number" id="minAmt" value="200">
+          </div>
+          <div class="form-group">
+            <label>Max Amount (₹)</label>
+            <input type="number" id="maxAmt" value="1000">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-red" onclick="closeModal('batchModal')">Cancel</button>
+      <button class="btn btn-purple" onclick="generateBatch()"><i class="fas fa-magic"></i> Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR VIEW MODAL -->
+<div class="modal-backdrop" id="qrViewModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="qrViewTitle">QR Codes</h3>
+      <button class="modal-close" onclick="closeModal('qrViewModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="qrViewBody"></div>
+  </div>
+</div>
+
+<script>
+// ======== PARTICLES ========
+(function(){
+  const c = document.getElementById('particles-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, particles = [];
+  function resize(){W = c.width = window.innerWidth; H = c.height = window.innerHeight;}
+  resize();
+  window.addEventListener('resize', resize);
+  for(let i=0;i<80;i++){
+    particles.push({
+      x:Math.random()*1920, y:Math.random()*1080,
+      r:Math.random()*2+0.5,
+      vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4,
+      a:Math.random(),
+      color:['rgba(200,75,255,','rgba(255,51,102,','rgba(0,229,255,'][Math.floor(Math.random()*3)]
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.color+(0.3+Math.sin(Date.now()/1000)*0.2)+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ======== STATE ========
+let currentRole = null;
+let currentUser = null;
+let currentPage = null;
+let gameTimer = null;
+let gameTimeLeft = 60;
+let selectedPiece = null;
+let isScratching = false;
+let qrBatches = [
+  {id:1, name:'Batch #001', total:20, rewards:10, used:15, status:'active', created:'2024-01-10', reward:'₹500 Fixed'},
+  {id:2, name:'Batch #002', total:20, rewards:8, used:20, status:'completed', created:'2024-01-08', reward:'₹200-₹800'},
+  {id:3, name:'Batch #003', total:15, rewards:5, used:3, status:'active', created:'2024-01-15', reward:'₹300 Fixed'},
+];
+
+const CREDS = {user:'user123', admin:'admin123', manager:'manager123'};
+const NAVS = {
+  user:[
+    {page:'dashboard', icon:'fa-home', label:'Dashboard'},
+    {page:'game', icon:'fa-gamepad', label:'Play Game', badge:{text:'LIVE',cls:'green'}},
+    {page:'wallet', icon:'fa-wallet', label:'My Wallet'},
+    {page:'history', icon:'fa-history', label:'Game History'},
+    {page:'achievements', icon:'fa-trophy', label:'Achievements'},
+    {page:'profile', icon:'fa-user', label:'Profile'},
+    {page:'support', icon:'fa-headset', label:'Support', badge:{text:'5',cls:'red'}},
+  ],
+  admin:[
+    {page:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard'},
+    {page:'qr-management', icon:'fa-qrcode', label:'QR Management', badge:{text:'3',cls:'purple'}},
+    {page:'user-management', icon:'fa-users', label:'Users'},
+    {page:'manager-management', icon:'fa-user-tie', label:'Managers'},
+    {page:'wallet-control', icon:'fa-wallet', label:'Wallet Control'},
+    {page:'game-config', icon:'fa-cog', label:'Game Config'},
+    {page:'reports', icon:'fa-chart-bar', label:'Reports'},
+    {page:'audit', icon:'fa-shield-alt', label:'Audit Logs'},
+  ],
+  manager:[
+    {page:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard'},
+    {page:'manager-users', icon:'fa-users', label:'Users'},
+    {page:'manager-kyc', icon:'fa-id-card', label:'KYC Approval', badge:{text:'23',cls:'red'}},
+    {page:'manager-withdrawals', icon:'fa-money-bill-wave', label:'Withdrawals', badge:{text:'12',cls:'yellow'}},
+    {page:'manager-reports', icon:'fa-chart-line', label:'Reports'},
+  ]
+};
+
+// ======== LOGIN ========
+let selectedRole = 'user';
+document.querySelectorAll('.role-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    selectedRole = tab.dataset.role;
+    const hints = {user:'user123', admin:'admin123', manager:'manager123'};
+    document.getElementById('passIn').value = hints[selectedRole];
+  });
+});
+
+document.getElementById('loginForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const pass = document.getElementById('passIn').value;
+  const email = document.getElementById('emailIn').value;
+  if(CREDS[selectedRole] === pass){
+    currentRole = selectedRole;
+    currentUser = {email, name: email.split('@')[0]};
+    showLoader();
+    setTimeout(()=>{
+      hideLoader();
+      initApp();
+      notify('Welcome to '+selectedRole.toUpperCase()+' portal!', 'success');
+    }, 1200);
+  } else {
+    notify('Wrong credentials! Try again.', 'error');
+    document.getElementById('loginForm').querySelector('input[type=password]').style.borderColor='var(--accent2)';
+    setTimeout(()=>document.getElementById('loginForm').querySelector('input[type=password]').style.borderColor='',1500);
+  }
+});
+
+function initApp(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('app').style.display='block';
+  buildSidebar();
+  navigate('dashboard');
+}
+
+function buildSidebar(){
+  const u = document.getElementById('sidebarUser');
+  u.innerHTML=`
+    <div class="avatar">${currentUser.name[0].toUpperCase()}</div>
+    <div class="avatar-info">
+      <div class="name">${currentUser.name}</div>
+      <div class="email">${currentUser.email}</div>
+    </div>
+  `;
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML='<div class="nav-section-title">Navigation</div>';
+  NAVS[currentRole].forEach(item=>{
+    const b = item.badge ? `<span class="nav-badge ${item.badge.cls}">${item.badge.text}</span>`:'';
+    const a = document.createElement('div');
+    a.className='nav-link'; a.dataset.page=item.page;
+    a.innerHTML=`<i class="fas ${item.icon}"></i>${item.label}${b}`;
+    a.onclick=()=>navigate(item.page);
+    nav.appendChild(a);
+  });
+}
+
+function navigate(page){
+  currentPage = page;
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    l.classList.toggle('active', l.dataset.page===page);
+  });
+  const titles = {
+    'dashboard':'Dashboard','game':'Play Game','wallet':'My Wallet',
+    'history':'Game History','achievements':'Achievements','profile':'Profile',
+    'support':'Support','qr-management':'QR Management','user-management':'User Management',
+    'manager-management':'Manager Management','wallet-control':'Wallet Control',
+    'game-config':'Game Config','reports':'Reports & Analytics','audit':'Audit Logs',
+    'manager-users':'Users','manager-kyc':'KYC Approval','manager-withdrawals':'Withdrawals',
+    'manager-reports':'Reports'
+  };
+  document.getElementById('topbarTitle').textContent = titles[page]||page.replace('-',' ').toUpperCase();
+  document.getElementById('sidebar').classList.remove('open');
+
+  const pc = document.getElementById('pageContainer');
+  pc.innerHTML='';
+  const fn = pages[currentRole+'_'+page] || pages[page];
+  if(fn) fn(pc);
+  else pc.innerHTML=`<div class="content-card" style="text-align:center;padding:60px 20px;"><div style="font-size:3rem;margin-bottom:16px">🚧</div><h3 style="color:var(--text2)">Coming Soon</h3><p style="color:var(--text3);margin-top:8px">This feature is under development</p></div>`;
+}
+
+// ======== PAGES ========
+const pages = {};
+
+// --- USER DASHBOARD ---
+pages['user_dashboard'] = pages['dashboard'] = function(el){
+  if(currentRole!=='user'){pages['admin_dashboard'](el);return;}
+  el.innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-val">₹2,450</div><div class="stat-label">Wallet Balance</div></div>
+      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-gamepad"></i></div><div class="stat-val">23</div><div class="stat-label">Total Games</div></div>
+      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-val">15</div><div class="stat-label">Games Won</div></div>
+      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-percent"></i></div><div class="stat-val">65%</div><div class="stat-label">Win Rate</div></div>
+    </div>
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-clock"></i> Recent Games</div>
+        <button class="btn btn-purple" onclick="navigate('history')"><i class="fas fa-eye"></i> View All</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Game</th><th>Entry</th><th>Result</th><th>Reward</th></tr></thead>
+          <tbody>
+            ${[
+              ['Jan 15','QR Puzzle #234','₹100','won','₹500'],
+              ['Jan 14','QR Puzzle #233','₹100','lost','—'],
+              ['Jan 13','QR Puzzle #232','₹100','won','₹300'],
+              ['Jan 12','QR Puzzle #231','₹100','lost','—'],
+              ['Jan 11','QR Puzzle #230','₹100','won','₹200'],
+            ].map(r=>`<tr>
+              <td style="color:var(--text3);font-size:0.8rem;font-family:'Space Mono',monospace">${r[0]}</td>
+              <td style="font-weight:600">${r[1]}</td><td>${r[2]}</td>
+              <td><span class="badge ${r[3]==='won'?'badge-green':'badge-red'}">${r[3].toUpperCase()}</span></td>
+              <td style="color:${r[3]==='won'?'var(--green)':'var(--text3)'}; font-family:'Bebas Neue',cursive; font-size:1.1rem">${r[4]}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-chart-bar"></i> Monthly Performance</div>
+      </div>
+      <div class="chart-container" style="padding-bottom:30px">
+        ${buildBarChart([
+          {l:'Oct',v:65,c:'var(--accent1)'},
+          {l:'Nov',v:48,c:'var(--accent2)'},
+          {l:'Dec',v:72,c:'var(--accent1)'},
+          {l:'Jan',v:58,c:'var(--accent3)'},
+        ])}
+      </div>
+    </div>
+  `;
+};
+
+function buildBarChart(data){
+  const mx = Math.max(...data.map(d=>d.v));
+  return data.map(d=>`
+    <div class="bar-item" style="height:${(d.v/mx)*180}px;background:${d.c};opacity:0.7;">
+      <div class="bar-label">${d.l}</div>
+      <div class="bar-val">${d.v}%</div>
+    </div>
+  `).join('');
+}
+
+// --- GAME ---
+pages['user_game'] = pages['game'] = function(el){
+  el.innerHTML=`
+    <div class="game-hero">
+      <div class="game-title">QR PUZZLE</div>
+      <div class="game-subtitle">SCAN · SOLVE · WIN</div>
+      <div class="game-fee"><i class="fas fa-coins"></i> Entry Fee: ₹100 &nbsp;|&nbsp; Prize Pool: up to ₹1000</div>
+    </div>
+    <div id="gameStart" class="content-card" style="text-align:center;padding:40px 20px">
+      <p style="color:var(--text2);margin-bottom:24px;font-size:1rem;line-height:1.7">Arrange the scrambled QR code pieces in the correct order before time runs out!<br>Solve it to reveal your scratch card prize.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-grad btn-lg" onclick="startGame()"><i class="fas fa-play"></i> START GAME</button>
+        <button class="btn btn-cyan btn-lg" onclick="viewRules()"><i class="fas fa-info-circle"></i> HOW TO PLAY</button>
+      </div>
+    </div>
+    <div id="gamePuzzle" style="display:none" class="content-card">
+      <div class="timer-bar">
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px">TIME REMAINING</div>
+          <div class="timer-display" id="timerDisplay">60</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.7rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px">PROGRESS</div>
+          <div id="progressTxt" style="font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:1px;color:var(--accent3)">0/10</div>
+        </div>
+      </div>
+      <div style="height:4px;background:var(--bg2);border-radius:2px;margin-bottom:20px;overflow:hidden">
+        <div id="timerProgress" style="height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));width:100%;transition:width 1s"></div>
+      </div>
+      <div class="puzzle-board" id="puzzleBoard"></div>
+      <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-purple" onclick="resetPuzzle()"><i class="fas fa-redo"></i> Shuffle</button>
+        <button class="btn btn-green" onclick="submitPuzzle()"><i class="fas fa-check"></i> Submit Solution</button>
+      </div>
+    </div>
+    <div id="gameScratch" style="display:none" class="content-card" style="text-align:center">
+      <h3 style="font-family:'Creepster',cursive;font-size:2rem;text-align:center;margin-bottom:20px;color:var(--accent1)">🎉 Puzzle Solved!</h3>
+      <p style="text-align:center;color:var(--text2);margin-bottom:24px">Scratch the card below to reveal your prize!</p>
+      <div style="display:flex;justify-content:center">
+        <div class="scratch-outer">
+          <div class="scratch-result-bg">
+            <div class="scratch-msg">🎊 YOU WON!</div>
+            <div class="scratch-amount">₹500</div>
+            <div class="scratch-sub">Credited to your wallet instantly</div>
+          </div>
+          <canvas id="scratchCanvas" width="440" height="180"></canvas>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-grad btn-lg" onclick="startGame()"><i class="fas fa-redo"></i> PLAY AGAIN</button>
+        <button class="btn btn-cyan btn-lg" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> MY WALLET</button>
+      </div>
+    </div>
+  `;
+};
+
+function startGame(){
+  document.getElementById('gameStart').style.display='none';
+  document.getElementById('gamePuzzle').style.display='block';
+  document.getElementById('gameScratch').style.display='none';
+  gameTimeLeft=60; selectedPiece=null;
+  generatePuzzle();
+  startTimer();
+}
+
+function generatePuzzle(){
+  const board = document.getElementById('puzzleBoard');
+  board.innerHTML='';
+  const order=[...Array(10).keys()];
+  const shuffled=[...order].sort(()=>Math.random()-0.5);
+  shuffled.forEach((val,idx)=>{
+    const d=document.createElement('div');
+    d.className='puzzle-piece'; d.dataset.val=val; d.dataset.idx=idx;
+    d.textContent=val+1;
+    d.onclick=()=>clickPiece(d);
+    board.appendChild(d);
+  });
+  updateProgress();
+}
+
+function clickPiece(piece){
+  if(selectedPiece && selectedPiece!==piece){
+    const tv=piece.dataset.val, tt=piece.textContent;
+    piece.dataset.val=selectedPiece.dataset.val;
+    piece.textContent=selectedPiece.textContent;
+    selectedPiece.dataset.val=tv; selectedPiece.textContent=tt;
+    selectedPiece.classList.remove('selected');
+    selectedPiece=null;
+    updateProgress();
+    if(checkSolved()) endGame(true);
+  } else if(selectedPiece===piece){
+    piece.classList.remove('selected'); selectedPiece=null;
+  } else {
+    if(selectedPiece) selectedPiece.classList.remove('selected');
+    piece.classList.add('selected'); selectedPiece=piece;
+  }
+}
+
+function updateProgress(){
+  const pieces=document.querySelectorAll('.puzzle-piece');
+  let correct=0;
+  pieces.forEach((p,i)=>{ if(parseInt(p.dataset.val)===i){p.classList.add('correct');correct++;}else{p.classList.remove('correct');}});
+  const el=document.getElementById('progressTxt');
+  if(el)el.textContent=correct+'/10';
+}
+
+function checkSolved(){
+  const pieces=document.querySelectorAll('.puzzle-piece');
+  for(let i=0;i<pieces.length;i++) if(parseInt(pieces[i].dataset.val)!==i) return false;
+  return true;
+}
+
+function startTimer(){
+  clearInterval(gameTimer);
+  gameTimer=setInterval(()=>{
+    gameTimeLeft--;
+    const d=document.getElementById('timerDisplay');
+    const p=document.getElementById('timerProgress');
+    if(d) d.textContent=gameTimeLeft;
+    if(p) p.style.width=(gameTimeLeft/60*100)+'%';
+    if(d && gameTimeLeft<=10) d.classList.add('warning');
+    if(gameTimeLeft<=0){clearInterval(gameTimer);endGame(false);}
+  },1000);
+}
+
+function resetPuzzle(){ clearInterval(gameTimer); startGame(); }
+
+function submitPuzzle(){
+  if(checkSolved()) endGame(true);
+  else notify('Not solved yet! Keep arranging the pieces.','warning');
+}
+
+function endGame(won){
+  clearInterval(gameTimer);
+  if(won){
+    document.getElementById('gamePuzzle').style.display='none';
+    document.getElementById('gameScratch').style.display='block';
+    setTimeout(initScratch,200);
+    notify('Puzzle solved! Scratch your card!','success');
+  } else {
+    notify("Time's up! Try again.",'error');
+    setTimeout(()=>{
+      document.getElementById('gamePuzzle').style.display='none';
+      document.getElementById('gameStart').style.display='block';
+    },2000);
+  }
+}
+
+function initScratch(){
+  const c=document.getElementById('scratchCanvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  c.width=440; c.height=180;
+  const g=ctx.createLinearGradient(0,0,440,180);
+  g.addColorStop(0,'#1a0028'); g.addColorStop(0.5,'#280018'); g.addColorStop(1,'#0a1a28');
+  ctx.fillStyle=g; ctx.fillRect(0,0,440,180);
+  ctx.fillStyle='rgba(200,75,255,0.3)';
+  for(let i=0;i<20;i++){
+    ctx.beginPath(); ctx.arc(Math.random()*440,Math.random()*180,Math.random()*30,0,Math.PI*2); ctx.fill();
+  }
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='bold 20px Rajdhani'; ctx.textAlign='center';
+  ctx.fillText('✦ SCRATCH HERE TO REVEAL ✦', 220, 100);
+  ctx.font='13px Space Mono'; ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.fillText('Use your finger or mouse', 220, 130);
+  let scratching=false;
+  c.onmousedown=()=>scratching=true;
+  c.onmouseup=()=>scratching=false;
+  c.onmouseleave=()=>scratching=false;
+  c.ontouchstart=()=>scratching=true;
+  c.ontouchend=()=>scratching=false;
+  c.onmousemove=ev=>{if(!scratching)return;doScratch(c,ctx,ev.offsetX,ev.offsetY);};
+  c.ontouchmove=ev=>{
+    ev.preventDefault();
+    const r=c.getBoundingClientRect();
+    doScratch(c,ctx,ev.touches[0].clientX-r.left,ev.touches[0].clientY-r.top);
+  };
+}
+function doScratch(c,ctx,x,y){
+  ctx.globalCompositeOperation='destination-out';
+  ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fill();
+}
+
+function viewRules(){
+  notify('Swap puzzle pieces by tapping two pieces. Arrange 1-10 in order to win!','info');
+}
+
+// --- WALLET ---
+pages['user_wallet'] = pages['wallet'] = function(el){
+  el.innerHTML=`
+    <div class="wallet-hero">
+      <div class="wallet-label">Total Balance</div>
+      <div class="wallet-bal">₹2,450.00</div>
+      <div style="display:flex;gap:8px;font-size:0.8rem">
+        <span class="badge badge-green"><i class="fas fa-arrow-up"></i> +₹800 this week</span>
+        <span class="badge badge-purple">KYC Verified</span>
+      </div>
+      <div class="wallet-actions">
+        <button class="btn btn-green btn-lg"><i class="fas fa-plus"></i> ADD MONEY</button>
+        <button class="btn btn-cyan btn-lg"><i class="fas fa-arrow-up"></i> WITHDRAW</button>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-list"></i> Transactions</div>
+        <span class="badge badge-purple">Last 30 days</span>
+      </div>
+      ${[
+        {type:'credit',icon:'fa-trophy',name:'Game Reward',sub:'QR Puzzle #234 — Won',amt:'+₹500',date:'Jan 15'},
+        {type:'debit',icon:'fa-gamepad',name:'Game Entry',sub:'QR Puzzle #235',amt:'-₹100',date:'Jan 15'},
+        {type:'credit',icon:'fa-plus-circle',name:'Added Money',sub:'UPI Transfer',amt:'+₹1,000',date:'Jan 14'},
+        {type:'debit',icon:'fa-university',name:'Withdrawal',sub:'Bank Transfer — HDFC ****4321',amt:'-₹1,000',date:'Jan 13'},
+        {type:'credit',icon:'fa-trophy',name:'Game Reward',sub:'QR Puzzle #232 — Won',amt:'+₹300',date:'Jan 13'},
+        {type:'debit',icon:'fa-gamepad',name:'Game Entry',sub:'QR Puzzle #232',amt:'-₹100',date:'Jan 13'},
+      ].map(t=>`
+        <div class="txn-item">
+          <div class="txn-icon ${t.type}"><i class="fas ${t.icon}"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">${t.name}</div>
+            <div class="txn-date">${t.sub} · ${t.date}</div>
+          </div>
+          <div class="txn-amount ${t.type}">${t.amt}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+};
+
+// --- ACHIEVEMENTS ---
+pages['user_achievements'] = pages['achievements'] = function(el){
+  const achs=[
+    {icon:'🎯',name:'First Blood',desc:'Win your first game',unlocked:true},
+    {icon:'🔥',name:'On Fire',desc:'Win 5 games in a row',unlocked:true},
+    {icon:'💎',name:'Diamond',desc:'Win ₹10,000 total',unlocked:false},
+    {icon:'🕐',name:'Speed Demon',desc:'Solve in under 15 seconds',unlocked:true},
+    {icon:'👑',name:'King of Puzzle',desc:'Win 50 games',unlocked:false},
+    {icon:'🎪',name:'Veteran',desc:'Play 100 games',unlocked:false},
+    {icon:'💰',name:'Big Winner',desc:'Win ₹1000 in one game',unlocked:true},
+    {icon:'🌙',name:'Night Owl',desc:'Play after midnight',unlocked:false},
+  ];
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-trophy"></i> Achievements</div>
+        <span class="badge badge-green">4/8 Unlocked</span>
+      </div>
+      <div class="achievement-grid">
+        ${achs.map(a=>`
+          <div class="achievement-item ${a.unlocked?'unlocked':''}">
+            ${a.unlocked?'<span class="nav-badge green ach-badge">✓</span>':''}
+            <span class="ach-icon">${a.icon}</span>
+            <div class="ach-name">${a.name}</div>
+            <div class="ach-desc">${a.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+};
+
+// --- HISTORY ---
+pages['user_history'] = pages['history'] = function(el){
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-history"></i> Game History</div>
+        <div style="display:flex;gap:8px">
+          <select style="padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem">
+            <option>All Games</option><option>Won</option><option>Lost</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Date & Time</th><th>Puzzle ID</th><th>Entry</th><th>Duration</th><th>Result</th><th>Reward</th></tr></thead>
+          <tbody>
+            ${[
+              ['234','Jan 15, 10:30 AM','QR-234','₹100','45s','won','₹500'],
+              ['233','Jan 14, 3:15 PM','QR-233','₹100','60s','lost','—'],
+              ['232','Jan 13, 7:00 PM','QR-232','₹100','38s','won','₹300'],
+              ['231','Jan 12, 11:00 AM','QR-231','₹100','60s','lost','—'],
+              ['230','Jan 11, 2:45 PM','QR-230','₹100','29s','won','₹200'],
+              ['229','Jan 10, 9:00 AM','QR-229','₹100','52s','lost','—'],
+            ].map(r=>`<tr>
+              <td style="font-family:'Space Mono',monospace;color:var(--text3);font-size:0.75rem">#${r[0]}</td>
+              <td style="font-size:0.8rem;color:var(--text2)">${r[1]}</td>
+              <td style="font-family:'Space Mono',monospace;font-size:0.8rem">${r[2]}</td>
+              <td>${r[3]}</td>
+              <td><span class="badge badge-cyan">${r[4]}</span></td>
+              <td><span class="badge ${r[5]==='won'?'badge-green':'badge-red'}">${r[5].toUpperCase()}</span></td>
+              <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${r[5]==='won'?'var(--green)':'var(--text3)'}">${r[6]}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+};
+
+// --- PROFILE ---
+pages['user_profile'] = pages['profile'] = function(el){
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px" class="profile-grid">
+      <div>
+        <div class="content-card" style="text-align:center">
+          <div style="width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;margin:0 auto 16px;box-shadow:0 0 20px rgba(200,75,255,0.4)">${currentUser.name[0].toUpperCase()}</div>
+          <div style="font-weight:700;font-size:1.1rem">${currentUser.name}</div>
+          <div style="font-size:0.8rem;color:var(--text3);margin:4px 0 12px">${currentUser.email}</div>
+          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+            <span class="badge badge-green"><i class="fas fa-check-circle"></i> KYC Verified</span>
+            <span class="badge badge-purple">Level 5</span>
+          </div>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
+              <div><div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--accent1)">23</div><div style="font-size:0.7rem;color:var(--text3)">GAMES</div></div>
+              <div><div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--green)">15</div><div style="font-size:0.7rem;color:var(--text3)">WINS</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="content-card">
+          <div class="content-card-header"><div class="content-card-title"><i class="fas fa-edit"></i> Edit Profile</div></div>
+          <div class="form-row">
+            <div class="form-group"><label>Full Name</label><input type="text" value="${currentUser.name}" class="profile-input"></div>
+            <div class="form-group"><label>Email</label><input type="email" value="${currentUser.email}" class="profile-input"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" value="+91 9876543210" class="profile-input"></div>
+            <div class="form-group"><label>City</label><input type="text" value="Mumbai" class="profile-input"></div>
+          </div>
+          <button class="btn btn-grad btn-lg" onclick="notify('Profile saved!','success')"><i class="fas fa-save"></i> SAVE CHANGES</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+// --- ADMIN DASHBOARD ---
+pages['admin_dashboard'] = function(el){
+  el.innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">1,234</div><div class="stat-label">Total Users</div></div>
+      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-val">₹2.5L</div><div class="stat-label">Revenue</div></div>
+      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-gamepad"></i></div><div class="stat-val">5,678</div><div class="stat-label">Games Played</div></div>
+      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-qrcode"></i></div><div class="stat-val">3</div><div class="stat-label">Active Batches</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="content-card">
+        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-purple" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('qr-management')"><i class="fas fa-qrcode"></i> Manage QR Batches</button>
+          <button class="btn btn-cyan" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('user-management')"><i class="fas fa-users"></i> Manage Users</button>
+          <button class="btn btn-green" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('reports')"><i class="fas fa-chart-bar"></i> View Reports</button>
+          <button class="btn btn-red" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('audit')"><i class="fas fa-shield-alt"></i> Audit Logs</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-line"></i> Revenue (6M)</div></div>
+        <div class="chart-container" style="padding-bottom:30px">
+          ${buildBarChart([
+            {l:'Aug',v:55,c:'var(--accent1)'},
+            {l:'Sep',v:70,c:'var(--accent2)'},
+            {l:'Oct',v:45,c:'var(--accent3)'},
+            {l:'Nov',v:85,c:'var(--accent1)'},
+            {l:'Dec',v:92,c:'var(--accent4)'},
+            {l:'Jan',v:78,c:'var(--accent2)'},
+          ])}
+        </div>
+      </div>
+    </div>
+    <div class="content-card">
+      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-stream"></i> Live Activity</div></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th><th>Status</th></tr></thead>
+        <tbody>
+          ${[
+            ['10:30 AM','user@example.com','Game Played','QR Puzzle #234','won'],
+            ['10:25 AM','jane@example.com','Registration','New User','completed'],
+            ['10:20 AM','admin','Batch Created','Batch #005 — 20 QRs','active'],
+            ['10:15 AM','bob@example.com','Withdrawal','₹2,000 via UPI','pending'],
+            ['10:10 AM','user2@example.com','Game Played','QR Puzzle #233','lost'],
+          ].map(r=>`<tr>
+            <td style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--text3)">${r[0]}</td>
+            <td style="font-size:0.82rem">${r[1]}</td>
+            <td style="font-weight:600">${r[2]}</td>
+            <td style="color:var(--text2)">${r[3]}</td>
+            <td><span class="badge ${r[4]==='won'||r[4]==='completed'||r[4]==='active'?'badge-green':r[4]==='pending'?'badge-yellow':'badge-red'}">${r[4].toUpperCase()}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+};
+
+// --- QR MANAGEMENT ---
+pages['admin_qr-management'] = function(el){
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-qrcode"></i> QR Batches</div>
+        <button class="btn btn-grad" onclick="openModal('batchModal')"><i class="fas fa-plus"></i> Create Batch</button>
+      </div>
+      <div class="qr-batch-grid" id="batchGrid"></div>
+    </div>
+  `;
+  renderBatches();
+};
+
+function renderBatches(){
+  const grid=document.getElementById('batchGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  qrBatches.forEach(b=>{
+    const pct=Math.round(b.used/b.total*100);
+    const cls=b.status==='active'?'badge-green':b.status==='completed'?'badge-purple':'badge-yellow';
+    const div=document.createElement('div');
+    div.className='qr-batch-item';
+    div.innerHTML=`
+      <div class="qr-batch-header">
+        <div>
+          <div class="qr-batch-name">${b.name}</div>
+          <div class="qr-batch-meta">${b.reward} · Created ${b.created}</div>
+        </div>
+        <span class="badge ${cls}">${b.status.toUpperCase()}</span>
+      </div>
+      <div class="qr-preview-grid" id="qrPrev_${b.id}">
+        <div class="qr-thumb" id="qrt1_${b.id}"></div>
+        <div class="qr-thumb" id="qrt2_${b.id}"></div>
+        <div class="qr-thumb" id="qrt3_${b.id}"></div>
+      </div>
+      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--text3);margin-bottom:8px">
+        <span><b style="color:var(--text)">${b.total}</b> Total</span>
+        <span><b style="color:var(--accent1)">${b.rewards}</b> Rewards</span>
+        <span><b style="color:var(--green)">${b.used}</b> Used</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill ${b.status==='completed'?'purple':'green'}" style="width:${pct}%"></div></div>
+      <div style="font-size:0.72rem;color:var(--text3);margin-bottom:14px;text-align:right">${pct}% used</div>
+      <div class="action-btns">
+        <button class="btn btn-purple" onclick="viewBatchQRs(${b.id})"><i class="fas fa-eye"></i> View QRs</button>
+        <button class="btn btn-cyan" onclick="downloadBatch(${b.id})"><i class="fas fa-download"></i> Export</button>
+        ${b.status==='active'?`<button class="btn btn-red" onclick="notify('Batch deactivated','warning')"><i class="fas fa-ban"></i></button>`:''}
+      </div>
+    `;
+    grid.appendChild(div);
+    setTimeout(()=>genQRPreviews(b.id, b.name),100);
+  });
+}
+
+async function genQRPreviews(id, batchName){
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById(`qrt${i}_${id}`);
+    if(!el)continue;
+    try{
+      const data=`QRPUZZLE:${batchName}:CODE${id}${i}:${Date.now()}`;
+      const canvas=document.createElement('canvas');
+      await QRCode.toCanvas(canvas, data, {width:56, margin:0, color:{dark:'#000',light:'#fff'}});
+      el.innerHTML=''; el.appendChild(canvas);
+    }catch(e){}
+  }
+}
+
+function viewBatchQRs(id){
+  const b=qrBatches.find(x=>x.id===id);
+  if(!b)return;
+  const modal=document.getElementById('qrViewModal');
+  document.getElementById('qrViewTitle').innerHTML=`<i class="fas fa-qrcode"></i> ${b.name} — QR Codes`;
+  const body=document.getElementById('qrViewBody');
+  body.innerHTML=`
+    <p style="color:var(--text2);margin-bottom:20px;font-size:0.85rem">${b.total} QR codes in this batch. ${b.rewards} are reward QRs.</p>
+    <div id="qrFullGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
+  `;
+  openModal('qrViewModal');
+  const grid=document.getElementById('qrFullGrid');
+  // Generate first 12 QR codes
+  const count=Math.min(b.total,12);
+  for(let i=0;i<count;i++){
+    const isReward=i<b.rewards;
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='text-align:center;';
+    wrapper.innerHTML=`
+      <div class="qr-full-display" id="qrFull_${id}_${i}"></div>
+      <div style="margin-top:6px">
+        <span class="badge ${isReward?'badge-yellow':'badge-cyan'}" style="font-size:0.65rem">${isReward?'REWARD':'BLANK'}</span>
+        <div style="font-size:0.65rem;color:var(--text3);font-family:'Space Mono',monospace;margin-top:3px">QR-${String(i+1).padStart(3,'0')}</div>
+      </div>
+    `;
+    grid.appendChild(wrapper);
+    const data=isReward?`REWARD:${b.name}:${i+1}:₹${500+i*50}`:`NOREWARD:${b.name}:${i+1}`;
+    const canvasEl=document.createElement('canvas');
+    QRCode.toCanvas(canvasEl, data, {width:70,margin:1,color:{dark:'#000',light:'#fff'}}).then(()=>{
+      const qrEl=document.getElementById(`qrFull_${id}_${i}`);
+      if(qrEl){qrEl.innerHTML='';qrEl.appendChild(canvasEl);}
+    }).catch(()=>{});
+  }
+  if(b.total>12){
+    const more=document.createElement('div');
+    more.style.cssText='text-align:center;padding:16px;color:var(--text3);font-size:0.8rem;grid-column:1/-1;';
+    more.textContent=`+ ${b.total-12} more QR codes. Export to view all.`;
+    grid.appendChild(more);
+  }
+}
+
+async function downloadBatch(id){
+  notify('Preparing batch export...','info');
+  const b=qrBatches.find(x=>x.id===id);
+  if(!b)return;
+  // Create CSV
+  let csv='QR_ID,Type,Data,Amount\n';
+  for(let i=0;i<b.total;i++){
+    const isR=i<b.rewards;
+    const amt=isR?500+i*50:0;
+    const data=isR?`REWARD:${b.name}:${i+1}:₹${amt}`:`NOREWARD:${b.name}:${i+1}`;
+    csv+=`QR-${String(i+1).padStart(3,'0')},${isR?'REWARD':'BLANK'},"${data}",${amt}\n`;
+  }
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`${b.name.replace(' ','_')}_export.csv`; a.click();
+  notify('Batch exported!','success');
+}
+
+// --- USER MANAGEMENT ---
+pages['admin_user-management'] = function(el){
+  const users=[
+    {id:1,name:'John Doe',email:'john@example.com',wallet:2500,kyc:'verified',status:'active',games:23},
+    {id:2,name:'Jane Smith',email:'jane@example.com',wallet:1800,kyc:'pending',status:'active',games:12},
+    {id:3,name:'Bob Johnson',email:'bob@example.com',wallet:3200,kyc:'not-submitted',status:'blocked',games:45},
+    {id:4,name:'Alice Brown',email:'alice@example.com',wallet:900,kyc:'verified',status:'active',games:8},
+    {id:5,name:'Charlie D',email:'charlie@example.com',wallet:4100,kyc:'verified',status:'active',games:67},
+  ];
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header">
+        <div class="content-card-title"><i class="fas fa-users"></i> Users (${users.length})</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" placeholder="Search..." style="padding:8px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;outline:none;width:180px">
+          <button class="btn btn-grad" onclick="notify('New user created!','success')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>User</th><th>Email</th><th>Wallet</th><th>Games</th><th>KYC</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${users.map(u=>`<tr>
+            <td><div style="display:flex;align-items:center;gap:10px">
+              <div class="user-row-avatar">${u.name[0]}</div>
+              <div>
+                <div style="font-weight:600;font-size:0.9rem">${u.name}</div>
+                <div style="font-size:0.72rem;color:var(--text3)">ID #${u.id}</div>
+              </div>
+            </div></td>
+            <td style="font-size:0.82rem">${u.email}</td>
+            <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--green)">₹${u.wallet.toLocaleString()}</td>
+            <td><span class="badge badge-purple">${u.games}</span></td>
+            <td><span class="badge ${u.kyc==='verified'?'badge-green':u.kyc==='pending'?'badge-yellow':'badge-cyan'}">${u.kyc}</span></td>
+            <td><span class="badge ${u.status==='active'?'badge-green':'badge-red'}">${u.status}</span></td>
+            <td><div class="action-btns">
+              <button class="btn btn-purple" onclick="notify('Viewing user #${u.id}','info')" title="View"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-cyan" onclick="notify('Editing user #${u.id}','info')" title="Edit"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-red" onclick="notify('User status toggled','warning')" title="Ban"><i class="fas fa-ban"></i></button>
+            </div></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+};
+
+// --- REPORTS ---
+pages['admin_reports'] = pages['manager-reports'] = function(el){
+  el.innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-val">₹2.5L</div><div class="stat-label">Total Revenue</div></div>
+      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-val">₹1.2L</div><div class="stat-label">Total Payouts</div></div>
+      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-val">52%</div><div class="stat-label">House Edge</div></div>
+      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">234</div><div class="stat-label">Active Today</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="content-card">
+        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-bar"></i> Daily Revenue</div></div>
+        <div class="chart-container" style="padding-bottom:30px">
+          ${buildBarChart([{l:'Mon',v:60,c:'var(--accent1)'},{l:'Tue',v:80,c:'var(--accent2)'},{l:'Wed',v:45,c:'var(--accent3)'},{l:'Thu',v:90,c:'var(--accent4)'},{l:'Fri',v:75,c:'var(--accent1)'},{l:'Sat',v:95,c:'var(--green)'},{l:'Sun',v:85,c:'var(--accent2)'}])}
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-pie"></i> Win vs Loss</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          ${[
+            {label:'Losses (Platform wins)',pct:62,color:'var(--accent1)'},
+            {label:'Player wins',pct:38,color:'var(--green)'},
+          ].map(r=>`
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:0.85rem;color:var(--text2)">${r.label}</span>
+                <span style="font-family:'Bebas Neue',cursive;font-size:1rem;color:${r.color}">${r.pct}%</span>
+              </div>
+              <div class="progress-bar-wrap"><div style="height:100%;width:${r.pct}%;background:${r.color};border-radius:3px;transition:width 0.5s"></div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+// --- MANAGER DASHBOARD ---
+pages['manager_dashboard'] = function(el){
+  el.innerHTML=`
+    <div class="alert-banner"><i class="fas fa-lock"></i> You have limited permissions as configured by the Admin.</div>
+    <div class="stats-grid">
+      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">1,234</div><div class="stat-label">Total Users</div></div>
+      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-id-card"></i></div><div class="stat-val">45</div><div class="stat-label">KYC Pending</div></div>
+      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-val">12</div><div class="stat-label">Withdrawals Pending</div></div>
+    </div>
+    <div class="content-card">
+      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-tasks"></i> Pending Tasks</div></div>
+      ${[
+        {title:'KYC Verification',sub:'23 users awaiting approval',badge:'badge-red',btn:'Review'},
+        {title:'Withdrawal Requests',sub:'12 requests pending processing',badge:'badge-yellow',btn:'Process'},
+        {title:'Support Tickets',sub:'5 open tickets need response',badge:'badge-purple',btn:'Respond'},
+        {title:'Account Reports',sub:'3 users reported for review',badge:'badge-red',btn:'Review'},
+      ].map(t=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:8px">
+          <div>
+            <div style="font-weight:700">${t.title}</div>
+            <div style="font-size:0.8rem;color:var(--text3);margin-top:2px">${t.sub}</div>
+          </div>
+          <button class="btn btn-purple" onclick="notify('Opening ${t.title}...','info')">${t.btn}</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+};
+
+pages['manager_manager-kyc'] = function(el){
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-id-card"></i> KYC Approval Queue</div><span class="badge badge-red">23 Pending</span></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>User</th><th>Submitted</th><th>Document</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[
+            ['Rahul S.','Jan 14','Aadhaar Card'],
+            ['Priya M.','Jan 13','PAN Card'],
+            ['Amit K.','Jan 13','Voter ID'],
+          ].map(r=>`<tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="user-row-avatar" style="width:30px;height:30px;font-size:0.8rem">${r[0][0]}</div><span>${r[0]}</span></div></td>
+            <td style="font-size:0.8rem;color:var(--text3)">${r[1]}</td>
+            <td>${r[2]}</td>
+            <td><span class="badge badge-yellow">PENDING</span></td>
+            <td><div class="action-btns">
+              <button class="btn btn-green" onclick="notify('KYC Approved!','success')"><i class="fas fa-check"></i> Approve</button>
+              <button class="btn btn-red" onclick="notify('KYC Rejected','error')"><i class="fas fa-times"></i> Reject</button>
+            </div></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+};
+
+pages['manager_manager-withdrawals'] = function(el){
+  el.innerHTML=`
+    <div class="content-card">
+      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</div><span class="badge badge-yellow">12 Pending</span></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Requested</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[
+            ['John Doe','₹2,000','UPI','Jan 15'],
+            ['Jane Smith','₹1,500','Bank','Jan 14'],
+            ['Alice Brown','₹3,000','UPI','Jan 14'],
+          ].map(r=>`<tr>
+            <td>${r[0]}</td>
+            <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--accent4)">${r[1]}</td>
+            <td><span class="badge badge-cyan">${r[2]}</span></td>
+            <td style="font-size:0.8rem;color:var(--text3)">${r[3]}</td>
+            <td><div class="action-btns">
+              <button class="btn btn-green" onclick="notify('Payment processed!','success')"><i class="fas fa-check"></i> Approve</button>
+              <button class="btn btn-red" onclick="notify('Request rejected','error')"><i class="fas fa-times"></i> Reject</button>
+            </div></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  `;
+};
+
+// ======== MODAL FUNCTIONS ========
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+window.onclick=e=>{
+  document.querySelectorAll('.modal-backdrop.open').forEach(m=>{
+    if(e.target===m) m.classList.remove('open');
+  });
+};
+
+function toggleRewardType(){
+  const t=document.getElementById('rewardType').value;
+  document.getElementById('fixedDiv').style.display=t==='fixed'?'block':'none';
+  document.getElementById('randomDiv').style.display=t==='random'?'block':'none';
+}
+
+function generateBatch(){
+  const name=document.getElementById('batchName').value||'New Batch';
+  const total=parseInt(document.getElementById('totalQRs').value)||20;
+  const rewards=parseInt(document.getElementById('rewardQRs').value)||10;
+  const type=document.getElementById('rewardType').value;
+  const rewardStr=type==='fixed'?`₹${document.getElementById('fixedAmt').value} Fixed`:`₹${document.getElementById('minAmt').value}-₹${document.getElementById('maxAmt').value}`;
+  showLoader();
+  setTimeout(()=>{
+    hideLoader();
+    closeModal('batchModal');
+    const id=qrBatches.length+1;
+    qrBatches.unshift({id,name,total,rewards,used:0,status:'active',created:'Jan '+new Date().getDate(),reward:rewardStr});
+    notify('QR Batch "'+name+'" created with '+total+' codes!','success');
+    if(document.getElementById('batchGrid')) renderBatches();
+  },1500);
+}
+
+// ======== UTILITIES ========
+function notify(msg, type='info'){
+  const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
+  const n=document.getElementById('notifications');
+  const d=document.createElement('div');
+  d.className='notif '+type;
+  d.innerHTML=`<i class="fas ${icons[type]} notif-icon"></i><div class="notif-msg">${msg}</div>`;
+  n.appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(100%)';d.style.transition='all 0.3s';setTimeout(()=>n.removeChild(d),300)},3500);
+}
+function showLoader(){document.getElementById('loader').classList.add('show');}
+function hideLoader(){document.getElementById('loader').classList.remove('show');}
+function logout(){
+  if(confirm('Logout from the portal?')){
+    currentRole=null; currentUser=null;
+    clearInterval(gameTimer);
+    document.getElementById('app').style.display='none';
+    document.getElementById('loginWrap').style.display='flex';
+    document.getElementById('loginForm').reset();
+    notify('Logged out successfully','info');
+  }
+}
+
+// Mobile toggle
+document.getElementById('mobileToggle').onclick=()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+};
+
+// Page routing for roles
+const roleProxy = new Proxy(pages, {
+  get(target, key){ return target[currentRole+'_'+key] || target[key]; }
+});
+
+// Override navigate to handle role-specific pages
+const _nav=navigate;
+window.navigate=function(page){
+  const fn=pages[currentRole+'_'+page]||pages[page];
+  currentPage=page;
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+  const titles={'dashboard':'Dashboard','game':'Play Game','wallet':'My Wallet','history':'Game History','achievements':'Achievements','profile':'Profile','support':'Support','qr-management':'QR Management','user-management':'User Management','manager-management':'Manager Management','wallet-control':'Wallet Control','game-config':'Game Config','reports':'Reports & Analytics','audit':'Audit Logs','manager-users':'Users','manager-kyc':'KYC Approval','manager-withdrawals':'Withdrawals','manager-reports':'Reports'};
+  document.getElementById('topbarTitle').textContent=(titles[page]||page).toUpperCase();
+  document.getElementById('sidebar').classList.remove('open');
+  const pc=document.getElementById('pageContainer');
+  pc.innerHTML='';
+  if(fn) fn(pc);
+  else pc.innerHTML='<div class="content-card" style="text-align:center;padding:60px 20px"><div style="font-size:3rem;margin-bottom:16px">🚧</div><h3 style="color:var(--text2)">Coming Soon</h3></div>';
+};
+</script>
 </body>
 </html>
