@@ -1,1868 +1,1235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR PUZZLE — HORROR EDITION</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LuxeJwel – Interactive Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg: #050508;
-  --bg2: #0d0d16;
-  --bg3: #12121f;
-  --card: #0f0f1a;
-  --card2: #161625;
-  --border: #2a2a45;
-  --border2: #3a3a60;
-  --accent1: #c84bff;
-  --accent2: #ff3366;
-  --accent3: #00e5ff;
-  --accent4: #ffe600;
-  --green: #00ff88;
-  --text: #e8e8f0;
-  --text2: #9090b0;
-  --text3: #5a5a80;
-  --glow1: rgba(200,75,255,0.15);
-  --glow2: rgba(255,51,102,0.15);
-  --glow3: rgba(0,229,255,0.12);
+:root{
+  --gold:#C9A84C;--dark-gold:#8B6914;--light-gold:#F5DEB3;--cream:#FFFDF7;
+  --dark:#1A1208;--charcoal:#2C2C2C;--gray:#6B6059;--light:#F0EDE8;
+  --white:#FFFFFF;--red:#E53E3E;--green:#2D6A4F;--blue:#2B6CB0;
+  --sidebar-w:240px;--topbar-h:60px;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body {
-  font-family: 'Rajdhani', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--charcoal);overflow:hidden;height:100vh;}
 
-/* === GRID BACKGROUND === */
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background-image:
-    linear-gradient(rgba(200,75,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,75,255,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events:none; z-index:0;
-}
+/* ── NAV TABS ── */
+#main-nav{display:flex;background:var(--dark);height:48px;align-items:center;padding:0 20px;gap:4px;position:fixed;top:0;left:0;right:0;z-index:1000;}
+#main-nav .brand{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:22px;font-weight:700;letter-spacing:2px;margin-right:20px;white-space:nowrap;}
+.nav-tab{padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:500;color:#ccc;transition:all .2s;border:1px solid transparent;white-space:nowrap;}
+.nav-tab:hover{background:rgba(201,168,76,.15);color:var(--gold);}
+.nav-tab.active{background:var(--gold);color:var(--dark);font-weight:600;}
+.nav-sep{width:1px;height:24px;background:rgba(255,255,255,.1);margin:0 6px;}
 
-/* === SCANLINE OVERLAY === */
-body::after {
-  content:'';
-  position:fixed; inset:0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
-  pointer-events:none; z-index:0;
-  animation: scan 8s linear infinite;
-}
-@keyframes scan {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100px; }
-}
+/* ── PANELS ── */
+.panel{display:none;position:fixed;top:48px;left:0;right:0;bottom:0;}
+.panel.active{display:flex;}
 
-/* === PARTICLES === */
-#particles-canvas { position:fixed; inset:0; pointer-events:none; z-index:1; }
+/* ════════════════════════════════════
+   USER WEBSITE PANEL
+════════════════════════════════════ */
+#panel-user{flex-direction:column;background:var(--cream);}
+.user-topbar{height:56px;background:var(--white);border-bottom:1px solid #e8e2d8;display:flex;align-items:center;padding:0 30px;gap:20px;box-shadow:0 1px 8px rgba(0,0,0,.06);}
+.user-topbar .logo{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--dark);font-weight:700;letter-spacing:3px;}
+.user-topbar .logo span{color:var(--gold);}
+.user-search{flex:1;max-width:380px;margin:0 auto;position:relative;}
+.user-search input{width:100%;padding:8px 16px 8px 36px;border:1px solid #ddd;border-radius:20px;font-size:13px;outline:none;background:#f9f7f4;}
+.user-search::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;}
+.topbar-icons{display:flex;gap:16px;align-items:center;}
+.topbar-icons .icon-btn{cursor:pointer;font-size:18px;position:relative;}
+.icon-btn .badge{position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--dark);font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.user-nav{background:var(--dark);display:flex;justify-content:center;gap:32px;padding:0 30px;}
+.user-nav a{color:#ccc;font-size:12px;font-weight:500;padding:10px 0;cursor:pointer;letter-spacing:.5px;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;}
+.user-nav a:hover,.user-nav a.active{color:var(--gold);border-bottom-color:var(--gold);}
+.user-content{flex:1;overflow-y:auto;padding:0;}
+.user-screen{display:none;}
+.user-screen.active{display:block;}
 
-/* === LOGIN === */
-#loginWrap {
-  position:relative; z-index:10;
-  min-height:100vh;
-  display:flex; align-items:center; justify-content:center;
-  padding:20px;
-}
-.login-card {
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: 20px;
-  padding: 50px 40px;
-  width: 100%; max-width: 460px;
-  position:relative; overflow:hidden;
-  box-shadow: 0 0 60px rgba(200,75,255,0.2), 0 0 120px rgba(255,51,102,0.1);
-}
-.login-card::before {
-  content:'';
-  position:absolute; top:-2px; left:10%; width:80%; height:2px;
-  background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
-}
-.login-card::after {
-  content:'';
-  position:absolute; bottom:-2px; left:10%; width:80%; height:2px;
-  background: linear-gradient(90deg, transparent, var(--accent2), var(--accent1), transparent);
-}
-.logo-wrap {
-  text-align:center; margin-bottom:40px;
-}
-.logo-skull {
-  font-size:60px; line-height:1;
-  filter: drop-shadow(0 0 20px var(--accent1));
-  animation: float 3s ease-in-out infinite;
-  display:block; margin-bottom:12px;
-}
-@keyframes float {
-  0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);}
-}
-.logo-title {
-  font-family:'Creepster', cursive;
-  font-size:2.8rem; letter-spacing:3px;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  text-shadow: none;
-  line-height:1;
-}
-.logo-sub {
-  font-family:'Space Mono', monospace;
-  font-size:0.7rem; color:var(--text3); letter-spacing:4px;
-  margin-top:6px;
-}
+/* Hero */
+.hero{background:linear-gradient(135deg,#1A1208 0%,#2C1F0A 40%,#1A1208 100%);color:var(--white);padding:60px 40px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1.1;margin-bottom:16px;}
+.hero h1 span{color:var(--gold);}
+.hero p{font-size:15px;color:#ccc;margin-bottom:30px;max-width:480px;margin-left:auto;margin-right:auto;}
+.btn-gold{background:var(--gold);color:var(--dark);padding:12px 30px;border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;border:none;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.btn-gold:hover{background:var(--dark-gold);color:var(--white);}
+.btn-outline{background:transparent;color:var(--gold);padding:12px 30px;border-radius:3px;font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--gold);letter-spacing:1px;text-transform:uppercase;margin-left:12px;}
 
-.role-tabs {
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:8px; margin-bottom:28px;
-}
-.role-tab {
-  padding:10px 8px; border-radius:10px;
-  border:1px solid var(--border);
-  background:var(--bg2);
-  color:var(--text2); font-family:'Rajdhani',sans-serif;
-  font-size:0.85rem; font-weight:600; letter-spacing:1px;
-  cursor:pointer; transition:all 0.2s;
-  text-align:center;
-}
-.role-tab:hover { border-color:var(--border2); color:var(--text); }
-.role-tab.active {
-  background: linear-gradient(135deg, rgba(200,75,255,0.2), rgba(255,51,102,0.2));
-  border-color:var(--accent1); color:var(--accent1);
-  box-shadow: 0 0 12px rgba(200,75,255,0.3);
-}
-.role-tab i { display:block; font-size:1.2rem; margin-bottom:4px; }
+/* Product Grid */
+.section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;text-align:center;margin:40px 0 8px;}
+.section-sub{text-align:center;color:var(--gray);font-size:13px;margin-bottom:28px;}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:0 30px 30px;}
+.prod-card{background:var(--white);border-radius:4px;overflow:hidden;cursor:pointer;transition:all .25s;border:1px solid #ede8e0;}
+.prod-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.12);}
+.prod-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:60px;background:linear-gradient(135deg,#faf7f2,#f0ebe0);}
+.prod-info{padding:14px;}
+.prod-name{font-size:13px;font-weight:500;margin-bottom:4px;color:var(--charcoal);}
+.prod-meta{font-size:11px;color:var(--gray);margin-bottom:8px;}
+.prod-price{font-size:16px;font-weight:600;color:var(--dark);}
+.prod-price .old{font-size:11px;color:var(--gray);text-decoration:line-through;margin-left:6px;font-weight:400;}
+.prod-price .disc{font-size:11px;color:var(--green);margin-left:6px;}
+.prod-actions{display:flex;gap:8px;margin-top:10px;}
+.prod-actions button{flex:1;padding:7px;border-radius:3px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.5px;}
+.btn-cart{background:var(--dark);color:var(--white);border:none;}
+.btn-wish{background:transparent;color:var(--dark);border:1px solid var(--dark);}
 
-.field-group { margin-bottom:20px; position:relative; }
-.field-group label {
-  display:block; font-size:0.75rem; font-weight:700;
-  letter-spacing:2px; color:var(--text3); margin-bottom:8px;
-  text-transform:uppercase;
-}
-.field-group input {
-  width:100%; padding:14px 18px;
-  background:var(--bg2); border:1px solid var(--border);
-  border-radius:10px; color:var(--text);
-  font-family:'Rajdhani',sans-serif; font-size:1rem;
-  transition:all 0.2s; outline:none;
-}
-.field-group input:focus {
-  border-color:var(--accent1);
-  box-shadow:0 0 0 3px rgba(200,75,255,0.1);
-}
-.field-group input::placeholder { color:var(--text3); }
+/* PDP */
+.pdp{padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:1100px;margin:0 auto;}
+.pdp-gallery{background:linear-gradient(135deg,#faf7f2,#f0ebe0);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:100px;min-height:360px;}
+.pdp-info h2{font-family:'Cormorant Garamond',serif;font-size:30px;margin-bottom:8px;}
+.pdp-price{font-size:28px;font-weight:600;color:var(--dark);margin:16px 0 8px;}
+.pdp-spec{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;padding:16px;background:#f9f7f4;border-radius:4px;}
+.pdp-spec-item label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
+.pdp-spec-item p{font-size:13px;font-weight:500;margin-top:2px;}
+.pdp-btns{display:flex;gap:12px;margin-top:20px;}
+.pdp-btns button{flex:1;padding:14px;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.5px;}
 
-.btn-primary {
-  width:100%; padding:16px;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
-  border:none; border-radius:12px; cursor:pointer;
-  font-family:'Bebas Neue', cursive; font-size:1.3rem;
-  letter-spacing:3px; color:white;
-  transition:all 0.3s; position:relative; overflow:hidden;
-  box-shadow: 0 4px 20px rgba(200,75,255,0.4);
-}
-.btn-primary:hover {
-  transform:translateY(-2px);
-  box-shadow:0 8px 30px rgba(200,75,255,0.5);
-}
-.btn-primary:active { transform:translateY(0); }
-.btn-primary::before {
-  content:'';
-  position:absolute; inset:0;
-  background:linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
-  transform:translateX(-100%); transition:transform 0.5s;
-}
-.btn-primary:hover::before { transform:translateX(100%); }
+/* Cart */
+.cart-layout{display:grid;grid-template-columns:1fr 360px;gap:24px;padding:30px;max-width:1100px;margin:0 auto;}
+.cart-items{background:var(--white);border-radius:6px;padding:20px;border:1px solid #ede8e0;}
+.cart-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #f0ece6;}
+.cart-item:last-child{border:none;}
+.cart-item-img{width:80px;height:80px;border-radius:4px;background:linear-gradient(135deg,#faf7f2,#f0ebe0);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.cart-item-info{flex:1;}
+.cart-item-info h4{font-size:14px;margin-bottom:4px;}
+.cart-item-info p{font-size:12px;color:var(--gray);}
+.qty-ctrl{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.qty-btn{width:26px;height:26px;border:1px solid #ddd;background:var(--white);border-radius:3px;cursor:pointer;font-size:14px;}
+.cart-summary{background:var(--white);border-radius:6px;padding:20px;height:fit-content;border:1px solid #ede8e0;}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;}
+.summary-row.total{font-weight:700;font-size:16px;padding-top:10px;border-top:1px solid #eee;margin-top:5px;}
 
-.hint-text {
-  text-align:center; margin-top:20px;
-  font-size:0.75rem; color:var(--text3);
-  font-family:'Space Mono',monospace; line-height:1.8;
-}
-.hint-text span { color:var(--accent3); }
+/* User Dashboard */
+.user-dash{padding:30px;max-width:1100px;margin:0 auto;}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.dash-card{background:var(--white);border-radius:6px;padding:20px;border:1px solid #ede8e0;}
+.dash-card .icon{font-size:28px;margin-bottom:8px;}
+.dash-card h3{font-size:20px;font-weight:700;margin-bottom:2px;}
+.dash-card p{font-size:12px;color:var(--gray);}
+.orders-list{background:var(--white);border-radius:6px;border:1px solid #ede8e0;overflow:hidden;}
+.orders-header{padding:16px 20px;font-weight:600;font-size:14px;border-bottom:1px solid #f0ece6;display:flex;justify-content:space-between;}
+.order-row{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid #f9f7f4;font-size:13px;}
+.order-row:last-child{border:none;}
+.status-pill{padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.s-delivered{background:#d1fae5;color:#065f46;}
+.s-shipped{background:#dbeafe;color:#1e40af;}
+.s-processing{background:#fef3c7;color:#92400e;}
+.s-placed{background:#f3e8ff;color:#5b21b6;}
 
-/* === LAYOUT === */
-#app { display:none; position:relative; z-index:10; min-height:100vh; }
+/* ════════════════════════════════════
+   ADMIN PANEL
+════════════════════════════════════ */
+#panel-admin{background:#f4f6f9;}
+.admin-sidebar{width:var(--sidebar-w);background:var(--dark);height:100%;display:flex;flex-direction:column;flex-shrink:0;}
+.admin-logo{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.admin-logo .name{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:20px;font-weight:700;letter-spacing:2px;}
+.admin-logo .role{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.sidebar-menu{flex:1;padding:12px 0;overflow-y:auto;}
+.menu-section{font-size:9px;color:#666;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px 6px;font-weight:600;}
+.menu-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;transition:all .2s;color:#bbb;font-size:13px;border-left:3px solid transparent;}
+.menu-item:hover{background:rgba(201,168,76,.1);color:var(--gold);}
+.menu-item.active{background:rgba(201,168,76,.15);color:var(--gold);border-left-color:var(--gold);}
+.menu-item .icon{font-size:16px;width:20px;text-align:center;}
+.menu-item .badge{margin-left:auto;background:var(--red);color:var(--white);font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.admin-topbar{height:var(--topbar-h);background:var(--white);border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:0 24px;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.admin-topbar h2{font-size:16px;font-weight:600;flex:1;}
+.admin-topbar .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--dark-gold));color:var(--dark);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.admin-content{flex:1;overflow-y:auto;padding:24px;}
+.admin-screen{display:none;}
+.admin-screen.active{display:block;}
 
-.sidebar {
-  position:fixed; left:0; top:0; bottom:0;
-  width:260px;
-  background:var(--card);
-  border-right:1px solid var(--border);
-  display:flex; flex-direction:column;
-  overflow-y:auto; z-index:100;
-  transition:transform 0.3s;
-}
-.sidebar-logo {
-  padding:24px 20px 20px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:12px;
-}
-.sidebar-logo .skull { font-size:28px; filter:drop-shadow(0 0 8px var(--accent1)); }
-.sidebar-logo-text h2 {
-  font-family:'Creepster',cursive; font-size:1.4rem; letter-spacing:2px;
-  background:linear-gradient(135deg, var(--accent1), var(--accent2));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-}
-.sidebar-logo-text small { font-size:0.65rem; color:var(--text3); letter-spacing:3px; font-family:'Space Mono',monospace; }
+/* Stats Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--white);border-radius:8px;padding:20px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:16px;}
+.stat-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.si-gold{background:#fef3c7;}
+.si-blue{background:#dbeafe;}
+.si-green{background:#d1fae5;}
+.si-purple{background:#ede9fe;}
+.stat-info h3{font-size:22px;font-weight:700;}
+.stat-info p{font-size:12px;color:#718096;margin-top:2px;}
+.stat-info .trend{font-size:11px;color:var(--green);font-weight:600;margin-top:4px;}
+.trend-down{color:var(--red) !important;}
 
-.sidebar-user {
-  margin:16px 16px 0;
-  padding:14px; border-radius:12px;
-  background:var(--bg2); border:1px solid var(--border);
-  display:flex; align-items:center; gap:12px;
-}
-.avatar {
-  width:40px; height:40px; border-radius:12px; flex-shrink:0;
-  background:linear-gradient(135deg, var(--accent1), var(--accent2));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Bebas Neue',cursive; font-size:1.2rem;
-  box-shadow:0 0 12px rgba(200,75,255,0.4);
-}
-.avatar-info .name { font-weight:700; font-size:0.95rem; }
-.avatar-info .email { font-size:0.7rem; color:var(--text3); font-family:'Space Mono',monospace; word-break:break-all; }
+/* Tables */
+.admin-table-wrap{background:var(--white);border-radius:8px;border:1px solid #e2e8f0;overflow:hidden;margin-bottom:20px;}
+.table-header{padding:16px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
+.table-header h3{font-size:14px;font-weight:600;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{background:#f8fafc;font-size:11px;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:.5px;padding:10px 16px;text-align:left;border-bottom:1px solid #e2e8f0;}
+.tbl td{padding:12px 16px;font-size:13px;border-bottom:1px solid #f7f7f7;}
+.tbl tr:last-child td{border:none;}
+.tbl tr:hover td{background:#fafafa;}
+.action-btn{padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;}
+.btn-edit{background:#ebf8ff;color:#2b6cb0;}
+.btn-del{background:#fff5f5;color:#e53e3e;margin-left:4px;}
+.btn-view{background:#f0fff4;color:#276749;margin-left:4px;}
+.btn-primary{background:var(--gold);color:var(--dark);padding:8px 16px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:none;letter-spacing:.5px;}
+.btn-secondary{background:var(--white);color:var(--charcoal);padding:8px 16px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #ddd;margin-right:8px;}
 
-.nav { padding:16px 12px; flex:1; }
-.nav-section { margin-bottom:20px; }
-.nav-section-title {
-  font-size:0.65rem; letter-spacing:3px; color:var(--text3);
-  font-weight:700; padding:0 8px 8px; text-transform:uppercase;
-}
-.nav-link {
-  display:flex; align-items:center; gap:12px;
-  padding:11px 12px; border-radius:10px;
-  color:var(--text2); text-decoration:none; cursor:pointer;
-  font-size:0.95rem; font-weight:600; letter-spacing:0.5px;
-  transition:all 0.2s; border:1px solid transparent;
-  margin-bottom:3px;
-}
-.nav-link:hover { background:var(--bg2); color:var(--text); border-color:var(--border); }
-.nav-link.active {
-  background:linear-gradient(90deg, rgba(200,75,255,0.15), transparent);
-  color:var(--accent1); border-color:rgba(200,75,255,0.3);
-}
-.nav-link i { width:18px; text-align:center; font-size:0.9rem; }
-.nav-badge {
-  margin-left:auto; padding:2px 8px; border-radius:20px;
-  font-size:0.7rem; font-weight:700; font-family:'Space Mono',monospace;
-}
-.nav-badge.red { background:rgba(255,51,102,0.2); color:var(--accent2); }
-.nav-badge.green { background:rgba(0,255,136,0.15); color:var(--green); }
-.nav-badge.purple { background:rgba(200,75,255,0.15); color:var(--accent1); }
+/* CSV Upload */
+.csv-drop{border:2px dashed var(--gold);border-radius:8px;padding:40px;text-align:center;background:#fffdf5;margin-bottom:20px;cursor:pointer;transition:all .2s;}
+.csv-drop:hover{background:#fef9e7;}
+.csv-drop .icon{font-size:48px;margin-bottom:12px;}
+.csv-drop h3{font-size:16px;font-weight:600;margin-bottom:6px;}
+.csv-drop p{font-size:13px;color:var(--gray);}
+.progress-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin:16px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--dark-gold));border-radius:4px;transition:width .5s;}
+.validation-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:6px;margin-bottom:6px;font-size:12px;}
+.vr-ok{background:#f0fff4;color:#276749;}
+.vr-err{background:#fff5f5;color:#e53e3e;}
 
-.sidebar-footer {
-  padding:16px 12px;
-  border-top:1px solid var(--border);
-}
-.logout-btn {
-  width:100%; padding:10px; border-radius:10px;
-  background:rgba(255,51,102,0.1); border:1px solid rgba(255,51,102,0.2);
-  color:var(--accent2); cursor:pointer;
-  font-family:'Rajdhani',sans-serif; font-size:0.9rem; font-weight:700;
-  letter-spacing:1px; transition:all 0.2s;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-}
-.logout-btn:hover { background:rgba(255,51,102,0.2); box-shadow:0 0 12px rgba(255,51,102,0.2); }
+/* Manager Panel */
+.manager-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.manager-card{background:var(--white);border-radius:8px;padding:20px;border:1px solid #e2e8f0;}
+.manager-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:var(--white);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.perm-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:12px;}
+.toggle{width:36px;height:20px;background:#e2e8f0;border-radius:10px;cursor:pointer;position:relative;transition:.2s;flex-shrink:0;}
+.toggle.on{background:var(--gold);}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--white);border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on::after{left:18px;}
 
-.main { margin-left:260px; min-height:100vh; padding:28px; }
+/* Charts placeholder */
+.chart-placeholder{background:var(--white);border-radius:8px;border:1px solid #e2e8f0;padding:20px;margin-bottom:20px;}
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:12px;}
+.chart-bar{flex:1;background:linear-gradient(to top,var(--gold),#f0c55a);border-radius:4px 4px 0 0;min-height:10px;position:relative;cursor:pointer;transition:.2s;}
+.chart-bar:hover{opacity:.85;}
+.chart-bar::after{content:attr(data-val);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:600;color:var(--gray);white-space:nowrap;}
+.chart-label{display:flex;justify-content:space-around;margin-top:6px;}
+.chart-label span{font-size:10px;color:var(--gray);flex:1;text-align:center;}
 
-/* === TOPBAR === */
-.topbar {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:28px; padding:16px 24px;
-  background:var(--card); border:1px solid var(--border);
-  border-radius:16px;
-}
-.topbar-title { font-family:'Bebas Neue',cursive; font-size:1.6rem; letter-spacing:2px; color:var(--text); }
-.topbar-right { display:flex; align-items:center; gap:12px; }
-.topbar-btn {
-  padding:8px 16px; border-radius:8px; cursor:pointer;
-  font-family:'Rajdhani',sans-serif; font-size:0.85rem; font-weight:700;
-  letter-spacing:1px; transition:all 0.2s; border:1px solid var(--border2);
-  background:var(--bg2); color:var(--text2);
-  display:flex; align-items:center; gap:6px;
-}
-.topbar-btn:hover { color:var(--text); border-color:var(--accent1); }
+/* ════════════════════════════════════
+   MANAGER PANEL
+════════════════════════════════════ */
+#panel-manager{background:#f4f6f9;}
+/* reuse admin styles */
 
-/* === STAT CARDS === */
-.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
+/* ════════════════════════════════════
+   APP MOCKUP
+════════════════════════════════════ */
+#panel-app{background:#1a1a2e;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;overflow-y:auto;padding:20px;}
+.phone-frame{width:280px;height:540px;background:var(--dark);border-radius:36px;border:8px solid #333;overflow:hidden;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);flex-shrink:0;}
+.phone-screen{height:100%;overflow:hidden;background:var(--cream);}
+.phone-label{color:var(--gold);text-align:center;font-size:12px;font-weight:600;margin-top:12px;letter-spacing:1px;text-transform:uppercase;}
+.app-topbar{background:var(--dark);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.app-topbar .logo{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:18px;font-weight:700;letter-spacing:2px;}
+.app-search{background:#f8f6f2;margin:12px;border-radius:20px;padding:8px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:#999;}
+.cat-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 12px 10px;scrollbar-width:none;}
+.cat-chip{background:var(--white);border:1px solid #e0d8cc;border-radius:16px;padding:6px 14px;font-size:11px;white-space:nowrap;cursor:pointer;transition:.2s;}
+.cat-chip.active,.cat-chip:hover{background:var(--dark);color:var(--gold);border-color:var(--dark);}
+.app-prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px;}
+.app-card{background:var(--white);border-radius:8px;overflow:hidden;border:1px solid #ede8e0;}
+.app-card-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#faf7f2,#f0ebe0);}
+.app-card-info{padding:8px;}
+.app-card-info p{font-size:10px;color:var(--gray);}
+.app-card-info h4{font-size:11px;font-weight:600;margin-bottom:2px;}
+.app-card-info .price{font-size:12px;font-weight:700;color:var(--dark);}
+.app-bottom-nav{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid #ede8e0;display:flex;justify-content:space-around;padding:8px 0 4px;}
+.app-nav-item{display:flex;flex-direction:column;align-items:center;font-size:9px;color:#999;cursor:pointer;gap:3px;}
+.app-nav-item.active{color:var(--gold);}
+.app-nav-item .ni{font-size:18px;}
 
-.stat-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:16px; padding:22px 20px; position:relative; overflow:hidden;
-  transition:all 0.3s;
-}
-.stat-card:hover { transform:translateY(-4px); border-color:var(--border2); }
-.stat-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-}
-.stat-card.c1::before { background:linear-gradient(90deg, var(--accent1), transparent); }
-.stat-card.c2::before { background:linear-gradient(90deg, var(--accent2), transparent); }
-.stat-card.c3::before { background:linear-gradient(90deg, var(--accent3), transparent); }
-.stat-card.c4::before { background:linear-gradient(90deg, var(--accent4), transparent); }
-.stat-icon {
-  width:44px; height:44px; border-radius:12px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.1rem; margin-bottom:14px;
-}
-.stat-card.c1 .stat-icon { background:rgba(200,75,255,0.15); color:var(--accent1); }
-.stat-card.c2 .stat-icon { background:rgba(255,51,102,0.15); color:var(--accent2); }
-.stat-card.c3 .stat-icon { background:rgba(0,229,255,0.15); color:var(--accent3); }
-.stat-card.c4 .stat-icon { background:rgba(255,230,0,0.12); color:var(--accent4); }
-.stat-val { font-family:'Bebas Neue',cursive; font-size:2rem; letter-spacing:1px; line-height:1; }
-.stat-label { font-size:0.8rem; color:var(--text3); letter-spacing:1.5px; font-weight:700; margin-top:4px; text-transform:uppercase; }
+/* Screen 2 – Product Detail App */
+.app-pdp{padding:0;}
+.app-pdp-hero{height:180px;background:linear-gradient(135deg,#faf7f2,#f0ebe0);display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;}
+.app-pdp-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:var(--dark);font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;}
+.app-pdp-info{padding:14px;}
+.app-pdp-info h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+.app-pdp-info .price{font-size:20px;font-weight:700;color:var(--dark);margin-bottom:8px;}
+.app-pdp-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f9f7f4;padding:10px;border-radius:6px;margin-bottom:10px;}
+.app-pdp-specs .spec label{font-size:8px;color:var(--gray);text-transform:uppercase;}
+.app-pdp-specs .spec p{font-size:11px;font-weight:600;margin-top:1px;}
+.app-add-btn{background:var(--dark);color:var(--gold);border:none;border-radius:8px;padding:10px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;margin:0 12px;width:calc(100% - 24px);}
 
-/* === CONTENT CARD === */
-.content-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:16px; padding:24px; margin-bottom:20px;
-}
-.content-card-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:20px; padding-bottom:16px;
-  border-bottom:1px solid var(--border);
-}
-.content-card-title {
-  font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:2px;
-  display:flex; align-items:center; gap:10px;
-}
-.content-card-title i { color:var(--accent1); }
-
-/* === TABLE === */
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; }
-th {
-  padding:10px 14px; text-align:left;
-  font-size:0.7rem; letter-spacing:2px; font-weight:700;
-  color:var(--text3); border-bottom:1px solid var(--border);
-  text-transform:uppercase;
-}
-td {
-  padding:12px 14px; border-bottom:1px solid rgba(42,42,69,0.5);
-  font-size:0.9rem; font-weight:500;
-}
-tr:hover td { background:rgba(200,75,255,0.04); }
-tr:last-child td { border-bottom:none; }
-
-/* === BADGES === */
-.badge {
-  display:inline-flex; align-items:center; gap:4px;
-  padding:3px 10px; border-radius:6px;
-  font-size:0.72rem; font-weight:700; letter-spacing:1px;
-}
-.badge-green { background:rgba(0,255,136,0.12); color:var(--green); border:1px solid rgba(0,255,136,0.2); }
-.badge-red { background:rgba(255,51,102,0.12); color:var(--accent2); border:1px solid rgba(255,51,102,0.2); }
-.badge-purple { background:rgba(200,75,255,0.12); color:var(--accent1); border:1px solid rgba(200,75,255,0.2); }
-.badge-yellow { background:rgba(255,230,0,0.1); color:var(--accent4); border:1px solid rgba(255,230,0,0.2); }
-.badge-cyan { background:rgba(0,229,255,0.1); color:var(--accent3); border:1px solid rgba(0,229,255,0.2); }
-
-/* === BUTTONS === */
-.btn {
-  padding:8px 16px; border-radius:8px; cursor:pointer;
-  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.85rem;
-  letter-spacing:0.8px; border:1px solid; transition:all 0.2s;
-  display:inline-flex; align-items:center; gap:6px;
-}
-.btn-purple { background:rgba(200,75,255,0.1); border-color:rgba(200,75,255,0.3); color:var(--accent1); }
-.btn-purple:hover { background:rgba(200,75,255,0.2); box-shadow:0 0 12px rgba(200,75,255,0.3); }
-.btn-red { background:rgba(255,51,102,0.1); border-color:rgba(255,51,102,0.3); color:var(--accent2); }
-.btn-red:hover { background:rgba(255,51,102,0.2); }
-.btn-green { background:rgba(0,255,136,0.1); border-color:rgba(0,255,136,0.2); color:var(--green); }
-.btn-green:hover { background:rgba(0,255,136,0.2); }
-.btn-cyan { background:rgba(0,229,255,0.1); border-color:rgba(0,229,255,0.2); color:var(--accent3); }
-.btn-cyan:hover { background:rgba(0,229,255,0.2); }
-.btn-lg {
-  padding:14px 28px; font-size:1rem; border-radius:12px;
-  font-family:'Bebas Neue',cursive; letter-spacing:2px; font-weight:400;
-}
-.btn-grad {
-  background:linear-gradient(135deg, var(--accent1), var(--accent2));
-  border:none; color:white;
-  box-shadow:0 4px 16px rgba(200,75,255,0.35);
-}
-.btn-grad:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(200,75,255,0.45); }
-
-/* === PAGES === */
-.page { display:none; }
-.page.active { display:block; }
-
-/* === GAME PAGE === */
-.game-hero {
-  text-align:center; padding:40px 20px 30px;
-  background:var(--card); border:1px solid var(--border);
-  border-radius:20px; margin-bottom:24px; position:relative; overflow:hidden;
-}
-.game-hero::before {
-  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
-  background:radial-gradient(circle, rgba(200,75,255,0.06) 0%, transparent 60%);
-  animation:rotate 20s linear infinite;
-}
-@keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.game-title {
-  font-family:'Creepster',cursive; font-size:3rem; letter-spacing:4px;
-  background:linear-gradient(135deg, var(--accent1), var(--accent2));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  margin-bottom:8px;
-}
-.game-subtitle { color:var(--text2); font-size:0.9rem; letter-spacing:2px; }
-.game-fee {
-  margin:20px 0;
-  display:inline-flex; align-items:center; gap:8px;
-  padding:8px 24px; border-radius:100px;
-  background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.2);
-  color:var(--green); font-family:'Space Mono',monospace; font-size:0.9rem;
-}
-
-/* === PUZZLE === */
-.puzzle-wrap { position:relative; z-index:1; }
-.timer-bar {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:16px;
-}
-.timer-display {
-  font-family:'Bebas Neue',cursive; font-size:2.5rem; letter-spacing:2px;
-  color:var(--accent2); line-height:1;
-}
-.timer-display.warning { color:var(--accent4); animation:pulse 0.5s infinite; }
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-
-.puzzle-board {
-  display:grid; grid-template-columns:repeat(5,1fr);
-  gap:6px; padding:16px;
-  background:var(--bg2); border:1px solid var(--border);
-  border-radius:16px; max-width:520px; margin:0 auto 20px;
-}
-.puzzle-piece {
-  aspect-ratio:1; border-radius:10px;
-  background:var(--card2); border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:1px;
-  cursor:pointer; transition:all 0.2s; color:var(--text2);
-  user-select:none;
-}
-.puzzle-piece:hover { border-color:var(--border2); color:var(--text); transform:scale(1.05); z-index:2; position:relative; }
-.puzzle-piece.selected {
-  border-color:var(--accent3); color:var(--accent3);
-  box-shadow:0 0 16px rgba(0,229,255,0.4);
-  background:rgba(0,229,255,0.08);
-}
-.puzzle-piece.correct {
-  border-color:var(--green); color:var(--green);
-  background:rgba(0,255,136,0.08);
-}
-
-/* === SCRATCH CARD === */
-.scratch-outer {
-  max-width:440px; margin:0 auto;
-  border-radius:20px; overflow:hidden;
-  box-shadow:0 0 40px rgba(200,75,255,0.3);
-  border:1px solid var(--border2);
-}
-.scratch-result-bg {
-  position:relative; padding:40px 30px;
-  background:linear-gradient(135deg, #1a0028, #28001a);
-  text-align:center;
-}
-.scratch-amount {
-  font-family:'Bebas Neue',cursive; font-size:4rem; letter-spacing:3px;
-  color:var(--accent4); text-shadow:0 0 30px rgba(255,230,0,0.5);
-}
-.scratch-msg { font-family:'Creepster',cursive; font-size:1.8rem; color:var(--accent1); margin-bottom:12px; }
-.scratch-sub { color:var(--text2); font-size:0.9rem; }
-#scratchCanvas { display:block; cursor:crosshair; }
-
-/* === QR CARDS === */
-.qr-batch-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
-.qr-batch-item {
-  background:var(--card2); border:1px solid var(--border);
-  border-radius:16px; padding:20px; position:relative; overflow:hidden;
-  transition:all 0.3s;
-}
-.qr-batch-item:hover { border-color:var(--border2); transform:translateY(-3px); }
-.qr-batch-item::after {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg, rgba(200,75,255,0.04), transparent);
-  pointer-events:none;
-}
-.qr-batch-header { display:flex; align-items:start; justify-content:space-between; margin-bottom:16px; }
-.qr-batch-name { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:1px; }
-.qr-batch-meta { font-size:0.8rem; color:var(--text3); margin-top:2px; }
-.qr-preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:12px 0; }
-.qr-thumb {
-  background:white; border-radius:6px; padding:4px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:0.6rem; color:#333; min-height:64px; overflow:hidden;
-}
-.qr-thumb canvas, .qr-thumb img { width:100%!important; height:auto!important; }
-
-.progress-bar-wrap {
-  height:6px; background:var(--bg2); border-radius:3px; margin:10px 0 14px;
-}
-.progress-bar-fill { height:100%; border-radius:3px; transition:width 0.5s; }
-.progress-bar-fill.green { background:linear-gradient(90deg, var(--green), #00c066); }
-.progress-bar-fill.purple { background:linear-gradient(90deg, var(--accent1), var(--accent2)); }
-
-/* === WALLET === */
-.wallet-hero {
-  background:linear-gradient(135deg, #1a0028 0%, #280018 100%);
-  border:1px solid rgba(200,75,255,0.3);
-  border-radius:20px; padding:30px; margin-bottom:20px;
-  position:relative; overflow:hidden;
-}
-.wallet-hero::before {
-  content:''; position:absolute; top:-30%; right:-20%; width:300px; height:300px;
-  background:radial-gradient(circle, rgba(200,75,255,0.15) 0%, transparent 70%);
-}
-.wallet-bal {
-  font-family:'Bebas Neue',cursive; font-size:3.5rem; letter-spacing:2px;
-  color:white; line-height:1; margin:10px 0;
-}
-.wallet-label { font-size:0.75rem; letter-spacing:3px; color:var(--text3); text-transform:uppercase; }
-.wallet-actions { display:flex; gap:12px; margin-top:20px; }
-
-.txn-item {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 16px; border-radius:12px;
-  background:var(--bg2); border:1px solid var(--border);
-  margin-bottom:8px; transition:all 0.2s;
-}
-.txn-item:hover { border-color:var(--border2); }
-.txn-icon {
-  width:36px; height:36px; border-radius:10px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:0.9rem;
-}
-.txn-icon.credit { background:rgba(0,255,136,0.12); color:var(--green); }
-.txn-icon.debit { background:rgba(255,51,102,0.12); color:var(--accent2); }
-.txn-info { flex:1; margin:0 14px; }
-.txn-name { font-weight:600; font-size:0.9rem; }
-.txn-date { font-size:0.75rem; color:var(--text3); font-family:'Space Mono',monospace; }
-.txn-amount { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:1px; }
-.txn-amount.credit { color:var(--green); }
-.txn-amount.debit { color:var(--accent2); }
-
-/* === USER MANAGEMENT === */
-.user-row-avatar {
-  width:34px; height:34px; border-radius:10px; flex-shrink:0;
-  background:linear-gradient(135deg, var(--accent1), var(--accent2));
-  display:inline-flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:0.85rem;
-}
-.action-btns { display:flex; gap:6px; flex-wrap:wrap; }
-
-/* === FORM === */
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
-.form-group { margin-bottom:18px; }
-.form-group label {
-  display:block; font-size:0.72rem; letter-spacing:2px; font-weight:700;
-  color:var(--text3); margin-bottom:8px; text-transform:uppercase;
-}
-.form-group input, .form-group select, .form-group textarea {
-  width:100%; padding:12px 16px;
-  background:var(--bg2); border:1px solid var(--border);
-  border-radius:10px; color:var(--text);
-  font-family:'Rajdhani',sans-serif; font-size:0.95rem;
-  transition:all 0.2s; outline:none;
-}
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color:var(--accent1); box-shadow:0 0 0 3px rgba(200,75,255,0.1);
-}
-.form-group select option { background:var(--card); }
-.form-group textarea { resize:vertical; min-height:100px; }
-
-/* === MODAL === */
-.modal-backdrop {
-  position:fixed; inset:0; background:rgba(0,0,0,0.7);
-  display:none; align-items:center; justify-content:center; z-index:1000;
-  backdrop-filter:blur(4px);
-}
-.modal-backdrop.open { display:flex; }
-.modal-box {
-  background:var(--card); border:1px solid var(--border2);
-  border-radius:20px; width:100%; max-width:520px;
-  max-height:90vh; overflow-y:auto; margin:16px;
-  box-shadow:0 0 60px rgba(200,75,255,0.2);
-}
-.modal-head {
-  padding:22px 24px 18px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.modal-head h3 { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:2px; color:var(--accent1); }
-.modal-close {
-  background:none; border:none; color:var(--text3); cursor:pointer;
-  font-size:1.2rem; padding:4px 8px; border-radius:8px; transition:all 0.2s;
-}
-.modal-close:hover { color:var(--accent2); background:rgba(255,51,102,0.1); }
-.modal-body { padding:24px; }
-.modal-foot { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
-
-/* === NOTIFICATION === */
-#notifications { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
-.notif {
-  min-width:280px; max-width:360px;
-  padding:14px 18px; border-radius:12px;
-  background:var(--card); border:1px solid var(--border2);
-  display:flex; align-items:start; gap:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.4);
-  animation:notifIn 0.3s ease-out;
-}
-@keyframes notifIn { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
-.notif.success { border-left:3px solid var(--green); }
-.notif.error { border-left:3px solid var(--accent2); }
-.notif.warning { border-left:3px solid var(--accent4); }
-.notif.info { border-left:3px solid var(--accent1); }
-.notif-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
-.notif.success .notif-icon { color:var(--green); }
-.notif.error .notif-icon { color:var(--accent2); }
-.notif.warning .notif-icon { color:var(--accent4); }
-.notif.info .notif-icon { color:var(--accent1); }
-.notif-msg { font-size:0.9rem; font-weight:500; color:var(--text); line-height:1.4; }
-
-/* === LOADER === */
-#loader {
-  position:fixed; inset:0; background:rgba(5,5,8,0.9);
-  display:none; align-items:center; justify-content:center; z-index:9998;
-  flex-direction:column; gap:16px;
-}
-#loader.show { display:flex; }
-.loader-ring {
-  width:50px; height:50px;
-  border:3px solid var(--border2);
-  border-top-color:var(--accent1);
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loader-text { font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--text3); letter-spacing:3px; }
-
-/* === MOBILE === */
-.mobile-toggle {
-  display:none; position:fixed; top:16px; left:16px; z-index:200;
-  padding:10px 12px; border-radius:10px; border:1px solid var(--border2);
-  background:var(--card); color:var(--text); cursor:pointer; font-size:1rem;
-}
-@media(max-width:900px){
-  .sidebar { transform:translateX(-100%); }
-  .sidebar.open { transform:translateX(0); }
-  .main { margin-left:0; padding:16px; padding-top:60px; }
-  .mobile-toggle { display:block; }
-  .stats-grid { grid-template-columns:repeat(2,1fr); }
-  .form-row { grid-template-columns:1fr; }
-  .qr-batch-grid { grid-template-columns:1fr; }
-  .topbar { flex-wrap:wrap; gap:10px; }
-}
-@media(max-width:480px){
-  .stats-grid { grid-template-columns:1fr; }
-  .puzzle-board { max-width:100%; }
-  .wallet-actions { flex-direction:column; }
-}
-
-/* === QR DISPLAY === */
-.qr-full-display {
-  background:white; border-radius:12px; padding:12px;
-  display:inline-block; margin:0 auto;
-  box-shadow:0 0 20px rgba(200,75,255,0.3);
-}
-.qr-code-text {
-  font-family:'Space Mono',monospace; font-size:0.65rem;
-  color:var(--text3); word-break:break-all; margin-top:8px;
-}
-
-/* === ACHIEVEMENTS === */
-.achievement-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
-.achievement-item {
-  background:var(--card2); border:1px solid var(--border);
-  border-radius:16px; padding:20px; text-align:center; transition:all 0.3s;
-  position:relative; overflow:hidden;
-}
-.achievement-item:hover { transform:translateY(-4px); border-color:var(--border2); }
-.achievement-item.unlocked { border-color:rgba(200,75,255,0.4); }
-.achievement-item.unlocked::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg, rgba(200,75,255,0.06), transparent);
-}
-.ach-icon { font-size:2.5rem; margin-bottom:10px; display:block; filter:grayscale(100%); opacity:0.4; }
-.achievement-item.unlocked .ach-icon { filter:none; opacity:1; }
-.ach-name { font-weight:700; font-size:0.9rem; margin-bottom:4px; }
-.ach-desc { font-size:0.75rem; color:var(--text3); }
-.ach-badge { position:absolute; top:10px; right:10px; }
-
-/* === REPORTS/CHARTS === */
-.chart-container {
-  background:var(--bg2); border:1px solid var(--border);
-  border-radius:12px; padding:16px; position:relative;
-  height:220px; display:flex; align-items:flex-end; gap:8px;
-  overflow:hidden;
-}
-.bar-item {
-  flex:1; border-radius:6px 6px 0 0; min-width:20px;
-  transition:all 0.5s; cursor:pointer; position:relative;
-}
-.bar-item:hover { opacity:0.8; }
-.bar-label {
-  position:absolute; bottom:-24px; left:50%; transform:translateX(-50%);
-  font-size:0.65rem; color:var(--text3); white-space:nowrap; letter-spacing:1px;
-}
-.bar-val {
-  position:absolute; top:-22px; left:50%; transform:translateX(-50%);
-  font-size:0.7rem; font-family:'Space Mono',monospace; color:var(--text2);
-  white-space:nowrap;
-}
-
-/* === MANAGER ALERT === */
-.alert-banner {
-  padding:14px 18px; border-radius:12px; margin-bottom:20px;
-  background:rgba(255,230,0,0.08); border:1px solid rgba(255,230,0,0.2);
-  color:var(--accent4); font-size:0.9rem; font-weight:600;
-  display:flex; align-items:center; gap:10px;
-}
+/* Utility */
+.flex{display:flex;} .items-center{align-items:center;} .gap-8{gap:8px;} .gap-12{gap:12px;}
+.mt-12{margin-top:12px;} .mt-20{margin-top:20px;}
+.text-sm{font-size:13px;} .text-xs{font-size:11px;} .text-gray{color:var(--gray);}
+.font-bold{font-weight:700;} .font-semi{font-weight:600;}
+.rounded{border-radius:6px;} .p-16{padding:16px;} .bg-white{background:var(--white);}
+.border{border:1px solid #e2e8f0;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.full-w{width:100%;}
+input[type=text],input[type=email],input[type=number],select,textarea{border:1px solid #ddd;border-radius:5px;padding:8px 12px;font-size:13px;font-family:'DM Sans',sans-serif;width:100%;outline:none;transition:.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+label.form-label{font-size:11px;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
+.form-group{margin-bottom:14px;}
 </style>
 </head>
 <body>
 
-<canvas id="particles-canvas"></canvas>
-<div id="notifications"></div>
-<div id="loader"><div class="loader-ring"></div><div class="loader-text">LOADING...</div></div>
-
-<!-- ======== LOGIN ======== -->
-<div id="loginWrap">
-  <div class="login-card">
-    <div class="logo-wrap">
-      <span class="logo-skull">💀</span>
-      <div class="logo-title">QR PUZZLE</div>
-      <div class="logo-sub">HORROR EDITION</div>
-    </div>
-
-    <div class="role-tabs">
-      <div class="role-tab active" data-role="user">
-        <i class="fas fa-user"></i> USER
-      </div>
-      <div class="role-tab" data-role="admin">
-        <i class="fas fa-skull"></i> ADMIN
-      </div>
-      <div class="role-tab" data-role="manager">
-        <i class="fas fa-user-shield"></i> MANAGER
-      </div>
-    </div>
-
-    <form id="loginForm">
-      <div class="field-group">
-        <label>Email Address</label>
-        <input type="email" id="emailIn" placeholder="Enter your email" value="user@example.com" required>
-      </div>
-      <div class="field-group">
-        <label>Password</label>
-        <input type="password" id="passIn" placeholder="Enter password" value="user123" required>
-      </div>
-      <button type="submit" class="btn-primary">
-        <i class="fas fa-door-open"></i> &nbsp; ENTER THE PORTAL
-      </button>
-    </form>
-
-    <div class="hint-text">
-      user: <span>user123</span> &nbsp;|&nbsp; admin: <span>admin123</span> &nbsp;|&nbsp; manager: <span>manager123</span>
-    </div>
-  </div>
-</div>
-
-<!-- ======== APP ======== -->
-<button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
-<div id="app">
-
-<!-- SIDEBAR -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <span class="skull">💀</span>
-    <div class="sidebar-logo-text">
-      <h2>QR PUZZLE</h2>
-      <small>HORROR EDITION</small>
-    </div>
-  </div>
-  <div class="sidebar-user" id="sidebarUser"></div>
-  <div class="nav" id="sidebarNav"></div>
-  <div class="sidebar-footer">
-    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
-  </div>
+<!-- MAIN NAV -->
+<nav id="main-nav">
+  <div class="brand">✦ LUXEJWEL</div>
+  <div class="nav-tab active" onclick="showPanel('user')">🛍️ Customer Website</div>
+  <div class="nav-sep"></div>
+  <div class="nav-tab" onclick="showPanel('app')">📱 Mobile App</div>
+  <div class="nav-sep"></div>
+  <div class="nav-tab" onclick="showPanel('admin')">⚙️ Admin Panel</div>
+  <div class="nav-sep"></div>
+  <div class="nav-tab" onclick="showPanel('manager')">👔 Manager Panel</div>
 </nav>
 
-<main class="main" id="mainContent">
-  <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">DASHBOARD</div>
-    <div class="topbar-right">
-      <button class="topbar-btn"><i class="fas fa-bell"></i> <span id="notifCount">3</span></button>
-      <button class="topbar-btn"><i class="fas fa-search"></i></button>
+<!-- ══════════════════ USER WEBSITE ══════════════════ -->
+<div class="panel active flex-col" id="panel-user">
+  <!-- Topbar -->
+  <div class="user-topbar">
+    <div class="logo">LUXE<span>JWEL</span></div>
+    <div class="user-search">
+      <input type="text" placeholder="Search necklaces, rings, earrings..."/>
+    </div>
+    <div class="topbar-icons">
+      <div class="icon-btn" title="Wishlist">♡<div class="badge">3</div></div>
+      <div class="icon-btn" title="Cart" onclick="showUserScreen('cart')">🛒<div class="badge">2</div></div>
+      <div class="icon-btn" title="Account" onclick="showUserScreen('dashboard')">👤</div>
     </div>
   </div>
-  <div id="pageContainer"></div>
-</main>
-
-</div>
-
-<!-- CREATE BATCH MODAL -->
-<div class="modal-backdrop" id="batchModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3><i class="fas fa-qrcode"></i> Create QR Batch</h3>
-      <button class="modal-close" onclick="closeModal('batchModal')"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Batch Name</label>
-          <input type="text" id="batchName" placeholder="e.g. Diwali Special">
-        </div>
-        <div class="form-group">
-          <label>Total QR Codes</label>
-          <input type="number" id="totalQRs" value="20" min="5" max="100">
-        </div>
+  <!-- Nav -->
+  <div class="user-nav">
+    <a class="active" onclick="showUserScreen('home');setActiveUserNav(this)">All Jewellery</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Gold</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Diamond</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Silver</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Bridal</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Rings</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Necklaces</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Earrings</a>
+    <a onclick="showUserScreen('home');setActiveUserNav(this)">Bangles</a>
+  </div>
+  <!-- Content -->
+  <div class="user-content">
+    <!-- HOME -->
+    <div class="user-screen active" id="us-home">
+      <div class="hero">
+        <h1>Timeless Beauty<br><span>Crafted in Gold</span></h1>
+        <p>Discover our exclusive collection of handcrafted jewellery for every occasion</p>
+        <button class="btn-gold">Shop Now</button>
+        <button class="btn-outline">Bridal Collection</button>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Reward QR Count</label>
-          <input type="number" id="rewardQRs" value="10">
-        </div>
-        <div class="form-group">
-          <label>Reward Type</label>
-          <select id="rewardType" onchange="toggleRewardType()">
-            <option value="fixed">Fixed Amount</option>
-            <option value="random">Random Range</option>
-          </select>
-        </div>
+      <!-- Gold Rate Banner -->
+      <div style="background:#1A1208;color:#F5DEB3;text-align:center;padding:10px;font-size:13px;display:flex;justify-content:center;gap:30px;">
+        <span>📊 Today's Gold Rate (22K): <strong style="color:var(--gold)">₹6,240/gm</strong></span>
+        <span>Silver: <strong style="color:var(--gold)">₹84/gm</strong></span>
+        <span>🕐 Updated: 10:30 AM</span>
       </div>
-      <div id="fixedDiv" class="form-group">
-        <label>Fixed Amount (₹)</label>
-        <input type="number" id="fixedAmt" value="500">
-      </div>
-      <div id="randomDiv" style="display:none">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Min Amount (₹)</label>
-            <input type="number" id="minAmt" value="200">
-          </div>
-          <div class="form-group">
-            <label>Max Amount (₹)</label>
-            <input type="number" id="maxAmt" value="1000">
+      <h2 class="section-title">New Arrivals</h2>
+      <p class="section-sub">Freshly crafted pieces for the discerning collector</p>
+      <div class="prod-grid">
+        <div class="prod-card" onclick="showUserScreen('pdp')">
+          <div class="prod-img">💍</div>
+          <div class="prod-info">
+            <div class="prod-name">Kundan Solitaire Ring</div>
+            <div class="prod-meta">Gold • 22K • 4.2g</div>
+            <div class="prod-price">₹28,500 <span class="old">₹32,000</span><span class="disc">-11%</span></div>
+            <div class="prod-actions">
+              <button class="btn-cart">Add to Cart</button>
+              <button class="btn-wish">♡</button>
+            </div>
           </div>
         </div>
+        <div class="prod-card" onclick="showUserScreen('pdp')">
+          <div class="prod-img">📿</div>
+          <div class="prod-info">
+            <div class="prod-name">Diamond Pendant Set</div>
+            <div class="prod-meta">Gold • 18K • 8.5g</div>
+            <div class="prod-price">₹72,000 <span class="old">₹85,000</span><span class="disc">-15%</span></div>
+            <div class="prod-actions">
+              <button class="btn-cart">Add to Cart</button>
+              <button class="btn-wish">♡</button>
+            </div>
+          </div>
+        </div>
+        <div class="prod-card" onclick="showUserScreen('pdp')">
+          <div class="prod-img">👂</div>
+          <div class="prod-info">
+            <div class="prod-name">Jhumka Earrings</div>
+            <div class="prod-meta">Gold • 22K • 6.8g</div>
+            <div class="prod-price">₹41,200</div>
+            <div class="prod-actions">
+              <button class="btn-cart">Add to Cart</button>
+              <button class="btn-wish">♡</button>
+            </div>
+          </div>
+        </div>
+        <div class="prod-card" onclick="showUserScreen('pdp')">
+          <div class="prod-img">💫</div>
+          <div class="prod-info">
+            <div class="prod-name">Bridal Choker Set</div>
+            <div class="prod-meta">Gold • 22K • 45g</div>
+            <div class="prod-price">₹2,85,000 <span class="old">₹3,20,000</span><span class="disc">-11%</span></div>
+            <div class="prod-actions">
+              <button class="btn-cart">Add to Cart</button>
+              <button class="btn-wish">♡</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-red" onclick="closeModal('batchModal')">Cancel</button>
-      <button class="btn btn-purple" onclick="generateBatch()"><i class="fas fa-magic"></i> Generate</button>
+
+    <!-- PDP -->
+    <div class="user-screen" id="us-pdp">
+      <div style="padding:12px 30px;font-size:12px;color:var(--gray);cursor:pointer;" onclick="showUserScreen('home')">← Back to products</div>
+      <div class="pdp">
+        <div class="pdp-gallery">💍</div>
+        <div class="pdp-info">
+          <div style="font-size:11px;color:var(--gray);margin-bottom:4px;">Rings › Solitaire › Gold</div>
+          <h2>Kundan Solitaire Ring</h2>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="color:#f6ad55;font-size:14px;">★★★★☆</span>
+            <span style="font-size:12px;color:var(--gray);">4.2 (128 reviews)</span>
+          </div>
+          <div class="pdp-price">₹28,500 <span style="font-size:14px;color:var(--gray);text-decoration:line-through;font-weight:400;">₹32,000</span></div>
+          <div style="background:#d1fae5;color:#065f46;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;display:inline-block;margin-bottom:12px;">You save ₹3,500 (11%)</div>
+          <div class="pdp-spec">
+            <div class="pdp-spec-item"><label>Metal</label><p>Gold</p></div>
+            <div class="pdp-spec-item"><label>Karat</label><p>22K</p></div>
+            <div class="pdp-spec-item"><label>Weight</label><p>4.2 grams</p></div>
+            <div class="pdp-spec-item"><label>Stone</label><p>Kundan</p></div>
+            <div class="pdp-spec-item"><label>Making Charge</label><p>12% (₹3,420)</p></div>
+            <div class="pdp-spec-item"><label>GST</label><p>3% (₹855)</p></div>
+          </div>
+          <div style="font-size:12px;color:var(--gray);margin-bottom:10px;">Size:</div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <div style="border:2px solid var(--gold);padding:6px 14px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;">6</div>
+            <div style="border:1px solid #ddd;padding:6px 14px;border-radius:4px;font-size:12px;cursor:pointer;">7</div>
+            <div style="border:1px solid #ddd;padding:6px 14px;border-radius:4px;font-size:12px;cursor:pointer;">8</div>
+          </div>
+          <div class="pdp-btns">
+            <button class="btn-gold" onclick="showUserScreen('cart')" style="flex:1;border:none;">Add to Cart</button>
+            <button style="flex:1;background:var(--dark);color:var(--white);border:none;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;padding:14px;">Buy Now</button>
+            <button style="padding:14px 16px;border:1px solid #ddd;background:var(--white);border-radius:3px;font-size:18px;cursor:pointer;">♡</button>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:#fffdf5;border-radius:4px;font-size:12px;display:flex;flex-direction:column;gap:6px;">
+            <div>🚚 Free delivery above ₹999 | Estimated: 3-5 days</div>
+            <div>↩️ 30-day easy returns</div>
+            <div>🏅 BIS Hallmarked | Certificate included</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CART -->
+    <div class="user-screen" id="us-cart">
+      <div style="padding:12px 30px;font-weight:600;font-size:15px;border-bottom:1px solid #eee;">Shopping Cart (2 items)</div>
+      <div class="cart-layout">
+        <div class="cart-items">
+          <div class="cart-item">
+            <div class="cart-item-img">💍</div>
+            <div class="cart-item-info">
+              <h4>Kundan Solitaire Ring</h4>
+              <p>Gold • 22K • Size 6</p>
+              <div class="qty-ctrl">
+                <button class="qty-btn">−</button><span>1</span><button class="qty-btn">+</button>
+                <span style="margin-left:auto;font-weight:600;font-size:14px;">₹28,500</span>
+              </div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img">📿</div>
+            <div class="cart-item-info">
+              <h4>Diamond Pendant Set</h4>
+              <p>Gold • 18K</p>
+              <div class="qty-ctrl">
+                <button class="qty-btn">−</button><span>1</span><button class="qty-btn">+</button>
+                <span style="margin-left:auto;font-weight:600;font-size:14px;">₹72,000</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;">
+            <input type="text" placeholder="Apply coupon code" style="flex:1;"/>
+            <button class="btn-gold" style="border:none;padding:8px 16px;border-radius:5px;font-size:12px;">Apply</button>
+          </div>
+        </div>
+        <div class="cart-summary">
+          <div style="font-size:14px;font-weight:600;margin-bottom:14px;">Order Summary</div>
+          <div class="summary-row"><span>Subtotal (2 items)</span><span>₹1,00,500</span></div>
+          <div class="summary-row"><span>Making Charges</span><span>₹9,240</span></div>
+          <div class="summary-row"><span>GST (3%)</span><span>₹3,015</span></div>
+          <div class="summary-row"><span>Shipping</span><span style="color:var(--green);font-weight:600;">FREE</span></div>
+          <div class="summary-row"><span>Discount</span><span style="color:var(--red);">- ₹3,500</span></div>
+          <div class="summary-row total"><span>Total</span><span>₹1,09,255</span></div>
+          <button class="btn-gold full-w mt-12" style="border:none;padding:14px;border-radius:5px;font-size:14px;letter-spacing:1px;">Proceed to Checkout</button>
+          <div style="font-size:11px;color:var(--gray);text-align:center;margin-top:10px;">🔒 100% Secure Payments</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;font-size:20px;">💳 🏦 📱</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER DASHBOARD -->
+    <div class="user-screen" id="us-dashboard">
+      <div style="padding:20px 30px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:14px;color:var(--gray);">Welcome back,</div>
+          <div style="font-size:20px;font-weight:700;">Priya Sharma ✨</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="text-align:center;padding:12px 20px;background:var(--white);border-radius:8px;border:1px solid #ede8e0;">
+            <div style="font-size:22px;font-weight:700;color:var(--gold);">850</div>
+            <div style="font-size:11px;color:var(--gray);">Loyalty Points</div>
+          </div>
+          <div style="text-align:center;padding:12px 20px;background:var(--white);border-radius:8px;border:1px solid #ede8e0;">
+            <div style="font-size:18px;font-weight:700;">🥇 Gold</div>
+            <div style="font-size:11px;color:var(--gray);">Member Tier</div>
+          </div>
+        </div>
+      </div>
+      <div class="user-dash">
+        <div class="dash-grid">
+          <div class="dash-card"><div class="icon">📦</div><h3>12</h3><p>Total Orders</p></div>
+          <div class="dash-card"><div class="icon">♡</div><h3>8</h3><p>Wishlist Items</p></div>
+          <div class="dash-card"><div class="icon">🔔</div><h3>3</h3><p>Notifications</p></div>
+          <div class="dash-card"><div class="icon">💰</div><h3>₹850</h3><p>Wallet Balance</p></div>
+        </div>
+        <div class="orders-list">
+          <div class="orders-header"><span>Recent Orders</span><a style="font-size:12px;color:var(--gold);cursor:pointer;">View All</a></div>
+          <div class="order-row">
+            <span style="font-size:12px;color:var(--gray);">#LJW2024001</span>
+            <span style="flex:1;font-weight:500;">Kundan Ring + Pendant</span>
+            <span style="font-weight:600;">₹1,09,255</span>
+            <span class="status-pill s-delivered">Delivered</span>
+          </div>
+          <div class="order-row">
+            <span style="font-size:12px;color:var(--gray);">#LJW2024002</span>
+            <span style="flex:1;font-weight:500;">Jhumka Earrings</span>
+            <span style="font-weight:600;">₹41,200</span>
+            <span class="status-pill s-shipped">Shipped</span>
+          </div>
+          <div class="order-row">
+            <span style="font-size:12px;color:var(--gray);">#LJW2024003</span>
+            <span style="flex:1;font-weight:500;">Bridal Choker Set</span>
+            <span style="font-weight:600;">₹2,85,000</span>
+            <span class="status-pill s-processing">Processing</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- QR VIEW MODAL -->
-<div class="modal-backdrop" id="qrViewModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3 id="qrViewTitle">QR Codes</h3>
-      <button class="modal-close" onclick="closeModal('qrViewModal')"><i class="fas fa-times"></i></button>
+<!-- ══════════════════ MOBILE APP ══════════════════ -->
+<div class="panel" id="panel-app">
+  <!-- Phone 1: Home -->
+  <div>
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="app-topbar">
+          <div class="logo">LUXEJWEL</div>
+          <div style="color:#ccc;font-size:18px;">🔔</div>
+        </div>
+        <div class="app-search">🔍 Search jewellery...</div>
+        <div class="cat-scroll">
+          <div class="cat-chip active">All</div>
+          <div class="cat-chip">Gold</div>
+          <div class="cat-chip">Diamond</div>
+          <div class="cat-chip">Silver</div>
+          <div class="cat-chip">Bridal</div>
+          <div class="cat-chip">Rings</div>
+        </div>
+        <div style="padding:0 12px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--charcoal);">New Arrivals</div>
+        <div class="app-prod-grid">
+          <div class="app-card">
+            <div class="app-card-img">💍</div>
+            <div class="app-card-info">
+              <h4>Kundan Ring</h4>
+              <p>Gold • 22K</p>
+              <div class="price">₹28,500</div>
+            </div>
+          </div>
+          <div class="app-card">
+            <div class="app-card-img">📿</div>
+            <div class="app-card-info">
+              <h4>Diamond Pendant</h4>
+              <p>Gold • 18K</p>
+              <div class="price">₹72,000</div>
+            </div>
+          </div>
+          <div class="app-card">
+            <div class="app-card-img">👂</div>
+            <div class="app-card-info">
+              <h4>Jhumka Set</h4>
+              <p>Gold • 22K</p>
+              <div class="price">₹41,200</div>
+            </div>
+          </div>
+          <div class="app-card">
+            <div class="app-card-img">💫</div>
+            <div class="app-card-info">
+              <h4>Bridal Choker</h4>
+              <p>Gold • 22K</p>
+              <div class="price">₹2,85,000</div>
+            </div>
+          </div>
+        </div>
+        <div style="height:60px;"></div>
+        <div class="app-bottom-nav">
+          <div class="app-nav-item active"><div class="ni">🏠</div>Home</div>
+          <div class="app-nav-item"><div class="ni">🔍</div>Search</div>
+          <div class="app-nav-item"><div class="ni">♡</div>Wishlist</div>
+          <div class="app-nav-item"><div class="ni">🛒</div>Cart</div>
+          <div class="app-nav-item"><div class="ni">👤</div>Profile</div>
+        </div>
+      </div>
     </div>
-    <div class="modal-body" id="qrViewBody"></div>
+    <div class="phone-label">Home Screen</div>
+  </div>
+
+  <!-- Phone 2: Product Detail -->
+  <div>
+    <div class="phone-frame">
+      <div class="phone-screen app-pdp">
+        <div class="app-pdp-hero">
+          💍
+          <div class="app-pdp-badge">22K BIS ✓</div>
+          <div style="position:absolute;top:10px;left:10px;font-size:18px;color:var(--dark);cursor:pointer;">←</div>
+          <div style="position:absolute;bottom:10px;right:10px;font-size:20px;">♡</div>
+        </div>
+        <div class="app-pdp-info">
+          <h3>Kundan Solitaire Ring</h3>
+          <div class="price">₹28,500 <span style="font-size:11px;text-decoration:line-through;color:#999;font-weight:400;">₹32,000</span></div>
+          <div class="app-pdp-specs">
+            <div class="spec"><label>Metal</label><p>Gold</p></div>
+            <div class="spec"><label>Karat</label><p>22K</p></div>
+            <div class="spec"><label>Weight</label><p>4.2g</p></div>
+            <div class="spec"><label>Stone</label><p>Kundan</p></div>
+          </div>
+          <div style="font-size:11px;color:var(--gray);margin-bottom:6px;">Select Size:</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px;">
+            <div style="border:2px solid var(--gold);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">6</div>
+            <div style="border:1px solid #ddd;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;">7</div>
+            <div style="border:1px solid #ddd;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;">8</div>
+          </div>
+          <button class="app-add-btn" style="margin:0;width:100%;">ADD TO CART  🛒</button>
+          <div style="font-size:10px;color:var(--gray);text-align:center;margin-top:8px;">🚚 Free delivery • ↩️ 30-day returns</div>
+        </div>
+        <div class="app-bottom-nav">
+          <div class="app-nav-item"><div class="ni">🏠</div>Home</div>
+          <div class="app-nav-item"><div class="ni">🔍</div>Search</div>
+          <div class="app-nav-item"><div class="ni">♡</div>Wishlist</div>
+          <div class="app-nav-item active"><div class="ni">🛒</div>Cart</div>
+          <div class="app-nav-item"><div class="ni">👤</div>Profile</div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label">Product Detail</div>
+  </div>
+
+  <!-- Phone 3: My Orders -->
+  <div>
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="app-topbar">
+          <div style="font-size:16px;font-weight:700;color:var(--white);">My Orders</div>
+          <div style="color:var(--gold);font-size:12px;cursor:pointer;">Filter</div>
+        </div>
+        <div style="padding:12px;display:flex;flex-direction:column;gap:10px;">
+          <div style="background:var(--white);border-radius:8px;padding:12px;border:1px solid #ede8e0;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:11px;color:var(--gray);">#LJW2024001</span>
+              <span style="background:#d1fae5;color:#065f46;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;">DELIVERED</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div style="font-size:28px;">💍</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;">Kundan Ring + Pendant</div>
+                <div style="font-size:11px;color:var(--gray);">2 items • ₹1,09,255</div>
+                <div style="font-size:10px;color:var(--gray);">Delivered 12 Mar 2024</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <button style="flex:1;padding:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;">Rate & Review</button>
+              <button style="flex:1;padding:6px;background:var(--dark);color:var(--white);border:none;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;">Reorder</button>
+            </div>
+          </div>
+          <div style="background:var(--white);border-radius:8px;padding:12px;border:1px solid #ede8e0;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:11px;color:var(--gray);">#LJW2024002</span>
+              <span style="background:#dbeafe;color:#1e40af;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;">SHIPPED</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div style="font-size:28px;">👂</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;">Jhumka Earrings</div>
+                <div style="font-size:11px;color:var(--gray);">₹41,200</div>
+                <div style="font-size:10px;color:var(--green);font-weight:600;">Expected: 15 Mar 2024</div>
+              </div>
+            </div>
+            <div style="background:#f0f9ff;border-radius:6px;padding:8px;margin-top:8px;font-size:10px;color:#1e40af;">
+              📦 In transit — Delhivery #DL9283746
+            </div>
+          </div>
+        </div>
+        <div class="app-bottom-nav">
+          <div class="app-nav-item"><div class="ni">🏠</div>Home</div>
+          <div class="app-nav-item"><div class="ni">🔍</div>Search</div>
+          <div class="app-nav-item"><div class="ni">♡</div>Wishlist</div>
+          <div class="app-nav-item active"><div class="ni">📦</div>Orders</div>
+          <div class="app-nav-item"><div class="ni">👤</div>Profile</div>
+        </div>
+      </div>
+    </div>
+    <div class="phone-label">My Orders</div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN PANEL ══════════════════ -->
+<div class="panel" id="panel-admin">
+  <div class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="name">✦ LUXEJWEL</div>
+      <div class="role">Admin Portal</div>
+    </div>
+    <div class="sidebar-menu">
+      <div class="menu-section">Overview</div>
+      <div class="menu-item active" onclick="showAdminScreen('dashboard');setActiveMenu(this)"><span class="icon">📊</span>Dashboard</div>
+      <div class="menu-section">Catalogue</div>
+      <div class="menu-item" onclick="showAdminScreen('products');setActiveMenu(this)"><span class="icon">💎</span>Products</div>
+      <div class="menu-item" onclick="showAdminScreen('csv');setActiveMenu(this)"><span class="icon">📤</span>CSV Bulk Upload</div>
+      <div class="menu-item" onclick="showAdminScreen('products');setActiveMenu(this)"><span class="icon">🗂️</span>Categories</div>
+      <div class="menu-item" onclick="showAdminScreen('products');setActiveMenu(this)"><span class="icon">📦</span>Inventory</div>
+      <div class="menu-section">Commerce</div>
+      <div class="menu-item" onclick="showAdminScreen('orders');setActiveMenu(this)"><span class="icon">🛍️</span>Orders<span class="badge">12</span></div>
+      <div class="menu-item" onclick="showAdminScreen('orders');setActiveMenu(this)"><span class="icon">↩️</span>Returns<span class="badge">3</span></div>
+      <div class="menu-item" onclick="showAdminScreen('orders');setActiveMenu(this)"><span class="icon">🎫</span>Coupons</div>
+      <div class="menu-section">Users</div>
+      <div class="menu-item" onclick="showAdminScreen('customers');setActiveMenu(this)"><span class="icon">👥</span>Customers</div>
+      <div class="menu-item" onclick="showAdminScreen('managers');setActiveMenu(this)"><span class="icon">👔</span>Managers</div>
+      <div class="menu-section">Insights</div>
+      <div class="menu-item" onclick="showAdminScreen('reports');setActiveMenu(this)"><span class="icon">📈</span>Reports</div>
+      <div class="menu-item" onclick="showAdminScreen('dashboard');setActiveMenu(this)"><span class="icon">📝</span>CMS</div>
+      <div class="menu-section">System</div>
+      <div class="menu-item" onclick="showAdminScreen('settings');setActiveMenu(this)"><span class="icon">⚙️</span>Settings</div>
+    </div>
+  </div>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h2 id="admin-title">Dashboard</h2>
+      <div style="font-size:12px;color:var(--gray);">📊 Gold: <strong>₹6,240/gm</strong></div>
+      <div style="font-size:12px;background:#d1fae5;color:#065f46;padding:4px 10px;border-radius:12px;font-weight:600;">● Live</div>
+      <div class="avatar">SA</div>
+    </div>
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div class="admin-screen active" id="as-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon si-gold">💰</div><div class="stat-info"><h3>₹4.2L</h3><p>Today's Revenue</p><div class="trend">↑ 18% vs yesterday</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-blue">🛍️</div><div class="stat-info"><h3>47</h3><p>Orders Today</p><div class="trend">↑ 12% vs yesterday</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-green">👥</div><div class="stat-info"><h3>23</h3><p>New Customers</p><div class="trend">↑ 5% vs yesterday</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-purple">📦</div><div class="stat-info"><h3>8</h3><p>Low Stock SKUs</p><div class="trend trend-down">↑ 3 since yesterday</div></div></div>
+        </div>
+        <div class="chart-placeholder">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:14px;font-weight:600;">Revenue — Last 7 Days</div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-secondary" style="font-size:11px;padding:5px 12px;">Week</button>
+              <button class="btn-primary" style="font-size:11px;padding:5px 12px;">Month</button>
+            </div>
+          </div>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="height:55%;" data-val="₹2.8L"></div>
+            <div class="chart-bar" style="height:70%;" data-val="₹3.5L"></div>
+            <div class="chart-bar" style="height:45%;" data-val="₹2.2L"></div>
+            <div class="chart-bar" style="height:80%;" data-val="₹4.0L"></div>
+            <div class="chart-bar" style="height:60%;" data-val="₹3.0L"></div>
+            <div class="chart-bar" style="height:90%;" data-val="₹4.5L"></div>
+            <div class="chart-bar" style="height:84%;" data-val="₹4.2L"></div>
+          </div>
+          <div class="chart-label">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-header"><h3>Recent Orders</h3><button class="btn-primary" onclick="showAdminScreen('orders');document.getElementById('admin-title').innerText='Orders'">View All</button></div>
+          <table class="tbl">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>#LJW001</td><td>Priya Sharma</td><td>2</td><td>₹1,09,255</td><td><span class="status-pill s-delivered">Delivered</span></td><td><button class="action-btn btn-view">View</button></td></tr>
+              <tr><td>#LJW002</td><td>Anita Verma</td><td>1</td><td>₹41,200</td><td><span class="status-pill s-shipped">Shipped</span></td><td><button class="action-btn btn-view">View</button></td></tr>
+              <tr><td>#LJW003</td><td>Meena Gupta</td><td>3</td><td>₹2,85,000</td><td><span class="status-pill s-processing">Processing</span></td><td><button class="action-btn btn-view">View</button></td></tr>
+              <tr><td>#LJW004</td><td>Rekha Singh</td><td>1</td><td>₹28,500</td><td><span class="status-pill s-placed">Placed</span></td><td><button class="action-btn btn-view">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="admin-screen" id="as-products">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="display:flex;gap:8px;">
+            <input type="text" placeholder="Search products..." style="width:220px;"/>
+            <select style="width:140px;"><option>All Categories</option><option>Rings</option><option>Necklaces</option><option>Earrings</option></select>
+            <select style="width:120px;"><option>All Status</option><option>Active</option><option>Draft</option></select>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-secondary" onclick="showAdminScreen('csv');document.getElementById('admin-title').innerText='CSV Bulk Upload'">📤 CSV Upload</button>
+            <button class="btn-primary">+ Add Product</button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="tbl">
+            <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Metal/Karat</th><th>Stock</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-GLD-001</td><td><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💍</span><span style="font-weight:500;">Kundan Solitaire Ring</span></div></td><td>Rings</td><td>Gold / 22K</td><td><span style="color:var(--green);font-weight:600;">24</span></td><td>₹28,500</td><td><span class="status-pill s-delivered">Active</span></td><td><button class="action-btn btn-edit">Edit</button><button class="action-btn btn-del">Del</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-DIA-002</td><td><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📿</span><span style="font-weight:500;">Diamond Pendant Set</span></div></td><td>Pendants</td><td>Gold / 18K</td><td><span style="color:var(--red);font-weight:600;">2 ⚠️</span></td><td>₹72,000</td><td><span class="status-pill s-delivered">Active</span></td><td><button class="action-btn btn-edit">Edit</button><button class="action-btn btn-del">Del</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-GLD-003</td><td><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">👂</span><span style="font-weight:500;">Jhumka Earrings</span></div></td><td>Earrings</td><td>Gold / 22K</td><td><span style="color:var(--green);font-weight:600;">18</span></td><td>₹41,200</td><td><span class="status-pill s-delivered">Active</span></td><td><button class="action-btn btn-edit">Edit</button><button class="action-btn btn-del">Del</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-BRD-004</td><td><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">💫</span><span style="font-weight:500;">Bridal Choker Set</span></div></td><td>Necklaces</td><td>Gold / 22K</td><td><span style="color:var(--green);font-weight:600;">5</span></td><td>₹2,85,000</td><td><span class="status-pill s-processing">Draft</span></td><td><button class="action-btn btn-edit">Edit</button><button class="action-btn btn-del">Del</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CSV UPLOAD -->
+      <div class="admin-screen" id="as-csv">
+        <div class="grid-2">
+          <div>
+            <div class="csv-drop" onclick="simulateUpload()">
+              <div class="icon">📤</div>
+              <h3>Drop your CSV file here</h3>
+              <p>or click to browse — Max 10MB</p>
+              <button class="btn-gold" style="margin-top:14px;border:none;padding:10px 24px;border-radius:5px;">Choose File</button>
+            </div>
+            <div id="upload-progress" style="display:none;" class="admin-table-wrap p-16">
+              <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Uploading & Validating...</div>
+              <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+              <div id="prog-text" style="font-size:11px;color:var(--gray);">0 of 120 rows processed</div>
+              <div id="validation-results" style="margin-top:12px;"></div>
+            </div>
+          </div>
+          <div>
+            <div class="admin-table-wrap p-16">
+              <div style="font-size:13px;font-weight:600;margin-bottom:12px;">CSV Column Reference</div>
+              <table class="tbl">
+                <thead><tr><th>Column</th><th>Required</th><th>Example</th></tr></thead>
+                <tbody>
+                  <tr><td><code style="font-size:11px;">sku</code></td><td>✅</td><td>LJW-GLD-001</td></tr>
+                  <tr><td><code style="font-size:11px;">name</code></td><td>✅</td><td>Kundan Ring</td></tr>
+                  <tr><td><code style="font-size:11px;">category</code></td><td>✅</td><td>Rings</td></tr>
+                  <tr><td><code style="font-size:11px;">metal</code></td><td>✅</td><td>Gold</td></tr>
+                  <tr><td><code style="font-size:11px;">karat</code></td><td>No</td><td>22</td></tr>
+                  <tr><td><code style="font-size:11px;">weight_gm</code></td><td>✅</td><td>4.2</td></tr>
+                  <tr><td><code style="font-size:11px;">price</code></td><td>✅</td><td>28500</td></tr>
+                  <tr><td><code style="font-size:11px;">quantity</code></td><td>✅</td><td>10</td></tr>
+                  <tr><td><code style="font-size:11px;">status</code></td><td>✅</td><td>active</td></tr>
+                  <tr><td><code style="font-size:11px;">images</code></td><td>✅</td><td>https://...</td></tr>
+                </tbody>
+              </table>
+              <button class="btn-secondary full-w mt-12">⬇️ Download Template</button>
+            </div>
+            <div class="admin-table-wrap p-16 mt-12">
+              <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Upload History</div>
+              <div style="font-size:12px;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:5px;">
+                  <div><div style="font-weight:600;">products_march.csv</div><div style="color:var(--gray);font-size:11px;">120 rows • 2 errors • by Admin</div></div>
+                  <span style="color:var(--green);font-size:11px;font-weight:600;">Success</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:5px;">
+                  <div><div style="font-weight:600;">bridal_collection.csv</div><div style="color:var(--gray);font-size:11px;">45 rows • 0 errors • by Rohit</div></div>
+                  <span style="color:var(--green);font-size:11px;font-weight:600;">Success</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="admin-screen" id="as-orders">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <input type="text" placeholder="Search order ID / customer..." style="width:240px;"/>
+          <select style="width:150px;"><option>All Status</option><option>Placed</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select>
+          <input type="text" placeholder="From date" style="width:120px;"/>
+          <input type="text" placeholder="To date" style="width:120px;"/>
+          <button class="btn-primary">Filter</button>
+          <button class="btn-secondary" style="margin-left:auto;">⬇️ Export</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Items</th><th>Payment</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>#LJW001</td><td>Priya Sharma</td><td>12 Mar</td><td>2</td><td>UPI ✅</td><td>₹1,09,255</td><td><span class="status-pill s-delivered">Delivered</span></td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Invoice</button></td></tr>
+              <tr><td>#LJW002</td><td>Anita Verma</td><td>13 Mar</td><td>1</td><td>Card ✅</td><td>₹41,200</td><td><span class="status-pill s-shipped">Shipped</span></td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Track</button></td></tr>
+              <tr><td>#LJW003</td><td>Meena Gupta</td><td>14 Mar</td><td>3</td><td>EMI ✅</td><td>₹2,85,000</td><td><span class="status-pill s-processing">Processing</span></td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Update</button></td></tr>
+              <tr><td>#LJW004</td><td>Rekha Singh</td><td>14 Mar</td><td>1</td><td>COD ⏳</td><td>₹28,500</td><td><span class="status-pill s-placed">Placed</span></td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Confirm</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS -->
+      <div class="admin-screen" id="as-customers">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <input type="text" placeholder="Search customers..." style="flex:1;"/>
+          <select style="width:150px;"><option>All Tiers</option><option>Gold</option><option>Silver</option><option>Platinum</option></select>
+          <button class="btn-primary">+ Add Customer</button>
+          <button class="btn-secondary">⬇️ Export</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Customer</th><th>Mobile</th><th>Orders</th><th>Total Spend</th><th>Tier</th><th>Points</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div style="font-weight:500;">Priya Sharma</div><div style="font-size:11px;color:var(--gray);">priya@email.com</div></td><td>98765 43210</td><td>12</td><td>₹4.8L</td><td>🥇 Gold</td><td>850</td><td>Jan 2024</td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Edit</button></td></tr>
+              <tr><td><div style="font-weight:500;">Anita Verma</div><div style="font-size:11px;color:var(--gray);">anita@email.com</div></td><td>99887 76655</td><td>5</td><td>₹1.2L</td><td>🥈 Silver</td><td>320</td><td>Feb 2024</td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Edit</button></td></tr>
+              <tr><td><div style="font-weight:500;">Meena Gupta</div><div style="font-size:11px;color:var(--gray);">meena@email.com</div></td><td>91234 56789</td><td>28</td><td>₹18.5L</td><td>🏆 Platinum</td><td>4200</td><td>Dec 2023</td><td><button class="action-btn btn-view">View</button><button class="action-btn btn-edit">Edit</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MANAGERS -->
+      <div class="admin-screen" id="as-managers">
+        <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-size:13px;color:var(--gray);">Manage sub-admin accounts and control their access permissions</div>
+          <button class="btn-primary" onclick="showNewManagerForm()">+ Create Manager</button>
+        </div>
+        <div id="manager-list-view">
+          <div class="manager-grid">
+            <div class="manager-card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="manager-avatar">RK</div>
+                <div>
+                  <div style="font-weight:600;">Rohit Kumar</div>
+                  <div style="font-size:11px;color:var(--gray);">Inventory Manager</div>
+                  <div style="font-size:10px;color:var(--green);margin-top:2px;">● Active</div>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:4px;">
+                  <button class="action-btn btn-edit" onclick="showPermissionEditor()">Permissions</button>
+                  <button class="action-btn btn-del">Deactivate</button>
+                </div>
+              </div>
+              <div style="font-size:11px;color:var(--gray);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Assigned Permissions</div>
+              <div class="perm-grid">
+                <div class="perm-item"><span>📦 Products</span><div class="toggle on"></div></div>
+                <div class="perm-item"><span>📊 Inventory</span><div class="toggle on"></div></div>
+                <div class="perm-item"><span>🛍️ Orders</span><div class="toggle"></div></div>
+                <div class="perm-item"><span>👥 Customers</span><div class="toggle"></div></div>
+                <div class="perm-item"><span>📤 CSV Upload</span><div class="toggle on"></div></div>
+                <div class="perm-item"><span>📈 Reports</span><div class="toggle"></div></div>
+              </div>
+            </div>
+            <div class="manager-card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="manager-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c);">SP</div>
+                <div>
+                  <div style="font-weight:600;">Sunita Patel</div>
+                  <div style="font-size:11px;color:var(--gray);">Order Executive</div>
+                  <div style="font-size:10px;color:var(--green);margin-top:2px;">● Active</div>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:4px;">
+                  <button class="action-btn btn-edit" onclick="showPermissionEditor()">Permissions</button>
+                  <button class="action-btn btn-del">Deactivate</button>
+                </div>
+              </div>
+              <div style="font-size:11px;color:var(--gray);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Assigned Permissions</div>
+              <div class="perm-grid">
+                <div class="perm-item"><span>📦 Products</span><div class="toggle"></div></div>
+                <div class="perm-item"><span>📊 Inventory</span><div class="toggle"></div></div>
+                <div class="perm-item"><span>🛍️ Orders</span><div class="toggle on"></div></div>
+                <div class="perm-item"><span>👥 Customers</span><div class="toggle on"></div></div>
+                <div class="perm-item"><span>📤 CSV Upload</span><div class="toggle"></div></div>
+                <div class="perm-item"><span>📈 Reports</span><div class="toggle on"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Permission Editor Modal -->
+        <div id="perm-editor" style="display:none;background:var(--white);border-radius:8px;border:1px solid #e2e8f0;padding:24px;margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="font-size:16px;font-weight:700;">Edit Permissions — Rohit Kumar</h3>
+            <button class="btn-secondary" onclick="document.getElementById('perm-editor').style.display='none'">✕ Close</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📦 Product Management</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>View</span><input type="checkbox" checked/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Create</span><input type="checkbox" checked/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Edit</span><input type="checkbox" checked/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Delete</span><input type="checkbox"/></label>
+              </div>
+            </div>
+            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:10px;">🛍️ Order Management</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>View</span><input type="checkbox"/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Update Status</span><input type="checkbox"/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Cancel</span><input type="checkbox"/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Refund</span><input type="checkbox"/></label>
+              </div>
+            </div>
+            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📈 Reports</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Sales Report</span><input type="checkbox"/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Product Report</span><input type="checkbox" checked/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Customer Report</span><input type="checkbox"/></label>
+                <label style="display:flex;justify-content:space-between;font-size:12px;cursor:pointer;"><span>Export Data</span><input type="checkbox"/></label>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;">
+            <button class="btn-secondary" onclick="document.getElementById('perm-editor').style.display='none'">Cancel</button>
+            <button class="btn-primary" onclick="document.getElementById('perm-editor').style.display='none'">💾 Save Permissions</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="admin-screen" id="as-reports">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <input type="text" placeholder="From date" style="width:130px;"/>
+          <input type="text" placeholder="To date" style="width:130px;"/>
+          <select style="width:150px;"><option>All Reports</option><option>Sales</option><option>Products</option><option>Customers</option></select>
+          <button class="btn-primary">Generate</button>
+          <button class="btn-secondary" style="margin-left:auto;">⬇️ Export CSV</button>
+          <button class="btn-secondary">⬇️ Export PDF</button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon si-gold">💰</div><div class="stat-info"><h3>₹28.4L</h3><p>Monthly Revenue</p><div class="trend">↑ 22% vs last month</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-blue">🛍️</div><div class="stat-info"><h3>342</h3><p>Orders This Month</p><div class="trend">↑ 14%</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-green">📊</div><div class="stat-info"><h3>3.2%</h3><p>Return Rate</p><div class="trend">↓ 0.5%</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-purple">🎯</div><div class="stat-info"><h3>68%</h3><p>Conversion Rate</p><div class="trend">↑ 5%</div></div></div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-header"><h3>Top Performing Products</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Product</th><th>SKU</th><th>Units Sold</th><th>Revenue</th><th>Return Rate</th></tr></thead>
+            <tbody>
+              <tr><td>💍 Kundan Solitaire Ring</td><td style="font-family:monospace;font-size:11px;">LJW-GLD-001</td><td>84</td><td>₹23.9L</td><td>1.2%</td></tr>
+              <tr><td>📿 Diamond Pendant Set</td><td style="font-family:monospace;font-size:11px;">LJW-DIA-002</td><td>42</td><td>₹30.2L</td><td>0.8%</td></tr>
+              <tr><td>👂 Jhumka Earrings</td><td style="font-family:monospace;font-size:11px;">LJW-GLD-003</td><td>120</td><td>₹49.4L</td><td>2.1%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="admin-screen" id="as-settings">
+        <div class="grid-2">
+          <div>
+            <div class="admin-table-wrap p-16">
+              <div style="font-size:14px;font-weight:600;margin-bottom:16px;">🏪 Store Information</div>
+              <div class="form-group"><label class="form-label">Store Name</label><input type="text" value="LuxeJwel Jewellery"/></div>
+              <div class="form-group"><label class="form-label">GST Number</label><input type="text" value="27AABCU9603R1ZN"/></div>
+              <div class="form-group"><label class="form-label">Contact Email</label><input type="email" value="support@luxejwel.com"/></div>
+              <div class="form-group"><label class="form-label">Support Phone</label><input type="text" value="+91 98765 43210"/></div>
+              <button class="btn-primary">Save Changes</button>
+            </div>
+          </div>
+          <div>
+            <div class="admin-table-wrap p-16">
+              <div style="font-size:14px;font-weight:600;margin-bottom:16px;">💳 Payment Gateway</div>
+              <div class="form-group"><label class="form-label">Razorpay Key ID</label><input type="text" value="rzp_live_••••••••••"/></div>
+              <div class="form-group"><label class="form-label">Enabled Methods</label>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+                  <label style="font-size:12px;display:flex;gap:4px;align-items:center;"><input type="checkbox" checked/> UPI</label>
+                  <label style="font-size:12px;display:flex;gap:4px;align-items:center;"><input type="checkbox" checked/> Cards</label>
+                  <label style="font-size:12px;display:flex;gap:4px;align-items:center;"><input type="checkbox" checked/> Net Banking</label>
+                  <label style="font-size:12px;display:flex;gap:4px;align-items:center;"><input type="checkbox" checked/> EMI</label>
+                  <label style="font-size:12px;display:flex;gap:4px;align-items:center;"><input type="checkbox"/> COD</label>
+                </div>
+              </div>
+              <button class="btn-primary">Save Payment Config</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MANAGER PANEL ══════════════════ -->
+<div class="panel" id="panel-manager">
+  <div class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="name">✦ LUXEJWEL</div>
+      <div class="role">Manager — Rohit Kumar</div>
+    </div>
+    <div class="sidebar-menu">
+      <div class="menu-section">My Access</div>
+      <div class="menu-item active" onclick="showManagerScreen('mdashboard');setActiveManagerMenu(this)"><span class="icon">📊</span>Dashboard</div>
+      <div class="menu-item" onclick="showManagerScreen('mproducts');setActiveManagerMenu(this)"><span class="icon">💎</span>Products<span style="margin-left:auto;font-size:9px;background:#d1fae5;color:#065f46;padding:2px 6px;border-radius:8px;">✓ Assigned</span></div>
+      <div class="menu-item" onclick="showManagerScreen('mcsv');setActiveManagerMenu(this)"><span class="icon">📤</span>CSV Upload<span style="margin-left:auto;font-size:9px;background:#d1fae5;color:#065f46;padding:2px 6px;border-radius:8px;">✓ Assigned</span></div>
+      <div class="menu-item" onclick="showManagerScreen('minventory');setActiveManagerMenu(this)"><span class="icon">📦</span>Inventory<span style="margin-left:auto;font-size:9px;background:#d1fae5;color:#065f46;padding:2px 6px;border-radius:8px;">✓ Assigned</span></div>
+      <div class="menu-item" style="opacity:.4;cursor:not-allowed;"><span class="icon">🛍️</span>Orders<span style="margin-left:auto;font-size:9px;background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:8px;">🔒 No Access</span></div>
+      <div class="menu-item" style="opacity:.4;cursor:not-allowed;"><span class="icon">👥</span>Customers<span style="margin-left:auto;font-size:9px;background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:8px;">🔒 No Access</span></div>
+      <div class="menu-item" style="opacity:.4;cursor:not-allowed;"><span class="icon">📈</span>Reports<span style="margin-left:auto;font-size:9px;background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:8px;">🔒 No Access</span></div>
+    </div>
+  </div>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h2 id="manager-title">My Dashboard</h2>
+      <div style="font-size:12px;background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:12px;font-weight:600;">👔 Manager Account</div>
+      <div class="avatar" style="background:linear-gradient(135deg,#667eea,#764ba2);">RK</div>
+    </div>
+    <div class="admin-content">
+      <!-- Manager Dashboard -->
+      <div class="admin-screen active" id="ms-mdashboard">
+        <div style="background:linear-gradient(135deg,#1a1208,#2c1f0a);color:var(--white);border-radius:8px;padding:20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;color:#ccc;">Good morning,</div>
+            <div style="font-size:22px;font-weight:700;color:var(--gold);">Rohit Kumar 👔</div>
+            <div style="font-size:12px;color:#aaa;margin-top:4px;">Inventory Manager · Last login: Today 9:15 AM</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:#aaa;margin-bottom:4px;">Your Access Modules</div>
+            <div style="font-size:28px;font-weight:700;color:var(--gold);">3 / 8</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+          <div class="stat-card"><div class="stat-icon si-gold">💎</div><div class="stat-info"><h3>248</h3><p>Total Products</p><div class="trend">You manage this</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-purple">⚠️</div><div class="stat-info"><h3>8</h3><p>Low Stock SKUs</p><div class="trend trend-down">Needs attention</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-blue">📤</div><div class="stat-info"><h3>5</h3><p>CSV Uploads Today</p><div class="trend">↑ 2 pending review</div></div></div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-header"><h3>Low Stock Alerts — Action Required</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Product</th><th>SKU</th><th>Current Stock</th><th>Threshold</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>📿 Diamond Pendant Set</td><td style="font-family:monospace;font-size:11px;">LJW-DIA-002</td><td><span style="color:var(--red);font-weight:700;">2</span></td><td>10</td><td><button class="action-btn btn-edit">Update Stock</button></td></tr>
+              <tr><td>💫 Bridal Choker Set</td><td style="font-family:monospace;font-size:11px;">LJW-BRD-004</td><td><span style="color:var(--red);font-weight:700;">1</span></td><td>5</td><td><button class="action-btn btn-edit">Update Stock</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Manager Products -->
+      <div class="admin-screen" id="ms-mproducts">
+        <div style="background:#fffdf5;border:1px solid var(--gold);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--dark-gold);">
+          ℹ️ You have <strong>View, Create & Edit</strong> access to Products. Delete is restricted by Admin.
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+          <input type="text" placeholder="Search products..." style="width:240px;"/>
+          <button class="btn-primary">+ Add Product</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="tbl">
+            <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Stock</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-GLD-001</td><td>💍 Kundan Ring</td><td>Rings</td><td>24</td><td>₹28,500</td><td><span class="status-pill s-delivered">Active</span></td><td><button class="action-btn btn-edit">Edit</button></td></tr>
+              <tr><td style="font-family:monospace;font-size:11px;">LJW-DIA-002</td><td>📿 Diamond Pendant</td><td>Pendants</td><td><span style="color:var(--red);font-weight:600;">2 ⚠️</span></td><td>₹72,000</td><td><span class="status-pill s-delivered">Active</span></td><td><button class="action-btn btn-edit">Edit</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Manager CSV -->
+      <div class="admin-screen" id="ms-mcsv">
+        <div style="background:#fffdf5;border:1px solid var(--gold);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--dark-gold);">
+          ℹ️ You have <strong>CSV Upload</strong> access. Uploads are logged and reviewed by Admin.
+        </div>
+        <div class="csv-drop">
+          <div class="icon">📤</div>
+          <h3>Upload Product CSV</h3>
+          <p>Drag & drop or click to browse</p>
+          <button class="btn-gold" style="margin-top:14px;border:none;padding:10px 24px;border-radius:5px;">Choose CSV File</button>
+        </div>
+      </div>
+
+      <!-- Manager Inventory -->
+      <div class="admin-screen" id="ms-minventory">
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card"><div class="stat-icon si-gold">📦</div><div class="stat-info"><h3>248</h3><p>Total SKUs</p></div></div>
+          <div class="stat-card"><div class="stat-icon si-purple">⚠️</div><div class="stat-info"><h3>8</h3><p>Low Stock</p><div class="trend trend-down">Below threshold</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-green">✅</div><div class="stat-info"><h3>240</h3><p>In Stock</p><div class="trend">Healthy</div></div></div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-header"><h3>Inventory Overview</h3><button class="btn-secondary">⬇️ Export</button></div>
+          <table class="tbl">
+            <thead><tr><th>Product</th><th>SKU</th><th>Available</th><th>Reserved</th><th>Threshold</th><th>Update Stock</th></tr></thead>
+            <tbody>
+              <tr><td>💍 Kundan Ring</td><td style="font-family:monospace;font-size:11px;">LJW-GLD-001</td><td>24</td><td>2</td><td>10</td><td><input type="number" value="24" style="width:70px;"/></td></tr>
+              <tr><td>📿 Diamond Pendant</td><td style="font-family:monospace;font-size:11px;">LJW-DIA-002</td><td><span style="color:var(--red);font-weight:700;">2</span></td><td>0</td><td>10</td><td><input type="number" value="2" style="width:70px;border-color:var(--red);"/></td></tr>
+              <tr><td>👂 Jhumka Earrings</td><td style="font-family:monospace;font-size:11px;">LJW-GLD-003</td><td>18</td><td>1</td><td>10</td><td><input type="number" value="18" style="width:70px;"/></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 16px;"><button class="btn-primary">💾 Save Inventory</button></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// ======== PARTICLES ========
-(function(){
-  const c = document.getElementById('particles-canvas');
-  const ctx = c.getContext('2d');
-  let W, H, particles = [];
-  function resize(){W = c.width = window.innerWidth; H = c.height = window.innerHeight;}
-  resize();
-  window.addEventListener('resize', resize);
-  for(let i=0;i<80;i++){
-    particles.push({
-      x:Math.random()*1920, y:Math.random()*1080,
-      r:Math.random()*2+0.5,
-      vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4,
-      a:Math.random(),
-      color:['rgba(200,75,255,','rgba(255,51,102,','rgba(0,229,255,'][Math.floor(Math.random()*3)]
-    });
-  }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=p.color+(0.3+Math.sin(Date.now()/1000)*0.2)+')';
-      ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function showUserScreen(name){
+  document.querySelectorAll('.user-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('us-'+name).classList.add('active');
+}
+function setActiveUserNav(el){
+  document.querySelectorAll('.user-nav a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+}
+function showAdminScreen(name){
+  document.querySelectorAll('.admin-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('as-'+name).classList.add('active');
+  const titles={dashboard:'Dashboard',products:'Product Management',csv:'CSV Bulk Upload',orders:'Order Management',customers:'Customer Management',managers:'Manager Panel',reports:'Reports & Analytics',settings:'Settings'};
+  document.getElementById('admin-title').innerText = titles[name]||name;
+}
+function setActiveMenu(el){
+  document.querySelectorAll('#panel-admin .menu-item').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+}
+function showManagerScreen(name){
+  document.querySelectorAll('#panel-manager .admin-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ms-'+name).classList.add('active');
+}
+function setActiveManagerMenu(el){
+  document.querySelectorAll('#panel-manager .menu-item').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+}
+function showPermissionEditor(){
+  const el=document.getElementById('perm-editor');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+function showNewManagerForm(){
+  alert('Create Manager form opens here:\n\nFields:\n• Full Name\n• Email\n• Mobile\n• Designation\n• Role Template (Inventory Mgr / Order Executive / Custom)\n• Permission Matrix (per module: View/Create/Edit/Delete)\n• Send Welcome Email toggle');
+}
 
-// ======== STATE ========
-let currentRole = null;
-let currentUser = null;
-let currentPage = null;
-let gameTimer = null;
-let gameTimeLeft = 60;
-let selectedPiece = null;
-let isScratching = false;
-let qrBatches = [
-  {id:1, name:'Batch #001', total:20, rewards:10, used:15, status:'active', created:'2024-01-10', reward:'₹500 Fixed'},
-  {id:2, name:'Batch #002', total:20, rewards:8, used:20, status:'completed', created:'2024-01-08', reward:'₹200-₹800'},
-  {id:3, name:'Batch #003', total:15, rewards:5, used:3, status:'active', created:'2024-01-15', reward:'₹300 Fixed'},
-];
+// CSV Upload simulation
+function simulateUpload(){
+  document.getElementById('upload-progress').style.display='block';
+  let pct=0;
+  const fill=document.getElementById('prog-fill');
+  const txt=document.getElementById('prog-text');
+  const res=document.getElementById('validation-results');
+  res.innerHTML='';
+  const interval=setInterval(()=>{
+    pct+=5;
+    fill.style.width=pct+'%';
+    txt.innerText=`${Math.floor(pct*1.2)} of 120 rows processed`;
+    if(pct>=100){
+      clearInterval(interval);
+      txt.innerText='✅ 118 rows imported successfully · 2 rows failed';
+      res.innerHTML=`
+        <div class="validation-row vr-ok">✅ Row 1-50: All valid — imported</div>
+        <div class="validation-row vr-ok">✅ Row 51-100: All valid — imported</div>
+        <div class="validation-row vr-ok">✅ Row 101-118: Valid — imported</div>
+        <div class="validation-row vr-err">❌ Row 119: Missing required field "price"</div>
+        <div class="validation-row vr-err">❌ Row 120: Invalid karat value "25" (must be 18, 22, or 24)</div>
+        <div style="margin-top:10px;display:flex;gap:8px;">
+          <button class="btn-primary">✅ Confirm Import (118 rows)</button>
+          <button class="btn-secondary">↩️ Rollback</button>
+          <button class="btn-secondary">⬇️ Error Report</button>
+        </div>
+      `;
+    }
+  },80);
+}
 
-const CREDS = {user:'user123', admin:'admin123', manager:'manager123'};
-const NAVS = {
-  user:[
-    {page:'dashboard', icon:'fa-home', label:'Dashboard'},
-    {page:'game', icon:'fa-gamepad', label:'Play Game', badge:{text:'LIVE',cls:'green'}},
-    {page:'wallet', icon:'fa-wallet', label:'My Wallet'},
-    {page:'history', icon:'fa-history', label:'Game History'},
-    {page:'achievements', icon:'fa-trophy', label:'Achievements'},
-    {page:'profile', icon:'fa-user', label:'Profile'},
-    {page:'support', icon:'fa-headset', label:'Support', badge:{text:'5',cls:'red'}},
-  ],
-  admin:[
-    {page:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard'},
-    {page:'qr-management', icon:'fa-qrcode', label:'QR Management', badge:{text:'3',cls:'purple'}},
-    {page:'user-management', icon:'fa-users', label:'Users'},
-    {page:'manager-management', icon:'fa-user-tie', label:'Managers'},
-    {page:'wallet-control', icon:'fa-wallet', label:'Wallet Control'},
-    {page:'game-config', icon:'fa-cog', label:'Game Config'},
-    {page:'reports', icon:'fa-chart-bar', label:'Reports'},
-    {page:'audit', icon:'fa-shield-alt', label:'Audit Logs'},
-  ],
-  manager:[
-    {page:'dashboard', icon:'fa-tachometer-alt', label:'Dashboard'},
-    {page:'manager-users', icon:'fa-users', label:'Users'},
-    {page:'manager-kyc', icon:'fa-id-card', label:'KYC Approval', badge:{text:'23',cls:'red'}},
-    {page:'manager-withdrawals', icon:'fa-money-bill-wave', label:'Withdrawals', badge:{text:'12',cls:'yellow'}},
-    {page:'manager-reports', icon:'fa-chart-line', label:'Reports'},
-  ]
-};
-
-// ======== LOGIN ========
-let selectedRole = 'user';
-document.querySelectorAll('.role-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    selectedRole = tab.dataset.role;
-    const hints = {user:'user123', admin:'admin123', manager:'manager123'};
-    document.getElementById('passIn').value = hints[selectedRole];
-  });
+// Toggle interactions
+document.querySelectorAll('.toggle').forEach(t=>{
+  t.addEventListener('click',function(){this.classList.toggle('on');});
 });
-
-document.getElementById('loginForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const pass = document.getElementById('passIn').value;
-  const email = document.getElementById('emailIn').value;
-  if(CREDS[selectedRole] === pass){
-    currentRole = selectedRole;
-    currentUser = {email, name: email.split('@')[0]};
-    showLoader();
-    setTimeout(()=>{
-      hideLoader();
-      initApp();
-      notify('Welcome to '+selectedRole.toUpperCase()+' portal!', 'success');
-    }, 1200);
-  } else {
-    notify('Wrong credentials! Try again.', 'error');
-    document.getElementById('loginForm').querySelector('input[type=password]').style.borderColor='var(--accent2)';
-    setTimeout(()=>document.getElementById('loginForm').querySelector('input[type=password]').style.borderColor='',1500);
-  }
-});
-
-function initApp(){
-  document.getElementById('loginWrap').style.display='none';
-  document.getElementById('app').style.display='block';
-  buildSidebar();
-  navigate('dashboard');
-}
-
-function buildSidebar(){
-  const u = document.getElementById('sidebarUser');
-  u.innerHTML=`
-    <div class="avatar">${currentUser.name[0].toUpperCase()}</div>
-    <div class="avatar-info">
-      <div class="name">${currentUser.name}</div>
-      <div class="email">${currentUser.email}</div>
-    </div>
-  `;
-  const nav = document.getElementById('sidebarNav');
-  nav.innerHTML='<div class="nav-section-title">Navigation</div>';
-  NAVS[currentRole].forEach(item=>{
-    const b = item.badge ? `<span class="nav-badge ${item.badge.cls}">${item.badge.text}</span>`:'';
-    const a = document.createElement('div');
-    a.className='nav-link'; a.dataset.page=item.page;
-    a.innerHTML=`<i class="fas ${item.icon}"></i>${item.label}${b}`;
-    a.onclick=()=>navigate(item.page);
-    nav.appendChild(a);
-  });
-}
-
-function navigate(page){
-  currentPage = page;
-  document.querySelectorAll('.nav-link').forEach(l=>{
-    l.classList.toggle('active', l.dataset.page===page);
-  });
-  const titles = {
-    'dashboard':'Dashboard','game':'Play Game','wallet':'My Wallet',
-    'history':'Game History','achievements':'Achievements','profile':'Profile',
-    'support':'Support','qr-management':'QR Management','user-management':'User Management',
-    'manager-management':'Manager Management','wallet-control':'Wallet Control',
-    'game-config':'Game Config','reports':'Reports & Analytics','audit':'Audit Logs',
-    'manager-users':'Users','manager-kyc':'KYC Approval','manager-withdrawals':'Withdrawals',
-    'manager-reports':'Reports'
-  };
-  document.getElementById('topbarTitle').textContent = titles[page]||page.replace('-',' ').toUpperCase();
-  document.getElementById('sidebar').classList.remove('open');
-
-  const pc = document.getElementById('pageContainer');
-  pc.innerHTML='';
-  const fn = pages[currentRole+'_'+page] || pages[page];
-  if(fn) fn(pc);
-  else pc.innerHTML=`<div class="content-card" style="text-align:center;padding:60px 20px;"><div style="font-size:3rem;margin-bottom:16px">🚧</div><h3 style="color:var(--text2)">Coming Soon</h3><p style="color:var(--text3);margin-top:8px">This feature is under development</p></div>`;
-}
-
-// ======== PAGES ========
-const pages = {};
-
-// --- USER DASHBOARD ---
-pages['user_dashboard'] = pages['dashboard'] = function(el){
-  if(currentRole!=='user'){pages['admin_dashboard'](el);return;}
-  el.innerHTML=`
-    <div class="stats-grid">
-      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-val">₹2,450</div><div class="stat-label">Wallet Balance</div></div>
-      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-gamepad"></i></div><div class="stat-val">23</div><div class="stat-label">Total Games</div></div>
-      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-val">15</div><div class="stat-label">Games Won</div></div>
-      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-percent"></i></div><div class="stat-val">65%</div><div class="stat-label">Win Rate</div></div>
-    </div>
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-clock"></i> Recent Games</div>
-        <button class="btn btn-purple" onclick="navigate('history')"><i class="fas fa-eye"></i> View All</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Date</th><th>Game</th><th>Entry</th><th>Result</th><th>Reward</th></tr></thead>
-          <tbody>
-            ${[
-              ['Jan 15','QR Puzzle #234','₹100','won','₹500'],
-              ['Jan 14','QR Puzzle #233','₹100','lost','—'],
-              ['Jan 13','QR Puzzle #232','₹100','won','₹300'],
-              ['Jan 12','QR Puzzle #231','₹100','lost','—'],
-              ['Jan 11','QR Puzzle #230','₹100','won','₹200'],
-            ].map(r=>`<tr>
-              <td style="color:var(--text3);font-size:0.8rem;font-family:'Space Mono',monospace">${r[0]}</td>
-              <td style="font-weight:600">${r[1]}</td><td>${r[2]}</td>
-              <td><span class="badge ${r[3]==='won'?'badge-green':'badge-red'}">${r[3].toUpperCase()}</span></td>
-              <td style="color:${r[3]==='won'?'var(--green)':'var(--text3)'}; font-family:'Bebas Neue',cursive; font-size:1.1rem">${r[4]}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-chart-bar"></i> Monthly Performance</div>
-      </div>
-      <div class="chart-container" style="padding-bottom:30px">
-        ${buildBarChart([
-          {l:'Oct',v:65,c:'var(--accent1)'},
-          {l:'Nov',v:48,c:'var(--accent2)'},
-          {l:'Dec',v:72,c:'var(--accent1)'},
-          {l:'Jan',v:58,c:'var(--accent3)'},
-        ])}
-      </div>
-    </div>
-  `;
-};
-
-function buildBarChart(data){
-  const mx = Math.max(...data.map(d=>d.v));
-  return data.map(d=>`
-    <div class="bar-item" style="height:${(d.v/mx)*180}px;background:${d.c};opacity:0.7;">
-      <div class="bar-label">${d.l}</div>
-      <div class="bar-val">${d.v}%</div>
-    </div>
-  `).join('');
-}
-
-// --- GAME ---
-pages['user_game'] = pages['game'] = function(el){
-  el.innerHTML=`
-    <div class="game-hero">
-      <div class="game-title">QR PUZZLE</div>
-      <div class="game-subtitle">SCAN · SOLVE · WIN</div>
-      <div class="game-fee"><i class="fas fa-coins"></i> Entry Fee: ₹100 &nbsp;|&nbsp; Prize Pool: up to ₹1000</div>
-    </div>
-    <div id="gameStart" class="content-card" style="text-align:center;padding:40px 20px">
-      <p style="color:var(--text2);margin-bottom:24px;font-size:1rem;line-height:1.7">Arrange the scrambled QR code pieces in the correct order before time runs out!<br>Solve it to reveal your scratch card prize.</p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-        <button class="btn btn-grad btn-lg" onclick="startGame()"><i class="fas fa-play"></i> START GAME</button>
-        <button class="btn btn-cyan btn-lg" onclick="viewRules()"><i class="fas fa-info-circle"></i> HOW TO PLAY</button>
-      </div>
-    </div>
-    <div id="gamePuzzle" style="display:none" class="content-card">
-      <div class="timer-bar">
-        <div>
-          <div style="font-size:0.7rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px">TIME REMAINING</div>
-          <div class="timer-display" id="timerDisplay">60</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:0.7rem;letter-spacing:2px;color:var(--text3);margin-bottom:4px">PROGRESS</div>
-          <div id="progressTxt" style="font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:1px;color:var(--accent3)">0/10</div>
-        </div>
-      </div>
-      <div style="height:4px;background:var(--bg2);border-radius:2px;margin-bottom:20px;overflow:hidden">
-        <div id="timerProgress" style="height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));width:100%;transition:width 1s"></div>
-      </div>
-      <div class="puzzle-board" id="puzzleBoard"></div>
-      <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-purple" onclick="resetPuzzle()"><i class="fas fa-redo"></i> Shuffle</button>
-        <button class="btn btn-green" onclick="submitPuzzle()"><i class="fas fa-check"></i> Submit Solution</button>
-      </div>
-    </div>
-    <div id="gameScratch" style="display:none" class="content-card" style="text-align:center">
-      <h3 style="font-family:'Creepster',cursive;font-size:2rem;text-align:center;margin-bottom:20px;color:var(--accent1)">🎉 Puzzle Solved!</h3>
-      <p style="text-align:center;color:var(--text2);margin-bottom:24px">Scratch the card below to reveal your prize!</p>
-      <div style="display:flex;justify-content:center">
-        <div class="scratch-outer">
-          <div class="scratch-result-bg">
-            <div class="scratch-msg">🎊 YOU WON!</div>
-            <div class="scratch-amount">₹500</div>
-            <div class="scratch-sub">Credited to your wallet instantly</div>
-          </div>
-          <canvas id="scratchCanvas" width="440" height="180"></canvas>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-grad btn-lg" onclick="startGame()"><i class="fas fa-redo"></i> PLAY AGAIN</button>
-        <button class="btn btn-cyan btn-lg" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> MY WALLET</button>
-      </div>
-    </div>
-  `;
-};
-
-function startGame(){
-  document.getElementById('gameStart').style.display='none';
-  document.getElementById('gamePuzzle').style.display='block';
-  document.getElementById('gameScratch').style.display='none';
-  gameTimeLeft=60; selectedPiece=null;
-  generatePuzzle();
-  startTimer();
-}
-
-function generatePuzzle(){
-  const board = document.getElementById('puzzleBoard');
-  board.innerHTML='';
-  const order=[...Array(10).keys()];
-  const shuffled=[...order].sort(()=>Math.random()-0.5);
-  shuffled.forEach((val,idx)=>{
-    const d=document.createElement('div');
-    d.className='puzzle-piece'; d.dataset.val=val; d.dataset.idx=idx;
-    d.textContent=val+1;
-    d.onclick=()=>clickPiece(d);
-    board.appendChild(d);
-  });
-  updateProgress();
-}
-
-function clickPiece(piece){
-  if(selectedPiece && selectedPiece!==piece){
-    const tv=piece.dataset.val, tt=piece.textContent;
-    piece.dataset.val=selectedPiece.dataset.val;
-    piece.textContent=selectedPiece.textContent;
-    selectedPiece.dataset.val=tv; selectedPiece.textContent=tt;
-    selectedPiece.classList.remove('selected');
-    selectedPiece=null;
-    updateProgress();
-    if(checkSolved()) endGame(true);
-  } else if(selectedPiece===piece){
-    piece.classList.remove('selected'); selectedPiece=null;
-  } else {
-    if(selectedPiece) selectedPiece.classList.remove('selected');
-    piece.classList.add('selected'); selectedPiece=piece;
-  }
-}
-
-function updateProgress(){
-  const pieces=document.querySelectorAll('.puzzle-piece');
-  let correct=0;
-  pieces.forEach((p,i)=>{ if(parseInt(p.dataset.val)===i){p.classList.add('correct');correct++;}else{p.classList.remove('correct');}});
-  const el=document.getElementById('progressTxt');
-  if(el)el.textContent=correct+'/10';
-}
-
-function checkSolved(){
-  const pieces=document.querySelectorAll('.puzzle-piece');
-  for(let i=0;i<pieces.length;i++) if(parseInt(pieces[i].dataset.val)!==i) return false;
-  return true;
-}
-
-function startTimer(){
-  clearInterval(gameTimer);
-  gameTimer=setInterval(()=>{
-    gameTimeLeft--;
-    const d=document.getElementById('timerDisplay');
-    const p=document.getElementById('timerProgress');
-    if(d) d.textContent=gameTimeLeft;
-    if(p) p.style.width=(gameTimeLeft/60*100)+'%';
-    if(d && gameTimeLeft<=10) d.classList.add('warning');
-    if(gameTimeLeft<=0){clearInterval(gameTimer);endGame(false);}
-  },1000);
-}
-
-function resetPuzzle(){ clearInterval(gameTimer); startGame(); }
-
-function submitPuzzle(){
-  if(checkSolved()) endGame(true);
-  else notify('Not solved yet! Keep arranging the pieces.','warning');
-}
-
-function endGame(won){
-  clearInterval(gameTimer);
-  if(won){
-    document.getElementById('gamePuzzle').style.display='none';
-    document.getElementById('gameScratch').style.display='block';
-    setTimeout(initScratch,200);
-    notify('Puzzle solved! Scratch your card!','success');
-  } else {
-    notify("Time's up! Try again.",'error');
-    setTimeout(()=>{
-      document.getElementById('gamePuzzle').style.display='none';
-      document.getElementById('gameStart').style.display='block';
-    },2000);
-  }
-}
-
-function initScratch(){
-  const c=document.getElementById('scratchCanvas');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  c.width=440; c.height=180;
-  const g=ctx.createLinearGradient(0,0,440,180);
-  g.addColorStop(0,'#1a0028'); g.addColorStop(0.5,'#280018'); g.addColorStop(1,'#0a1a28');
-  ctx.fillStyle=g; ctx.fillRect(0,0,440,180);
-  ctx.fillStyle='rgba(200,75,255,0.3)';
-  for(let i=0;i<20;i++){
-    ctx.beginPath(); ctx.arc(Math.random()*440,Math.random()*180,Math.random()*30,0,Math.PI*2); ctx.fill();
-  }
-  ctx.fillStyle='rgba(255,255,255,0.9)';
-  ctx.font='bold 20px Rajdhani'; ctx.textAlign='center';
-  ctx.fillText('✦ SCRATCH HERE TO REVEAL ✦', 220, 100);
-  ctx.font='13px Space Mono'; ctx.fillStyle='rgba(255,255,255,0.5)';
-  ctx.fillText('Use your finger or mouse', 220, 130);
-  let scratching=false;
-  c.onmousedown=()=>scratching=true;
-  c.onmouseup=()=>scratching=false;
-  c.onmouseleave=()=>scratching=false;
-  c.ontouchstart=()=>scratching=true;
-  c.ontouchend=()=>scratching=false;
-  c.onmousemove=ev=>{if(!scratching)return;doScratch(c,ctx,ev.offsetX,ev.offsetY);};
-  c.ontouchmove=ev=>{
-    ev.preventDefault();
-    const r=c.getBoundingClientRect();
-    doScratch(c,ctx,ev.touches[0].clientX-r.left,ev.touches[0].clientY-r.top);
-  };
-}
-function doScratch(c,ctx,x,y){
-  ctx.globalCompositeOperation='destination-out';
-  ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fill();
-}
-
-function viewRules(){
-  notify('Swap puzzle pieces by tapping two pieces. Arrange 1-10 in order to win!','info');
-}
-
-// --- WALLET ---
-pages['user_wallet'] = pages['wallet'] = function(el){
-  el.innerHTML=`
-    <div class="wallet-hero">
-      <div class="wallet-label">Total Balance</div>
-      <div class="wallet-bal">₹2,450.00</div>
-      <div style="display:flex;gap:8px;font-size:0.8rem">
-        <span class="badge badge-green"><i class="fas fa-arrow-up"></i> +₹800 this week</span>
-        <span class="badge badge-purple">KYC Verified</span>
-      </div>
-      <div class="wallet-actions">
-        <button class="btn btn-green btn-lg"><i class="fas fa-plus"></i> ADD MONEY</button>
-        <button class="btn btn-cyan btn-lg"><i class="fas fa-arrow-up"></i> WITHDRAW</button>
-      </div>
-    </div>
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-list"></i> Transactions</div>
-        <span class="badge badge-purple">Last 30 days</span>
-      </div>
-      ${[
-        {type:'credit',icon:'fa-trophy',name:'Game Reward',sub:'QR Puzzle #234 — Won',amt:'+₹500',date:'Jan 15'},
-        {type:'debit',icon:'fa-gamepad',name:'Game Entry',sub:'QR Puzzle #235',amt:'-₹100',date:'Jan 15'},
-        {type:'credit',icon:'fa-plus-circle',name:'Added Money',sub:'UPI Transfer',amt:'+₹1,000',date:'Jan 14'},
-        {type:'debit',icon:'fa-university',name:'Withdrawal',sub:'Bank Transfer — HDFC ****4321',amt:'-₹1,000',date:'Jan 13'},
-        {type:'credit',icon:'fa-trophy',name:'Game Reward',sub:'QR Puzzle #232 — Won',amt:'+₹300',date:'Jan 13'},
-        {type:'debit',icon:'fa-gamepad',name:'Game Entry',sub:'QR Puzzle #232',amt:'-₹100',date:'Jan 13'},
-      ].map(t=>`
-        <div class="txn-item">
-          <div class="txn-icon ${t.type}"><i class="fas ${t.icon}"></i></div>
-          <div class="txn-info">
-            <div class="txn-name">${t.name}</div>
-            <div class="txn-date">${t.sub} · ${t.date}</div>
-          </div>
-          <div class="txn-amount ${t.type}">${t.amt}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-};
-
-// --- ACHIEVEMENTS ---
-pages['user_achievements'] = pages['achievements'] = function(el){
-  const achs=[
-    {icon:'🎯',name:'First Blood',desc:'Win your first game',unlocked:true},
-    {icon:'🔥',name:'On Fire',desc:'Win 5 games in a row',unlocked:true},
-    {icon:'💎',name:'Diamond',desc:'Win ₹10,000 total',unlocked:false},
-    {icon:'🕐',name:'Speed Demon',desc:'Solve in under 15 seconds',unlocked:true},
-    {icon:'👑',name:'King of Puzzle',desc:'Win 50 games',unlocked:false},
-    {icon:'🎪',name:'Veteran',desc:'Play 100 games',unlocked:false},
-    {icon:'💰',name:'Big Winner',desc:'Win ₹1000 in one game',unlocked:true},
-    {icon:'🌙',name:'Night Owl',desc:'Play after midnight',unlocked:false},
-  ];
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-trophy"></i> Achievements</div>
-        <span class="badge badge-green">4/8 Unlocked</span>
-      </div>
-      <div class="achievement-grid">
-        ${achs.map(a=>`
-          <div class="achievement-item ${a.unlocked?'unlocked':''}">
-            ${a.unlocked?'<span class="nav-badge green ach-badge">✓</span>':''}
-            <span class="ach-icon">${a.icon}</span>
-            <div class="ach-name">${a.name}</div>
-            <div class="ach-desc">${a.desc}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-};
-
-// --- HISTORY ---
-pages['user_history'] = pages['history'] = function(el){
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-history"></i> Game History</div>
-        <div style="display:flex;gap:8px">
-          <select style="padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem">
-            <option>All Games</option><option>Won</option><option>Lost</option>
-          </select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Date & Time</th><th>Puzzle ID</th><th>Entry</th><th>Duration</th><th>Result</th><th>Reward</th></tr></thead>
-          <tbody>
-            ${[
-              ['234','Jan 15, 10:30 AM','QR-234','₹100','45s','won','₹500'],
-              ['233','Jan 14, 3:15 PM','QR-233','₹100','60s','lost','—'],
-              ['232','Jan 13, 7:00 PM','QR-232','₹100','38s','won','₹300'],
-              ['231','Jan 12, 11:00 AM','QR-231','₹100','60s','lost','—'],
-              ['230','Jan 11, 2:45 PM','QR-230','₹100','29s','won','₹200'],
-              ['229','Jan 10, 9:00 AM','QR-229','₹100','52s','lost','—'],
-            ].map(r=>`<tr>
-              <td style="font-family:'Space Mono',monospace;color:var(--text3);font-size:0.75rem">#${r[0]}</td>
-              <td style="font-size:0.8rem;color:var(--text2)">${r[1]}</td>
-              <td style="font-family:'Space Mono',monospace;font-size:0.8rem">${r[2]}</td>
-              <td>${r[3]}</td>
-              <td><span class="badge badge-cyan">${r[4]}</span></td>
-              <td><span class="badge ${r[5]==='won'?'badge-green':'badge-red'}">${r[5].toUpperCase()}</span></td>
-              <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${r[5]==='won'?'var(--green)':'var(--text3)'}">${r[6]}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-};
-
-// --- PROFILE ---
-pages['user_profile'] = pages['profile'] = function(el){
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px" class="profile-grid">
-      <div>
-        <div class="content-card" style="text-align:center">
-          <div style="width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;margin:0 auto 16px;box-shadow:0 0 20px rgba(200,75,255,0.4)">${currentUser.name[0].toUpperCase()}</div>
-          <div style="font-weight:700;font-size:1.1rem">${currentUser.name}</div>
-          <div style="font-size:0.8rem;color:var(--text3);margin:4px 0 12px">${currentUser.email}</div>
-          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
-            <span class="badge badge-green"><i class="fas fa-check-circle"></i> KYC Verified</span>
-            <span class="badge badge-purple">Level 5</span>
-          </div>
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">
-              <div><div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--accent1)">23</div><div style="font-size:0.7rem;color:var(--text3)">GAMES</div></div>
-              <div><div style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--green)">15</div><div style="font-size:0.7rem;color:var(--text3)">WINS</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="content-card">
-          <div class="content-card-header"><div class="content-card-title"><i class="fas fa-edit"></i> Edit Profile</div></div>
-          <div class="form-row">
-            <div class="form-group"><label>Full Name</label><input type="text" value="${currentUser.name}" class="profile-input"></div>
-            <div class="form-group"><label>Email</label><input type="email" value="${currentUser.email}" class="profile-input"></div>
-            <div class="form-group"><label>Phone</label><input type="tel" value="+91 9876543210" class="profile-input"></div>
-            <div class="form-group"><label>City</label><input type="text" value="Mumbai" class="profile-input"></div>
-          </div>
-          <button class="btn btn-grad btn-lg" onclick="notify('Profile saved!','success')"><i class="fas fa-save"></i> SAVE CHANGES</button>
-        </div>
-      </div>
-    </div>
-  `;
-};
-
-// --- ADMIN DASHBOARD ---
-pages['admin_dashboard'] = function(el){
-  el.innerHTML=`
-    <div class="stats-grid">
-      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">1,234</div><div class="stat-label">Total Users</div></div>
-      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-val">₹2.5L</div><div class="stat-label">Revenue</div></div>
-      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-gamepad"></i></div><div class="stat-val">5,678</div><div class="stat-label">Games Played</div></div>
-      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-qrcode"></i></div><div class="stat-val">3</div><div class="stat-label">Active Batches</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="content-card">
-        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <button class="btn btn-purple" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('qr-management')"><i class="fas fa-qrcode"></i> Manage QR Batches</button>
-          <button class="btn btn-cyan" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('user-management')"><i class="fas fa-users"></i> Manage Users</button>
-          <button class="btn btn-green" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('reports')"><i class="fas fa-chart-bar"></i> View Reports</button>
-          <button class="btn btn-red" style="justify-content:flex-start;padding:12px 16px" onclick="navigate('audit')"><i class="fas fa-shield-alt"></i> Audit Logs</button>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-line"></i> Revenue (6M)</div></div>
-        <div class="chart-container" style="padding-bottom:30px">
-          ${buildBarChart([
-            {l:'Aug',v:55,c:'var(--accent1)'},
-            {l:'Sep',v:70,c:'var(--accent2)'},
-            {l:'Oct',v:45,c:'var(--accent3)'},
-            {l:'Nov',v:85,c:'var(--accent1)'},
-            {l:'Dec',v:92,c:'var(--accent4)'},
-            {l:'Jan',v:78,c:'var(--accent2)'},
-          ])}
-        </div>
-      </div>
-    </div>
-    <div class="content-card">
-      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-stream"></i> Live Activity</div></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th><th>Status</th></tr></thead>
-        <tbody>
-          ${[
-            ['10:30 AM','user@example.com','Game Played','QR Puzzle #234','won'],
-            ['10:25 AM','jane@example.com','Registration','New User','completed'],
-            ['10:20 AM','admin','Batch Created','Batch #005 — 20 QRs','active'],
-            ['10:15 AM','bob@example.com','Withdrawal','₹2,000 via UPI','pending'],
-            ['10:10 AM','user2@example.com','Game Played','QR Puzzle #233','lost'],
-          ].map(r=>`<tr>
-            <td style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--text3)">${r[0]}</td>
-            <td style="font-size:0.82rem">${r[1]}</td>
-            <td style="font-weight:600">${r[2]}</td>
-            <td style="color:var(--text2)">${r[3]}</td>
-            <td><span class="badge ${r[4]==='won'||r[4]==='completed'||r[4]==='active'?'badge-green':r[4]==='pending'?'badge-yellow':'badge-red'}">${r[4].toUpperCase()}</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>
-  `;
-};
-
-// --- QR MANAGEMENT ---
-pages['admin_qr-management'] = function(el){
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-qrcode"></i> QR Batches</div>
-        <button class="btn btn-grad" onclick="openModal('batchModal')"><i class="fas fa-plus"></i> Create Batch</button>
-      </div>
-      <div class="qr-batch-grid" id="batchGrid"></div>
-    </div>
-  `;
-  renderBatches();
-};
-
-function renderBatches(){
-  const grid=document.getElementById('batchGrid');
-  if(!grid)return;
-  grid.innerHTML='';
-  qrBatches.forEach(b=>{
-    const pct=Math.round(b.used/b.total*100);
-    const cls=b.status==='active'?'badge-green':b.status==='completed'?'badge-purple':'badge-yellow';
-    const div=document.createElement('div');
-    div.className='qr-batch-item';
-    div.innerHTML=`
-      <div class="qr-batch-header">
-        <div>
-          <div class="qr-batch-name">${b.name}</div>
-          <div class="qr-batch-meta">${b.reward} · Created ${b.created}</div>
-        </div>
-        <span class="badge ${cls}">${b.status.toUpperCase()}</span>
-      </div>
-      <div class="qr-preview-grid" id="qrPrev_${b.id}">
-        <div class="qr-thumb" id="qrt1_${b.id}"></div>
-        <div class="qr-thumb" id="qrt2_${b.id}"></div>
-        <div class="qr-thumb" id="qrt3_${b.id}"></div>
-      </div>
-      <div style="display:flex;gap:12px;font-size:0.8rem;color:var(--text3);margin-bottom:8px">
-        <span><b style="color:var(--text)">${b.total}</b> Total</span>
-        <span><b style="color:var(--accent1)">${b.rewards}</b> Rewards</span>
-        <span><b style="color:var(--green)">${b.used}</b> Used</span>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill ${b.status==='completed'?'purple':'green'}" style="width:${pct}%"></div></div>
-      <div style="font-size:0.72rem;color:var(--text3);margin-bottom:14px;text-align:right">${pct}% used</div>
-      <div class="action-btns">
-        <button class="btn btn-purple" onclick="viewBatchQRs(${b.id})"><i class="fas fa-eye"></i> View QRs</button>
-        <button class="btn btn-cyan" onclick="downloadBatch(${b.id})"><i class="fas fa-download"></i> Export</button>
-        ${b.status==='active'?`<button class="btn btn-red" onclick="notify('Batch deactivated','warning')"><i class="fas fa-ban"></i></button>`:''}
-      </div>
-    `;
-    grid.appendChild(div);
-    setTimeout(()=>genQRPreviews(b.id, b.name),100);
-  });
-}
-
-async function genQRPreviews(id, batchName){
-  for(let i=1;i<=3;i++){
-    const el=document.getElementById(`qrt${i}_${id}`);
-    if(!el)continue;
-    try{
-      const data=`QRPUZZLE:${batchName}:CODE${id}${i}:${Date.now()}`;
-      const canvas=document.createElement('canvas');
-      await QRCode.toCanvas(canvas, data, {width:56, margin:0, color:{dark:'#000',light:'#fff'}});
-      el.innerHTML=''; el.appendChild(canvas);
-    }catch(e){}
-  }
-}
-
-function viewBatchQRs(id){
-  const b=qrBatches.find(x=>x.id===id);
-  if(!b)return;
-  const modal=document.getElementById('qrViewModal');
-  document.getElementById('qrViewTitle').innerHTML=`<i class="fas fa-qrcode"></i> ${b.name} — QR Codes`;
-  const body=document.getElementById('qrViewBody');
-  body.innerHTML=`
-    <p style="color:var(--text2);margin-bottom:20px;font-size:0.85rem">${b.total} QR codes in this batch. ${b.rewards} are reward QRs.</p>
-    <div id="qrFullGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
-  `;
-  openModal('qrViewModal');
-  const grid=document.getElementById('qrFullGrid');
-  // Generate first 12 QR codes
-  const count=Math.min(b.total,12);
-  for(let i=0;i<count;i++){
-    const isReward=i<b.rewards;
-    const wrapper=document.createElement('div');
-    wrapper.style.cssText='text-align:center;';
-    wrapper.innerHTML=`
-      <div class="qr-full-display" id="qrFull_${id}_${i}"></div>
-      <div style="margin-top:6px">
-        <span class="badge ${isReward?'badge-yellow':'badge-cyan'}" style="font-size:0.65rem">${isReward?'REWARD':'BLANK'}</span>
-        <div style="font-size:0.65rem;color:var(--text3);font-family:'Space Mono',monospace;margin-top:3px">QR-${String(i+1).padStart(3,'0')}</div>
-      </div>
-    `;
-    grid.appendChild(wrapper);
-    const data=isReward?`REWARD:${b.name}:${i+1}:₹${500+i*50}`:`NOREWARD:${b.name}:${i+1}`;
-    const canvasEl=document.createElement('canvas');
-    QRCode.toCanvas(canvasEl, data, {width:70,margin:1,color:{dark:'#000',light:'#fff'}}).then(()=>{
-      const qrEl=document.getElementById(`qrFull_${id}_${i}`);
-      if(qrEl){qrEl.innerHTML='';qrEl.appendChild(canvasEl);}
-    }).catch(()=>{});
-  }
-  if(b.total>12){
-    const more=document.createElement('div');
-    more.style.cssText='text-align:center;padding:16px;color:var(--text3);font-size:0.8rem;grid-column:1/-1;';
-    more.textContent=`+ ${b.total-12} more QR codes. Export to view all.`;
-    grid.appendChild(more);
-  }
-}
-
-async function downloadBatch(id){
-  notify('Preparing batch export...','info');
-  const b=qrBatches.find(x=>x.id===id);
-  if(!b)return;
-  // Create CSV
-  let csv='QR_ID,Type,Data,Amount\n';
-  for(let i=0;i<b.total;i++){
-    const isR=i<b.rewards;
-    const amt=isR?500+i*50:0;
-    const data=isR?`REWARD:${b.name}:${i+1}:₹${amt}`:`NOREWARD:${b.name}:${i+1}`;
-    csv+=`QR-${String(i+1).padStart(3,'0')},${isR?'REWARD':'BLANK'},"${data}",${amt}\n`;
-  }
-  const blob=new Blob([csv],{type:'text/csv'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`${b.name.replace(' ','_')}_export.csv`; a.click();
-  notify('Batch exported!','success');
-}
-
-// --- USER MANAGEMENT ---
-pages['admin_user-management'] = function(el){
-  const users=[
-    {id:1,name:'John Doe',email:'john@example.com',wallet:2500,kyc:'verified',status:'active',games:23},
-    {id:2,name:'Jane Smith',email:'jane@example.com',wallet:1800,kyc:'pending',status:'active',games:12},
-    {id:3,name:'Bob Johnson',email:'bob@example.com',wallet:3200,kyc:'not-submitted',status:'blocked',games:45},
-    {id:4,name:'Alice Brown',email:'alice@example.com',wallet:900,kyc:'verified',status:'active',games:8},
-    {id:5,name:'Charlie D',email:'charlie@example.com',wallet:4100,kyc:'verified',status:'active',games:67},
-  ];
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header">
-        <div class="content-card-title"><i class="fas fa-users"></i> Users (${users.length})</div>
-        <div style="display:flex;gap:8px">
-          <input type="text" placeholder="Search..." style="padding:8px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;outline:none;width:180px">
-          <button class="btn btn-grad" onclick="notify('New user created!','success')"><i class="fas fa-plus"></i> Add</button>
-        </div>
-      </div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>User</th><th>Email</th><th>Wallet</th><th>Games</th><th>KYC</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${users.map(u=>`<tr>
-            <td><div style="display:flex;align-items:center;gap:10px">
-              <div class="user-row-avatar">${u.name[0]}</div>
-              <div>
-                <div style="font-weight:600;font-size:0.9rem">${u.name}</div>
-                <div style="font-size:0.72rem;color:var(--text3)">ID #${u.id}</div>
-              </div>
-            </div></td>
-            <td style="font-size:0.82rem">${u.email}</td>
-            <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--green)">₹${u.wallet.toLocaleString()}</td>
-            <td><span class="badge badge-purple">${u.games}</span></td>
-            <td><span class="badge ${u.kyc==='verified'?'badge-green':u.kyc==='pending'?'badge-yellow':'badge-cyan'}">${u.kyc}</span></td>
-            <td><span class="badge ${u.status==='active'?'badge-green':'badge-red'}">${u.status}</span></td>
-            <td><div class="action-btns">
-              <button class="btn btn-purple" onclick="notify('Viewing user #${u.id}','info')" title="View"><i class="fas fa-eye"></i></button>
-              <button class="btn btn-cyan" onclick="notify('Editing user #${u.id}','info')" title="Edit"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-red" onclick="notify('User status toggled','warning')" title="Ban"><i class="fas fa-ban"></i></button>
-            </div></td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>
-  `;
-};
-
-// --- REPORTS ---
-pages['admin_reports'] = pages['manager-reports'] = function(el){
-  el.innerHTML=`
-    <div class="stats-grid">
-      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-rupee-sign"></i></div><div class="stat-val">₹2.5L</div><div class="stat-label">Total Revenue</div></div>
-      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-val">₹1.2L</div><div class="stat-label">Total Payouts</div></div>
-      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-percentage"></i></div><div class="stat-val">52%</div><div class="stat-label">House Edge</div></div>
-      <div class="stat-card c4"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">234</div><div class="stat-label">Active Today</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="content-card">
-        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-bar"></i> Daily Revenue</div></div>
-        <div class="chart-container" style="padding-bottom:30px">
-          ${buildBarChart([{l:'Mon',v:60,c:'var(--accent1)'},{l:'Tue',v:80,c:'var(--accent2)'},{l:'Wed',v:45,c:'var(--accent3)'},{l:'Thu',v:90,c:'var(--accent4)'},{l:'Fri',v:75,c:'var(--accent1)'},{l:'Sat',v:95,c:'var(--green)'},{l:'Sun',v:85,c:'var(--accent2)'}])}
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="content-card-header"><div class="content-card-title"><i class="fas fa-chart-pie"></i> Win vs Loss</div></div>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
-          ${[
-            {label:'Losses (Platform wins)',pct:62,color:'var(--accent1)'},
-            {label:'Player wins',pct:38,color:'var(--green)'},
-          ].map(r=>`
-            <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-                <span style="font-size:0.85rem;color:var(--text2)">${r.label}</span>
-                <span style="font-family:'Bebas Neue',cursive;font-size:1rem;color:${r.color}">${r.pct}%</span>
-              </div>
-              <div class="progress-bar-wrap"><div style="height:100%;width:${r.pct}%;background:${r.color};border-radius:3px;transition:width 0.5s"></div></div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-};
-
-// --- MANAGER DASHBOARD ---
-pages['manager_dashboard'] = function(el){
-  el.innerHTML=`
-    <div class="alert-banner"><i class="fas fa-lock"></i> You have limited permissions as configured by the Admin.</div>
-    <div class="stats-grid">
-      <div class="stat-card c1"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-val">1,234</div><div class="stat-label">Total Users</div></div>
-      <div class="stat-card c2"><div class="stat-icon"><i class="fas fa-id-card"></i></div><div class="stat-val">45</div><div class="stat-label">KYC Pending</div></div>
-      <div class="stat-card c3"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-val">12</div><div class="stat-label">Withdrawals Pending</div></div>
-    </div>
-    <div class="content-card">
-      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-tasks"></i> Pending Tasks</div></div>
-      ${[
-        {title:'KYC Verification',sub:'23 users awaiting approval',badge:'badge-red',btn:'Review'},
-        {title:'Withdrawal Requests',sub:'12 requests pending processing',badge:'badge-yellow',btn:'Process'},
-        {title:'Support Tickets',sub:'5 open tickets need response',badge:'badge-purple',btn:'Respond'},
-        {title:'Account Reports',sub:'3 users reported for review',badge:'badge-red',btn:'Review'},
-      ].map(t=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:8px">
-          <div>
-            <div style="font-weight:700">${t.title}</div>
-            <div style="font-size:0.8rem;color:var(--text3);margin-top:2px">${t.sub}</div>
-          </div>
-          <button class="btn btn-purple" onclick="notify('Opening ${t.title}...','info')">${t.btn}</button>
-        </div>
-      `).join('')}
-    </div>
-  `;
-};
-
-pages['manager_manager-kyc'] = function(el){
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-id-card"></i> KYC Approval Queue</div><span class="badge badge-red">23 Pending</span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>User</th><th>Submitted</th><th>Document</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${[
-            ['Rahul S.','Jan 14','Aadhaar Card'],
-            ['Priya M.','Jan 13','PAN Card'],
-            ['Amit K.','Jan 13','Voter ID'],
-          ].map(r=>`<tr>
-            <td><div style="display:flex;align-items:center;gap:8px"><div class="user-row-avatar" style="width:30px;height:30px;font-size:0.8rem">${r[0][0]}</div><span>${r[0]}</span></div></td>
-            <td style="font-size:0.8rem;color:var(--text3)">${r[1]}</td>
-            <td>${r[2]}</td>
-            <td><span class="badge badge-yellow">PENDING</span></td>
-            <td><div class="action-btns">
-              <button class="btn btn-green" onclick="notify('KYC Approved!','success')"><i class="fas fa-check"></i> Approve</button>
-              <button class="btn btn-red" onclick="notify('KYC Rejected','error')"><i class="fas fa-times"></i> Reject</button>
-            </div></td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>
-  `;
-};
-
-pages['manager_manager-withdrawals'] = function(el){
-  el.innerHTML=`
-    <div class="content-card">
-      <div class="content-card-header"><div class="content-card-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</div><span class="badge badge-yellow">12 Pending</span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Requested</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${[
-            ['John Doe','₹2,000','UPI','Jan 15'],
-            ['Jane Smith','₹1,500','Bank','Jan 14'],
-            ['Alice Brown','₹3,000','UPI','Jan 14'],
-          ].map(r=>`<tr>
-            <td>${r[0]}</td>
-            <td style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--accent4)">${r[1]}</td>
-            <td><span class="badge badge-cyan">${r[2]}</span></td>
-            <td style="font-size:0.8rem;color:var(--text3)">${r[3]}</td>
-            <td><div class="action-btns">
-              <button class="btn btn-green" onclick="notify('Payment processed!','success')"><i class="fas fa-check"></i> Approve</button>
-              <button class="btn btn-red" onclick="notify('Request rejected','error')"><i class="fas fa-times"></i> Reject</button>
-            </div></td>
-          </tr>`).join('')}
-        </tbody>
-      </table></div>
-    </div>
-  `;
-};
-
-// ======== MODAL FUNCTIONS ========
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-window.onclick=e=>{
-  document.querySelectorAll('.modal-backdrop.open').forEach(m=>{
-    if(e.target===m) m.classList.remove('open');
-  });
-};
-
-function toggleRewardType(){
-  const t=document.getElementById('rewardType').value;
-  document.getElementById('fixedDiv').style.display=t==='fixed'?'block':'none';
-  document.getElementById('randomDiv').style.display=t==='random'?'block':'none';
-}
-
-function generateBatch(){
-  const name=document.getElementById('batchName').value||'New Batch';
-  const total=parseInt(document.getElementById('totalQRs').value)||20;
-  const rewards=parseInt(document.getElementById('rewardQRs').value)||10;
-  const type=document.getElementById('rewardType').value;
-  const rewardStr=type==='fixed'?`₹${document.getElementById('fixedAmt').value} Fixed`:`₹${document.getElementById('minAmt').value}-₹${document.getElementById('maxAmt').value}`;
-  showLoader();
-  setTimeout(()=>{
-    hideLoader();
-    closeModal('batchModal');
-    const id=qrBatches.length+1;
-    qrBatches.unshift({id,name,total,rewards,used:0,status:'active',created:'Jan '+new Date().getDate(),reward:rewardStr});
-    notify('QR Batch "'+name+'" created with '+total+' codes!','success');
-    if(document.getElementById('batchGrid')) renderBatches();
-  },1500);
-}
-
-// ======== UTILITIES ========
-function notify(msg, type='info'){
-  const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
-  const n=document.getElementById('notifications');
-  const d=document.createElement('div');
-  d.className='notif '+type;
-  d.innerHTML=`<i class="fas ${icons[type]} notif-icon"></i><div class="notif-msg">${msg}</div>`;
-  n.appendChild(d);
-  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(100%)';d.style.transition='all 0.3s';setTimeout(()=>n.removeChild(d),300)},3500);
-}
-function showLoader(){document.getElementById('loader').classList.add('show');}
-function hideLoader(){document.getElementById('loader').classList.remove('show');}
-function logout(){
-  if(confirm('Logout from the portal?')){
-    currentRole=null; currentUser=null;
-    clearInterval(gameTimer);
-    document.getElementById('app').style.display='none';
-    document.getElementById('loginWrap').style.display='flex';
-    document.getElementById('loginForm').reset();
-    notify('Logged out successfully','info');
-  }
-}
-
-// Mobile toggle
-document.getElementById('mobileToggle').onclick=()=>{
-  document.getElementById('sidebar').classList.toggle('open');
-};
-
-// Page routing for roles
-const roleProxy = new Proxy(pages, {
-  get(target, key){ return target[currentRole+'_'+key] || target[key]; }
-});
-
-// Override navigate to handle role-specific pages
-const _nav=navigate;
-window.navigate=function(page){
-  const fn=pages[currentRole+'_'+page]||pages[page];
-  currentPage=page;
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
-  const titles={'dashboard':'Dashboard','game':'Play Game','wallet':'My Wallet','history':'Game History','achievements':'Achievements','profile':'Profile','support':'Support','qr-management':'QR Management','user-management':'User Management','manager-management':'Manager Management','wallet-control':'Wallet Control','game-config':'Game Config','reports':'Reports & Analytics','audit':'Audit Logs','manager-users':'Users','manager-kyc':'KYC Approval','manager-withdrawals':'Withdrawals','manager-reports':'Reports'};
-  document.getElementById('topbarTitle').textContent=(titles[page]||page).toUpperCase();
-  document.getElementById('sidebar').classList.remove('open');
-  const pc=document.getElementById('pageContainer');
-  pc.innerHTML='';
-  if(fn) fn(pc);
-  else pc.innerHTML='<div class="content-card" style="text-align:center;padding:60px 20px"><div style="font-size:3rem;margin-bottom:16px">🚧</div><h3 style="color:var(--text2)">Coming Soon</h3></div>';
-};
 </script>
 </body>
 </html>
